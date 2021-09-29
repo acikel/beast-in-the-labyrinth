@@ -42,11 +42,23 @@
 *.VC.db
 *.VC.opendb
 
+
 # Precompiled Assets
 SourceArt/**/*.png
 SourceArt/**/*.tga
 
 # Binary Files
+Binaries/*
+!Binaries/Win64
+
+Binaries/Win64/*
+
+!Binaries/Win64/UE4Editor-BeastInTheLabyrinth.dll
+!Binaries/Win64/UE4Editor-BeastInTheLabyrinth.pdb
+!Binaries/Win64/UE4Editor.modules
+!Binaries/Win64/BeastInTheLabyrinthEditor.target
+
+
 Plugins/*/Binaries/*
 
 # Builds
