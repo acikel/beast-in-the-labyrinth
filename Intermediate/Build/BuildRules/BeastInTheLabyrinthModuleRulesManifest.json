@@ -1,0 +1,8 @@
+{
+	"SourceFiles": [
+		"D:\\Projects\\Games\\BeastInTheLabyrinth\\Source\\BeastInTheLabyrinth\\BeastInTheLabyrinth.Build.cs",
+		"D:\\Projects\\Games\\BeastInTheLabyrinth\\Source\\BeastInTheLabyrinth.Target.cs",
+		"D:\\Projects\\Games\\BeastInTheLabyrinth\\Source\\BeastInTheLabyrinthEditor.Target.cs"
+	],
+	"EngineVersion": "4.27.0"
+}

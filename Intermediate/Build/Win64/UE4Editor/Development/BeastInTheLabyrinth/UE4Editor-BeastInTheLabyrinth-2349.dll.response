@@ -34,8 +34,10 @@
 /NODEFAULTLIB:"LIBCPD"
 /FUNCTIONPADMIN
 "D:\Projects\Games\BeastInTheLabyrinth\Intermediate\Build\Win64\BeastInTheLabyrinthEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.obj"
+"D:\Projects\Games\BeastInTheLabyrinth\Intermediate\Build\Win64\UE4Editor\Development\BeastInTheLabyrinth\BeastGameMode.cpp.obj"
 "D:\Projects\Games\BeastInTheLabyrinth\Intermediate\Build\Win64\UE4Editor\Development\BeastInTheLabyrinth\PlayerCharacter.cpp.obj"
 "D:\Projects\Games\BeastInTheLabyrinth\Intermediate\Build\Win64\UE4Editor\Development\BeastInTheLabyrinth\BeastInTheLabyrinth.cpp.obj"
+"D:\Projects\Games\BeastInTheLabyrinth\Intermediate\Build\Win64\UE4Editor\Development\BeastInTheLabyrinth\BeastGameMode.gen.cpp.obj"
 "D:\Projects\Games\BeastInTheLabyrinth\Intermediate\Build\Win64\UE4Editor\Development\BeastInTheLabyrinth\BeastInTheLabyrinth.init.gen.cpp.obj"
 "D:\Projects\Games\BeastInTheLabyrinth\Intermediate\Build\Win64\UE4Editor\Development\BeastInTheLabyrinth\PlayerCharacter.gen.cpp.obj"
 "D:\Projects\Games\BeastInTheLabyrinth\Intermediate\Build\Win64\UE4Editor\Development\BeastInTheLabyrinth\Default.rc2.res"
