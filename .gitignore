@@ -66,8 +66,21 @@ Build/*/**
 Saved/*
 
 # Compiled source files for the engine to use
+!Intermediate/
 Intermediate/*
+!Intermediate/Build
+Intermediate/Build/*
+!Intermediate/Build/Win64/
+Intermediate/Build/Win64/*
+
+!Intermediate/Build/Win64/Inc/
+!Intermediate/Build/Win64/BeastInTheLabyrinth/
+!Intermediate/Build/Win64/BeastInTheLabyrinthEditor/
+!Intermediate/Build/Win64/UE4Editor/
+
+
 Plugins/*/Intermediate/*
+
 
 # Cache files for the editor to use
 DerivedDataCache/*
