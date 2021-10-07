@@ -13,5 +13,6 @@ UCLASS()
 class BEASTINTHELABYRINTH_API ABeastPlayerController : public APlayerController
 {
 	GENERATED_BODY()
-	
+
+	// virtual void BeginPlay() override;
 };
