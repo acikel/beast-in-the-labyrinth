@@ -82,10 +82,15 @@ public:
 	FOnEndFocus OnEndFocus;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintAssignable)
-	FOnInteract OnInteract; 
+	FOnInteract OnInteract;
+
+	UPROPERTY(Replicated, EditDefaultsOnly, BlueprintReadWrite)
+	bool Enabled = true;
 	
 protected:
 
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
 	virtual void Deactivate() override;
 
 	bool CanInteract(class APlayerCharacter* Character) const;

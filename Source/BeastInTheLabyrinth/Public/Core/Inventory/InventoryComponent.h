@@ -29,16 +29,16 @@ public:
 	void SelectItem(int32 ItemIndex);
 
 	UFUNCTION(BlueprintCallable, Category="Inventory")
-	bool AddItem(class UItem* Item);
+	bool AddItem(class AItem* Item);
 
 	UFUNCTION(BlueprintCallable, Category="Inventory")
-	bool RemoveItem(class UItem* Item);
+	bool RemoveItem(class AItem* Item);
 
 	UFUNCTION(BlueprintCallable, Category="Inventory")
 	bool RemoveSelectedItem();
 
 	UFUNCTION(BlueprintCallable, Category="Inventory")
-	UItem* FindItem(class UItem* Item) const;
+	AItem* FindItem(class AItem* Item) const;
 
 	UFUNCTION(Client, Reliable)
 	void ClientRefreshInventory();
@@ -49,26 +49,39 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 InventorySize = 3;
 
-	UFUNCTION(BlueprintPure, Category="Inventory")
-	FORCEINLINE TArray<class UItem*> GetInventoryItems() const { return InventoryItems; }
+	UPROPERTY(BlueprintReadOnly)
+	class UItemSocket* ItemSocket;
 
 	UFUNCTION(BlueprintPure, Category="Inventory")
-	FORCEINLINE class UItem* GetSelectedItem() const { return (SelectedInventoryIndex < InventoryItems.Num() && SelectedInventoryIndex >= 0) ? InventoryItems[SelectedInventoryIndex] : nullptr; }
+	FORCEINLINE TArray<class AItem*> GetInventoryItems() const { return InventoryItems; }
+
+	UFUNCTION(BlueprintPure, Category="Inventory")
+	FORCEINLINE class AItem* GetSelectedItem() const { return (SelectedInventoryIndex < InventoryItems.Num() && SelectedInventoryIndex >= 0) ? InventoryItems[SelectedInventoryIndex] : nullptr; }
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
 	UPROPERTY(ReplicatedUsing=OnRep_Items, VisibleAnywhere, Category="Inventory")
-	TArray<class UItem*> InventoryItems;
+	TArray<class AItem*> InventoryItems;
 
-	UPROPERTY(BlueprintReadOnly, Category="Inventory")
+	UPROPERTY(ReplicatedUsing=OnRep_SelectedInventoryIndex, BlueprintReadOnly, Category="Inventory")
 	int32 SelectedInventoryIndex;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float ItemThrowForce = 100000;
+
+	UFUNCTION()
+	void OnRep_SelectedInventoryIndex();
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	virtual bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 
 	virtual void OnComponentCreated() override;
+
+	void UpdateItemHolding();
+
+	void StoreItem(AItem* Item);
+	void HoldItem(AItem* Item);
 
 public:	
 	// Called every frame
@@ -80,5 +93,7 @@ private:
 
 	UPROPERTY()
 	int32 ReplicatedItemsKey;
+
+	int32 LastSelectedItemIndex;
 		
 };

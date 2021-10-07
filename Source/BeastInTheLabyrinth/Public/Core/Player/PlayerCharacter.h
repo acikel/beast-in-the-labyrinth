@@ -24,25 +24,22 @@ public:
 	float GetRemainingInteractionTime() const;
 
 	UFUNCTION(BlueprintCallable, Category="Items")
-	void UseItem(class UItem* Item);
+	void UseItem(class AItem* Item);
 
 	UFUNCTION(Server, Reliable)
-	void ServerUseItem(class UItem* Item);
+	void ServerUseItem(class AItem* Item);
 
 	UFUNCTION(BlueprintCallable, Category="Items")
-	void DropItem(class UItem* Item);
+	void DropItem(class AItem* Item);
 
 	UFUNCTION(BlueprintCallable, Category="Items")
 	void DropSelectedItem();
 
 	UFUNCTION(Server, Reliable)
-	void ServerDropItem(class UItem* Item);
+	void ServerDropItem(class AItem* Item);
 
 	UFUNCTION(Server, Reliable)
 	void ServerDropSelectedItem();
-
-	UPROPERTY(EditDefaultsOnly, Category="Items")
-	TSubclassOf<class APickup> PickupClass;
 
 protected:
 	// Called when the game starts or when spawned
@@ -83,7 +80,7 @@ protected:
 	
 
 	FTimerHandle TimerHandle_Interact;
-
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

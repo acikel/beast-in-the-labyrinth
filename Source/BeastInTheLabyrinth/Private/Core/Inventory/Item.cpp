@@ -3,34 +3,94 @@
 
 #include "Core/Inventory/Item.h"
 
+#include "Core/Interaction/InteractableComponent.h"
 #include "Core/Inventory/InventoryComponent.h"
+#include "Core/Player/PlayerCharacter.h"
 #include "Net/UnrealNetwork.h"
 
-void UItem::Use(class APlayerCharacter* Character)
+AItem::AItem()
+{
+	PrimaryActorTick.bCanEverTick = false;
+
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
+	Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+
+	SetRootComponent(Mesh);
+
+	InteractionComponent = CreateDefaultSubobject<UInteractableComponent>("InteractionComponent");
+	InteractionComponent->InteractionTime = 0;
+	InteractionComponent->InteractionDistance = 250;
+	InteractionComponent->InteractableNameText = ItemName;
+	InteractionComponent->InteractableActionText = FText::FromString("Take");
+	InteractionComponent->OnInteract.AddDynamic(this, &AItem::OnTakeItem);
+	InteractionComponent->SetIsReplicated(true);
+	InteractionComponent->SetupAttachment(Mesh);
+	
+	bReplicates = true;
+	SetReplicatingMovement(true);
+}
+
+void AItem::Use(class APlayerCharacter* Character)
 {
 	ReceiveOnUse(Character);
 }
 
-void UItem::AddedToInventory(UInventoryComponent* Inventory)
+void AItem::AddedToInventory(UInventoryComponent* Inventory)
 {
 }
 
-void UItem::MarkDirtyForReplication()
+void AItem::SetCanBePickedUp(bool CanBePickedUp)
 {
-	++RepKey;
-
-	if (OwningInventory)
+	if (!HasAuthority())
 	{
-		++OwningInventory->ReplicatedItemsKey;
+		ServerSetCanBePickedUp(CanBePickedUp);
+	}
+	
+	InteractionComponent->Enabled = CanBePickedUp;
+}
+
+void AItem::ServerSetCanBePickedUp_Implementation(bool CanBePickedUp)
+{
+	SetCanBePickedUp(CanBePickedUp);
+}
+
+void AItem::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void AItem::OnTakeItem(APlayerCharacter* Taker)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Take Item"));
+	
+	if (!Taker)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Pickup was taken but player was not valid."));
+		return;
+	}
+	
+	if (HasAuthority() && !IsPendingKillPending())
+	{
+		if (UInventoryComponent* PlayerInventory = Taker->PlayerInventory)
+		{
+			const bool WasAdded = PlayerInventory->AddItem(this);
+
+			if (WasAdded)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Item was taken."));
+			}
+		}
 	}
 }
 
-void UItem::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void AItem::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AItem, InteractionComponent);
 }
 
-bool UItem::IsSupportedForNetworking() const
+bool AItem::IsSupportedForNetworking() const
 {
 	return true;
 }

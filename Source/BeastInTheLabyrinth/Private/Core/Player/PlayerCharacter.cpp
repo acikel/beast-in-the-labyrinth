@@ -5,7 +5,6 @@
 
 #include "Components/CapsuleComponent.h"
 #include "Core/Inventory/Item.h"
-#include "Core/Inventory/Pickup.h"
 #include "Core/Inventory/InventoryComponent.h"
 
 // Sets default values
@@ -120,8 +119,11 @@ void APlayerCharacter::FoundNewInteractable(UInteractableComponent* Interactable
 		}
 	}
 
-	InteractionData.ViewedInteractionComponent = Interactable;
-	Interactable->BeginFocus(this);
+	if (IsValid(Interactable))
+	{
+		InteractionData.ViewedInteractionComponent = Interactable;
+		Interactable->BeginFocus(this);
+	}
 }
 
 void APlayerCharacter::BeginInteract()
@@ -189,12 +191,12 @@ void APlayerCharacter::Interact()
 	}
 }
 
-void APlayerCharacter::ServerUseItem_Implementation(UItem* Item)
+void APlayerCharacter::ServerUseItem_Implementation(AItem* Item)
 {
 	UseItem(Item);
 }
 
-void APlayerCharacter::UseItem(UItem* Item)
+void APlayerCharacter::UseItem(AItem* Item)
 {
 	if (GetLocalRole() < ROLE_Authority && Item)
 	{
@@ -215,7 +217,7 @@ void APlayerCharacter::UseItem(UItem* Item)
 	}
 }
 
-void APlayerCharacter::DropItem(UItem* Item)
+void APlayerCharacter::DropItem(AItem* Item)
 {
 	if (PlayerInventory && Item && PlayerInventory->FindItem(Item))
 	{
@@ -239,11 +241,6 @@ void APlayerCharacter::DropItem(UItem* Item)
 			SpawnLocation.Z -= GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 		
 			const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
-		
-			ensure(PickupClass);
-		
-			APickup* Pickup = GetWorld()->SpawnActor<APickup>(PickupClass, SpawnTransform, SpawnParams);
-			Pickup->InitializePickup(Item->GetClass());
 		}
 	}
 }
@@ -261,7 +258,7 @@ void APlayerCharacter::DropSelectedItem()
 	
 	if (HasAuthority())
 	{
-		UItem* Item = PlayerInventory->GetSelectedItem();
+		AItem* Item = PlayerInventory->GetSelectedItem();
 		if (PlayerInventory->RemoveSelectedItem() && Item)
 		{
 			FActorSpawnParameters SpawnParams;
@@ -273,11 +270,6 @@ void APlayerCharacter::DropSelectedItem()
 			SpawnLocation.Z -= GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 		
 			const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
-		
-			ensure(PickupClass);
-		
-			APickup* Pickup = GetWorld()->SpawnActor<APickup>(PickupClass, SpawnTransform, SpawnParams);
-			Pickup->InitializePickup(Item->GetClass());
 		}
 	}
 }
@@ -287,7 +279,7 @@ void APlayerCharacter::ServerDropSelectedItem_Implementation()
 	DropSelectedItem();
 }
 
-void APlayerCharacter::ServerDropItem_Implementation(UItem* Item)
+void APlayerCharacter::ServerDropItem_Implementation(AItem* Item)
 {
 	DropItem(Item);
 }

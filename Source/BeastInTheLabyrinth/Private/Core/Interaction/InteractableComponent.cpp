@@ -4,6 +4,7 @@
 #include "Core/Interaction/InteractableComponent.h"
 #include "Core/Player/PlayerCharacter.h"
 #include "Core/Widget/Game/InteractionWidget.h"
+#include "Net/UnrealNetwork.h"
 
 UInteractableComponent::UInteractableComponent()
 {
@@ -21,6 +22,8 @@ UInteractableComponent::UInteractableComponent()
 
 	SetActive(true);
 	SetHiddenInGame(true);
+	
+	SetIsReplicatedByDefault(true);
 }
 
 void UInteractableComponent::SetInteractableNameText(const FText& NewNameText)
@@ -33,6 +36,13 @@ void UInteractableComponent::SetInteractableActionText(const FText& NewActionTex
 {
 	InteractableActionText = NewActionText;
 	RefreshWidget();
+}
+
+void UInteractableComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UInteractableComponent, Enabled);
 }
 
 void UInteractableComponent::Deactivate()
@@ -54,7 +64,7 @@ void UInteractableComponent::Deactivate()
 bool UInteractableComponent::CanInteract(class APlayerCharacter* Character) const
 {
 	const bool PlayerAlreadyInteracting = !AllowMultipleInteractors && Interactors.Num() >= 1;
-	return !PlayerAlreadyInteracting && IsActive() && GetOwner() != nullptr && Character != nullptr;
+	return !PlayerAlreadyInteracting && IsActive() && GetOwner() != nullptr && Character != nullptr && Enabled;
 }
 
 void UInteractableComponent::RefreshWidget()
@@ -77,8 +87,11 @@ void UInteractableComponent::BeginFocus(APlayerCharacter* Character)
 
 	OnBeginFocus.Broadcast(Character);
 
-	SetHiddenInGame(false);
-	RefreshWidget();
+	if (Enabled)
+	{
+		SetHiddenInGame(false);
+		RefreshWidget();
+	}
 }
 
 void UInteractableComponent::EndFocus(class APlayerCharacter* Character)

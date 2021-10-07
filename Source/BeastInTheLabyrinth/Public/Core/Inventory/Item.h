@@ -9,11 +9,13 @@
 /**
  * 
  */
-UCLASS(Blueprintable, EditInlineNew, DefaultToInstanced)
-class BEASTINTHELABYRINTH_API UItem : public UObject
+UCLASS(Blueprintable)
+class BEASTINTHELABYRINTH_API AItem : public AActor
 {
 	GENERATED_BODY()
 
+	AItem();
+	
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FText ItemName;
@@ -22,22 +24,34 @@ public:
 	UTexture2D* ItemIcon;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UStaticMesh* Mesh;
+	UStaticMeshComponent* Mesh;
+	
 
-	UPROPERTY()
-	int32 RepKey;
-
+	UPROPERTY(BlueprintReadOnly)
 	class UInventoryComponent* OwningInventory;
 
 	virtual void Use(class APlayerCharacter* Character);
 	virtual void AddedToInventory(class UInventoryComponent* Inventory);
 
-	void MarkDirtyForReplication();
+	UFUNCTION()
+	void SetCanBePickedUp(bool CanBePickedUp);
+
+	UFUNCTION(Server, Reliable)
+	void ServerSetCanBePickedUp(bool CanBePickedUp);
 
 protected:
+	virtual void BeginPlay() override;
+	
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
+	class UInteractableComponent* InteractionComponent;
+	
 	UFUNCTION(BlueprintImplementableEvent, meta=(DisplayName="OnUse"))
 	void ReceiveOnUse(class APlayerCharacter* Character);
+
+	UFUNCTION()
+	void OnTakeItem(APlayerCharacter* Taker);
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual bool IsSupportedForNetworking() const override;
 };
+
