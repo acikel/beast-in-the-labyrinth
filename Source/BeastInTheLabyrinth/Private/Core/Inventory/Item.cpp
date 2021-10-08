@@ -10,7 +10,7 @@
 
 AItem::AItem()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
 	Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
@@ -33,6 +33,7 @@ AItem::AItem()
 void AItem::Use(class APlayerCharacter* Character)
 {
 	ReceiveOnUse(Character);
+	OnUse.Broadcast(Character);
 }
 
 void AItem::AddedToInventory(UInventoryComponent* Inventory)
@@ -54,9 +55,22 @@ void AItem::ServerSetCanBePickedUp_Implementation(bool CanBePickedUp)
 	SetCanBePickedUp(CanBePickedUp);
 }
 
+void AItem::OnDropItem(APlayerCharacter* Character)
+{
+	OnDrop.Broadcast(Character);
+}
+
 void AItem::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void AItem::Destroyed()
+{
+	if (OwningInventory)
+		OwningInventory->RemoveItem(this);
+	
+	Super::Destroyed();
 }
 
 void AItem::OnTakeItem(APlayerCharacter* Taker)
@@ -78,6 +92,8 @@ void AItem::OnTakeItem(APlayerCharacter* Taker)
 			if (WasAdded)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Item was taken."));
+				OwningInventory = PlayerInventory;
+				OnTake.Broadcast(Taker);
 			}
 		}
 	}

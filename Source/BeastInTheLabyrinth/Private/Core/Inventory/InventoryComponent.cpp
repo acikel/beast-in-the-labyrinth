@@ -17,32 +17,33 @@ UInventoryComponent::UInventoryComponent()
 
 void UInventoryComponent::NextItem()
 {
-	if (AItem* Item = GetSelectedItem())
+	if (GetOwner() && !GetOwner()->HasAuthority())
 	{
-		StoreItem(Item);
+		ServerNextItem();
 	}
 	
 	++SelectedInventoryIndex;
 	if (SelectedInventoryIndex >= InventoryItems.Num())
 		SelectedInventoryIndex = 0;
-
-	if (AItem* Item = GetSelectedItem())
-	{
-		HoldItem(Item);
-	}
 	
 	OnInventoryUpdated.Broadcast();
+	UpdateItemHolding();
 }
 
 void UInventoryComponent::PreviousItem()
 {
+	if (GetOwner() && !GetOwner()->HasAuthority())
+	{
+		ServerPreviousItem();
+	}
+	
 	--SelectedInventoryIndex;
 	if (SelectedInventoryIndex < 0)
 		SelectedInventoryIndex = InventoryItems.Num() - 1;
-
-	UpdateItemHolding();
+	
 	
 	OnInventoryUpdated.Broadcast();
+	UpdateItemHolding();
 }
 
 void UInventoryComponent::SelectItem(int32 ItemIndex)
@@ -103,42 +104,31 @@ bool UInventoryComponent::AddItem(AItem* Item)
 
 bool UInventoryComponent::RemoveItem(AItem* Item)
 {
-
+	int32 Index = -1;
+	InventoryItems.Find(Item, Index);
+	if (InventoryItems.IsValidIndex(Index))
+	{
+		RemoveItemAtIndex(Index);
+	}
+	
 	return false;
 }
 
-bool UInventoryComponent::RemoveSelectedItem()
+bool UInventoryComponent::RemoveSelectedItem(bool ShouldDropItem)
 {
 	if (GetOwner() && GetOwner()->HasAuthority())
 	{
-		if (SelectedInventoryIndex >= 0 && SelectedInventoryIndex < InventoryItems.Num())
+		if (InventoryItems.IsValidIndex(SelectedInventoryIndex))
 		{
 			AItem* Item = InventoryItems[SelectedInventoryIndex];
 			
 			InventoryItems[SelectedInventoryIndex] = nullptr;
 			ReplicatedItemsKey++;
 
-			FDetachmentTransformRules DetachmentTransformRules(
-				EDetachmentRule::KeepWorld,
-				true
-				);
+			if (ShouldDropItem)
+				DropItem(Item);
 			
-			Item->DetachFromActor(DetachmentTransformRules);
-			Item->SetHidden(false);
-
-			Item->Mesh->SetSimulatePhysics(true);
-			Item->SetCanBePickedUp(true);
-
-			FVector Forward;
-
-			if (ItemSocket)
-				Forward = ItemSocket->GetForwardVector();
-			else
-				Forward = GetOwner()->GetActorForwardVector();
-
-			const FVector CalculatedThrowForce = Forward * ItemThrowForce;
-			
-			Item->Mesh->AddForce(CalculatedThrowForce);
+			OnInventoryUpdated.Broadcast();
 
 			return true;
 		}
@@ -186,10 +176,57 @@ void UInventoryComponent::BeginPlay()
 }
 
 
+void UInventoryComponent::ServerNextItem_Implementation()
+{
+	NextItem();
+}
+
+void UInventoryComponent::ServerPreviousItem_Implementation()
+{
+	PreviousItem();
+}
+
+void UInventoryComponent::RemoveItemAtIndex(int32 Index, bool ShouldDropItem)
+{
+	AItem* Item = InventoryItems[Index];
+			
+	InventoryItems[Index] = nullptr;
+	ReplicatedItemsKey++;
+
+	if (ShouldDropItem)
+		DropItem(Item);
+	
+	OnInventoryUpdated.Broadcast();
+}
+
+void UInventoryComponent::DropItem(AItem* Item)
+{
+	FDetachmentTransformRules DetachmentTransformRules(
+	EDetachmentRule::KeepWorld,
+	true
+	);
+	
+	Item->DetachFromActor(DetachmentTransformRules);
+	Item->SetHidden(false);
+
+	Item->Mesh->SetSimulatePhysics(true);
+	Item->SetCanBePickedUp(true);
+
+	FVector Forward;
+
+	if (ItemSocket)
+		Forward = ItemSocket->GetForwardVector();
+	else
+		Forward = GetOwner()->GetActorForwardVector();
+
+	const FVector CalculatedThrowForce = Forward * ItemThrowForce;
+			
+	Item->Mesh->AddForce(CalculatedThrowForce);
+}
+
 void UInventoryComponent::OnRep_SelectedInventoryIndex()
 {
 	UpdateItemHolding();
-	
 	OnInventoryUpdated.Broadcast();
 }
 
@@ -233,8 +270,10 @@ void UInventoryComponent::UpdateItemHolding()
 
 void UInventoryComponent::StoreItem(AItem* Item)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Store item"));
 	if (GetOwner() && GetOwner()->HasAuthority())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Store item for real"));
 		Item->DisableComponentsSimulatePhysics();
 		
 		FAttachmentTransformRules AttachmentTransformRules(
@@ -246,7 +285,7 @@ void UInventoryComponent::StoreItem(AItem* Item)
 		Item->AttachToActor(GetOwner(), AttachmentTransformRules);
 		Item->SetActorLocation(GetOwner()->GetActorLocation());
 
-		Item->SetHidden(true);
+		Item->SetActorHiddenInGame(true);
 	}
 }
 
@@ -267,7 +306,7 @@ void UInventoryComponent::HoldItem(AItem* Item)
 			false);
 
 		Item->AttachToComponent(ItemSocket, AttachmentTransformRules);
-		Item->SetHidden(false);
+		Item->SetActorHiddenInGame(false);
 	}
 }
 

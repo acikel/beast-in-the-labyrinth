@@ -6,6 +6,11 @@
 #include "UObject/NoExportTypes.h"
 #include "Item.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnUseItem, class APlayerCharacter*, Character);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDropItem, class APlayerCharacter*, Character);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnTakeItem, class APlayerCharacter*, Character);
+
 /**
  * 
  */
@@ -39,11 +44,23 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerSetCanBePickedUp(bool CanBePickedUp);
 
+	void OnDropItem(class APlayerCharacter* Character);
+
 protected:
 	virtual void BeginPlay() override;
+	virtual void Destroyed() override;
 	
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
 	class UInteractableComponent* InteractionComponent;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnUseItem OnUse;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnDropItem OnDrop;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnTakeItem OnTake;
 	
 	UFUNCTION(BlueprintImplementableEvent, meta=(DisplayName="OnUse"))
 	void ReceiveOnUse(class APlayerCharacter* Character);
