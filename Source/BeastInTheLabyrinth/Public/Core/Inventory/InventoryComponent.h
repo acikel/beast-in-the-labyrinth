@@ -21,7 +21,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Inventory")
 	void NextItem();
-
+	
 	UFUNCTION(BlueprintCallable, Category="Inventory")
 	void PreviousItem();
 
@@ -35,7 +35,7 @@ public:
 	bool RemoveItem(class AItem* Item);
 
 	UFUNCTION(BlueprintCallable, Category="Inventory")
-	bool RemoveSelectedItem();
+	bool RemoveSelectedItem(bool ShouldDropItem = true);
 
 	UFUNCTION(BlueprintCallable, Category="Inventory")
 	AItem* FindItem(class AItem* Item) const;
@@ -71,6 +71,17 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	float ItemThrowForce = 100000;
 
+	UFUNCTION(Server, Reliable)
+	void ServerNextItem();
+
+	UFUNCTION(Server, Reliable)
+	void ServerPreviousItem();
+
+	void RemoveItemAtIndex(int32 Index, bool ShouldDropItem = true);
+
+	void DropItem(AItem* Item);
+
+	
 	UFUNCTION()
 	void OnRep_SelectedInventoryIndex();
 
@@ -94,6 +105,7 @@ private:
 	UPROPERTY()
 	int32 ReplicatedItemsKey;
 
+	UPROPERTY()
 	int32 LastSelectedItemIndex;
 		
 };
