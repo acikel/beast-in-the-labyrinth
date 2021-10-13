@@ -12,10 +12,13 @@
 void UBeastGameInstance::Init()
 {
 	Super::Init();
+	
+	DestroySessionCompleteDelegate = FOnDestroySessionCompleteDelegate::CreateUObject(this, &UBeastGameInstance::OnDestroySessionComplete);
 	TravelLocalSessionFailureDelegateHandle = GEngine->OnTravelFailure().AddUObject(this, &UBeastGameInstance::OnTravelLocalSessionFailure);
+	NetworkFailureDelegateHandle = GEngine->OnNetworkFailure().AddUObject(this, &UBeastGameInstance::OnNetworkFailure);
 }
 
-bool UBeastGameInstance::HostSession()
+bool UBeastGameInstance::HostGame()
 {
 	UE_LOG(BeastGame, Log, TEXT("UBeastGameInstance::HostSession"));
 
@@ -84,9 +87,8 @@ void UBeastGameInstance::FinishSessionCreation(EOnJoinSessionCompleteResult::Typ
 
 
 
-
 /** Initiates the session searching */
-bool UBeastGameInstance::FindSessions(const bool bFindLan)
+bool UBeastGameInstance::FindGames(const bool bFindLan)
 {
 	ABeastGameSession* const GameSession = GetGameSession();
 	if (GameSession)
@@ -124,7 +126,7 @@ void UBeastGameInstance::OnFindSessionsCompleted(const TArray<FOnlineSessionSear
 }
 
 
-void UBeastGameInstance::JoinSession(const FBlueprintSessionResult & Session)
+void UBeastGameInstance::JoinGame(const FBlueprintSessionResult & Session)
 {
 	ABeastGameSession* const GameSession = GetGameSession();
 	
@@ -155,9 +157,38 @@ void UBeastGameInstance::OnJoinCompleted(EOnJoinSessionCompleteResult::Type Resu
 
 void UBeastGameInstance::DestroySession()
 {
-	ABeastGameSession* const GameSession = GetGameSession();
-	GameSession->DestroySession();
+	const IOnlineSessionPtr SessionInterface = Online::GetSessionInterface(GetWorld());
+	if (!SessionInterface.IsValid())
+	{
+		OnDestroySessionCompleteEvent.Broadcast(false);
+		return;
+	}
+	
+	DestroySessionCompleteDelegateHandle = SessionInterface->AddOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegate);
+
+	if (!SessionInterface->DestroySession(NAME_GameSession))
+	{
+		SessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
+		OnDestroySessionCompleteEvent.Broadcast(false);
+	}
 }
+
+void UBeastGameInstance::OnDestroySessionComplete(FName InSessionName, bool WasSuccessful)
+{
+	UE_LOG(BeastGame, Log, TEXT("OnDestroySessionComplete %s Success: %d"), *InSessionName.ToString(), WasSuccessful);
+
+	const IOnlineSessionPtr SessionInterface = Online::GetSessionInterface(GetWorld());
+	if (!SessionInterface.IsValid())
+	{
+		OnDestroySessionCompleteEvent.Broadcast(false);
+		return;
+	}
+	
+	SessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
+	
+	OnDestroySessionCompleteEvent.Broadcast(WasSuccessful);
+}
+
 
 void UBeastGameInstance::QuitToMenu()
 {
@@ -196,6 +227,22 @@ void UBeastGameInstance::OnTravelLocalSessionFailure(UWorld* World, ETravelFailu
 													const FString& ErrorString)
 {
 	UE_LOG(BeastGame, Warning, TEXT("TravelFailure: %d ErrorString: %s"), static_cast<int32>(FailureType), *ErrorString);
+
+	QuitToMenu();
+}
+
+void UBeastGameInstance::OnNetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& Error)
+{
+	if (NetDriver)
+	{
+		UE_LOG(BeastGame, Error, TEXT("NetworkFailure NetDriver: %s, FailureType: %s, Error: %s"), *NetDriver->GetName(), ENetworkFailure::ToString(FailureType), *Error);		
+	}
+	else
+	{
+		UE_LOG(BeastGame, Error, TEXT("NetworkFailure FailureType: %s, Error: %s"), ENetworkFailure::ToString(FailureType), *Error);
+	}
+	
+	QuitToMenu();
 }
 
 
@@ -211,6 +258,7 @@ FString UBeastGameInstance::GetSessionState() const
 	return TEXT("");
 }
 
+// This works not as client, because the game mode is only available on the server
 ABeastGameSession* UBeastGameInstance::GetGameSession() const
 {
 	UWorld* const World = GetWorld();

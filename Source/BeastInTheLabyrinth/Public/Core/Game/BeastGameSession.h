@@ -31,7 +31,7 @@ DECLARE_EVENT_TwoParams(ASecurityGameSession, FOnCreatePresenceSessionComplete, 
 	
 DECLARE_MULTICAST_DELEGATE_TwoParams(FBeastOnFindSessionsComplete, const TArray<FOnlineSessionSearchResult>& SessionResults, bool Successful);
 DECLARE_MULTICAST_DELEGATE_OneParam(FBeastOnJoinSessionComplete, EOnJoinSessionCompleteResult::Type Result);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCSOnDestroySessionComplete, bool, Successful);
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FBeastOnJoinSessionComplete, bool, Successful);
 
 
 UCLASS()
@@ -47,26 +47,24 @@ public:
 	void FindSessions(const bool bIsLanQuery, const int32 MaxSearchResults = 10);
 	// void JoinSession(const int32 SessionsIndex);
 	void JoinSession(const FOnlineSessionSearchResult& DesiredSession);
-	void DestroySession();
+	//void DestroySession();
 	
 	EOnlineSessionState::Type GetSessionState() const;
 	
 	FBeastOnFindSessionsComplete OnFindSessionsCompleteEvent;
 	FBeastOnJoinSessionComplete OnJoinGameSessionCompleteEvent;
-	FCSOnDestroySessionComplete OnDestroySessionCompleteEvent;
+	//FBeastOnDestroySessionComplete OnDestroySessionCompleteEvent;
 	FOnCreatePresenceSessionComplete OnCreatePresenceSessionCompleteEvent;
 
 protected:
 	// Called by delegates
 	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
-	void OnDestroySessionComplete(FName InSessionName, bool WasSuccessful);
+	//void OnDestroySessionComplete(FName InSessionName, bool WasSuccessful);
 	void OnEndSessionComplete(FName InSessionName, bool WasSuccessful);
 	void OnFindSessionsCompleted(bool Successful);
 	
 	void OnJoinSessionCompleted(FName JoinedSessionName, EOnJoinSessionCompleteResult::Type Result);
-	void OnNetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType,
-	                      const FString& Error);
-
+	
 
 private:
 	static constexpr int32 DefaultMaxPlayerCount = 4;
@@ -89,16 +87,11 @@ private:
 		
 	FDelegateHandle StartSessionCompleteDelegateHandle;
 	
-
 	
 	// End and destroy
 	FOnEndSessionCompleteDelegate EndSessionCompleteDelegate;
 	FDelegateHandle EndSessionCompleteDelegateHandle;
 	
-	FOnDestroySessionCompleteDelegate DestroySessionCompleteDelegate;
-	FDelegateHandle DestroySessionCompleteDelegateHandle;
-	
-	
-	// Error handling
-	FDelegateHandle NetworkFailureDelegateHandle;
+	// FOnDestroySessionCompleteDelegate DestroySessionCompleteDelegate;
+	// FDelegateHandle DestroySessionCompleteDelegateHandle;
 };

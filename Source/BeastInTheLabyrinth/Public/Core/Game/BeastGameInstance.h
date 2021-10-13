@@ -20,6 +20,7 @@
 // };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnFindSessionsCompleted, const TArray<FBlueprintSessionResult>&, SessionResults, bool, Successful);
+DECLARE_MULTICAST_DELEGATE_OneParam(FBeastOnDestroySessionComplete, bool Successful);
 
 UCLASS()
 class BEASTINTHELABYRINTH_API UBeastGameInstance : public UGameInstance
@@ -28,17 +29,14 @@ class BEASTINTHELABYRINTH_API UBeastGameInstance : public UGameInstance
 
 public:
 	UFUNCTION(BlueprintCallable)
-	bool HostSession();
+	bool HostGame();
 
 	UFUNCTION(BlueprintCallable)
-	bool FindSessions(const bool bFindLan);
+	bool FindGames(const bool bFindLan);
 
 	UFUNCTION(BlueprintCallable)
-	void JoinSession(const FBlueprintSessionResult & Session);
-
-	UFUNCTION(BlueprintCallable)
-	void DestroySession();
-
+	void JoinGame(const FBlueprintSessionResult & Session);
+	
 	UFUNCTION(BlueprintCallable)
 	void QuitToMenu();
 	
@@ -48,7 +46,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintAssignable)
 	FOnFindSessionsCompleted OnSessionsFound;
 
+	FBeastOnDestroySessionComplete OnDestroySessionCompleteEvent;
+
 protected:
+	void DestroySession();
+	void OnDestroySessionComplete(FName InSessionName, bool WasSuccessful);
+	
 	UPROPERTY(BlueprintReadWrite)
 	FString ProfilePlayerName;
 
@@ -60,6 +63,7 @@ private:
 	void OnFindSessionsCompleted(const TArray<FOnlineSessionSearchResult>& SessionResults, const bool bSuccessful);
 	void OnJoinCompleted(EOnJoinSessionCompleteResult::Type Result);
 	void OnTravelLocalSessionFailure(UWorld* World, ETravelFailure::Type FailureType, const FString& ErrorString);
+	void OnNetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& Error);
 	
 	void FinishSessionCreation(EOnJoinSessionCompleteResult::Type Result);
 	void ClientTravelToCurrentSession() const;
@@ -72,6 +76,10 @@ private:
 	FDelegateHandle CreatePresenceSessionCompleteDelegateHandle;
 	FDelegateHandle FindSessionsCompleteDelegateHandle;
 	
+	FOnDestroySessionCompleteDelegate DestroySessionCompleteDelegate;
+	FDelegateHandle DestroySessionCompleteDelegateHandle;
+	
 	// Error handling
 	FDelegateHandle TravelLocalSessionFailureDelegateHandle;
+	FDelegateHandle NetworkFailureDelegateHandle;
 };

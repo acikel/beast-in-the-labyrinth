@@ -10,12 +10,11 @@ ABeastGameSession::ABeastGameSession(const FObjectInitializer& ObjectInitializer
 	if (!HasAnyFlags(RF_ClassDefaultObject))
 	{
 		CreateSessionCompleteDelegate = FOnCreateSessionCompleteDelegate::CreateUObject(this, &ABeastGameSession::OnCreateSessionComplete);
-		DestroySessionCompleteDelegate = FOnDestroySessionCompleteDelegate::CreateUObject(this, &ABeastGameSession::OnDestroySessionComplete);
+		// DestroySessionCompleteDelegate = FOnDestroySessionCompleteDelegate::CreateUObject(this, &ABeastGameSession::OnDestroySessionComplete);
 		EndSessionCompleteDelegate = FOnEndSessionCompleteDelegate::CreateUObject(this, &ABeastGameSession::OnEndSessionComplete);
 		
 		FindSessionsCompleteDelegate = FOnFindSessionsCompleteDelegate::CreateUObject(this, &ABeastGameSession::OnFindSessionsCompleted);
 		JoinSessionCompleteDelegate = FOnJoinSessionCompleteDelegate::CreateUObject(this, &ABeastGameSession::OnJoinSessionCompleted);
-		NetworkFailureDelegateHandle = GEngine->OnNetworkFailure().AddUObject(this, &ABeastGameSession::OnNetworkFailure);
 	}
 }
 
@@ -105,42 +104,6 @@ void ABeastGameSession::OnCreateSessionComplete(FName InSessionName, bool bWasSu
 }
 
 
-void ABeastGameSession::DestroySession()
-{
-	const IOnlineSessionPtr SessionInterface = Online::GetSessionInterface(GetWorld());
-	if (!SessionInterface.IsValid())
-	{
-		OnDestroySessionCompleteEvent.Broadcast(false);
-		return;
-	}
-
-	DestroySessionCompleteDelegateHandle = SessionInterface->AddOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegate);
-
-	if (!SessionInterface->DestroySession(NAME_GameSession))
-	{
-		SessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
-		OnDestroySessionCompleteEvent.Broadcast(false);
-	}
-}
-
-void ABeastGameSession::OnDestroySessionComplete(FName InSessionName, bool WasSuccessful)
-{
-	UE_LOG(BeastGame, Log, TEXT("OnDestroySessionComplete %s Success: %d"), *InSessionName.ToString(), WasSuccessful);
-
-	const IOnlineSessionPtr SessionInterface = Online::GetSessionInterface(GetWorld());
-	if (!SessionInterface.IsValid())
-	{
-		OnDestroySessionCompleteEvent.Broadcast(false);
-		return;
-	}
-
-	HostSettings = nullptr;
-	SessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
-	SessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegateHandle);
-	SessionInterface->ClearOnStartSessionCompleteDelegate_Handle(StartSessionCompleteDelegateHandle);
-	
-	OnDestroySessionCompleteEvent.Broadcast(WasSuccessful);
-}
 
 void ABeastGameSession::OnEndSessionComplete(FName InSessionName, bool WasSuccessful)
 {
@@ -244,31 +207,6 @@ void ABeastGameSession::OnJoinSessionCompleted(FName JoinedSessionName, EOnJoinS
 
 
 
-void ABeastGameSession::OnNetworkFailure(UWorld* World, UNetDriver* NetDriver, ENetworkFailure::Type FailureType, const FString& Error)
-{
-	if (NetDriver)
-	{
-		UE_LOG(BeastGame, Error, TEXT("NetworkFailure NetDriver: %s, FailureType: %s, Error: %s"), *NetDriver->GetName(), ENetworkFailure::ToString(FailureType), *Error);		
-	}
-	else
-	{
-		UE_LOG(BeastGame, Error, TEXT("NetworkFailure FailureType: %s, Error: %s"), ENetworkFailure::ToString(FailureType), *Error);
-	}
-	
-
-	if (FailureType == ENetworkFailure::ConnectionLost)
-	{
-		UE_LOG(BeastGame, Log, TEXT("Connection lost --> destroy session"));
-
-		const IOnlineSessionPtr SessionInterface = Online::GetSessionInterface(World);
-		if (SessionInterface.IsValid())
-		{
-			DestroySessionCompleteDelegateHandle = SessionInterface->AddOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegate);
-			SessionInterface->DestroySession(NAME_GameSession);
-		}
-	}
-}
-
 
 EOnlineSessionState::Type ABeastGameSession::GetSessionState() const
 {
@@ -279,3 +217,40 @@ EOnlineSessionState::Type ABeastGameSession::GetSessionState() const
 	}
 	return EOnlineSessionState::NoSession;
 }
+
+
+// void ABeastGameSession::DestroySession()
+// {
+// 	const IOnlineSessionPtr SessionInterface = Online::GetSessionInterface(GetWorld());
+// 	if (!SessionInterface.IsValid())
+// 	{
+// 		//OnDestroySessionCompleteEvent.Broadcast(false);
+// 		return;
+// 	}
+//
+// 	DestroySessionCompleteDelegateHandle = SessionInterface->AddOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegate);
+//
+// 	if (!SessionInterface->DestroySession(NAME_GameSession))
+// 	{
+// 		SessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
+// 		//OnDestroySessionCompleteEvent.Broadcast(false);
+// 	}
+// }
+//
+// void ABeastGameSession::OnDestroySessionComplete(FName InSessionName, bool WasSuccessful)
+// {
+// 	UE_LOG(BeastGame, Log, TEXT("OnDestroySessionComplete %s Success: %d"), *InSessionName.ToString(), WasSuccessful);
+//
+// 	const IOnlineSessionPtr SessionInterface = Online::GetSessionInterface(GetWorld());
+// 	if (!SessionInterface.IsValid())
+// 	{
+// 		//OnDestroySessionCompleteEvent.Broadcast(false);
+// 		return;
+// 	}
+//
+// 	HostSettings = nullptr;
+// 	SessionInterface->ClearOnDestroySessionCompleteDelegate_Handle(DestroySessionCompleteDelegateHandle);
+// 	SessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(CreateSessionCompleteDelegateHandle);
+// 	SessionInterface->ClearOnStartSessionCompleteDelegate_Handle(StartSessionCompleteDelegateHandle);
+// 	//OnDestroySessionCompleteEvent.Broadcast(WasSuccessful);
+// }
