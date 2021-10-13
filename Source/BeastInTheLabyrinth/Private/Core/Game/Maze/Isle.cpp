@@ -3,3 +3,6 @@
 
 #include "Core/Game/Maze/Isle.h"
 
+UIsle::UIsle()
+{
+}
