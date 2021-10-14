@@ -16,7 +16,8 @@ void ALabyrinthGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Super::EndPlay(EndPlayReason);
 
-	for (UObjective* Objective : ChosenObjectives)
+	ALabyrinthGameState* LabyrinthGameState = GetGameState<ALabyrinthGameState>();
+	for (UObjective* Objective : LabyrinthGameState->ChosenObjectives)
 	{
 		Objective->OnCompleted.RemoveAll(this);
 	}
@@ -30,9 +31,11 @@ void ALabyrinthGameMode::OnGameEnded_Implementation(const bool bIsWon)
 void ALabyrinthGameMode::GenerateObjectives()
 {
 	TArray<UClass*> AvailableObjectives = TArray<UClass*>(Objectives);
-	ChosenObjectives.Empty();
+	ALabyrinthGameState* LabyrinthGameState = GetGameState<ALabyrinthGameState>();
 	
-	while (AvailableObjectives.Num() > 0 && ChosenObjectives.Num() < GENERATE_NUM_OBJECTIVES)
+	LabyrinthGameState->ChosenObjectives.Empty();
+	
+	while (AvailableObjectives.Num() > 0 && LabyrinthGameState->ChosenObjectives.Num() < GENERATE_NUM_OBJECTIVES)
 	{
 		const int32 RandomIndex = FMath::RandRange(0, AvailableObjectives.Num() - 1);
 
@@ -40,7 +43,7 @@ void ALabyrinthGameMode::GenerateObjectives()
 
 		NewObjective->OnCompleted.AddDynamic(this, &ALabyrinthGameMode::OnObjectiveCompleted);
 		
-		ChosenObjectives.Add(NewObjective);
+		LabyrinthGameState->ChosenObjectives.Add(NewObjective);
 		AvailableObjectives.RemoveAt(RandomIndex);
 	}
 }
@@ -52,7 +55,8 @@ void ALabyrinthGameMode::GenerateLabyrinth()
 
 void ALabyrinthGameMode::OnObjectiveCompleted()
 {
-	for (const UObjective* Objective : ChosenObjectives)
+	ALabyrinthGameState* LabyrinthGameState = GetGameState<ALabyrinthGameState>();
+	for (const UObjective* Objective : LabyrinthGameState->ChosenObjectives)
 	{
 		// If any objective isn't completed - The game goes on
 		if(!Objective->IsCompleted()) { return; }

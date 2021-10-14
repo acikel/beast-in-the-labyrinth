@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "LabyrinthGameState.h"
 #include "Core/Game/BeastGameMode.h"
 #include "Core/Objective/Objective.h"
 #include "LabyrinthGameMode.generated.h"
@@ -14,10 +15,6 @@ UCLASS()
 class BEASTINTHELABYRINTH_API ALabyrinthGameMode : public ABeastGameMode
 {
 	GENERATED_BODY()
-
-public:
-	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TArray<UObjective*> ChosenObjectives;
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
