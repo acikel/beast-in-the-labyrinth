@@ -35,7 +35,7 @@ bool UBeastGameInstance::HostGame()
 		UE_LOG(BeastGame, Log, TEXT("Has Game Session"));
 		CreatePresenceSessionCompleteDelegateHandle = GameSession->OnCreatePresenceSessionCompleteEvent.AddUObject(this, &UBeastGameInstance::OnCreatePresenceSessionComplete);
 		
-		bool constexpr IsLanGame = true;
+		bool constexpr IsLanGame = false;
 		UE_LOG(BeastGame, Log, TEXT("MapName: %s"), *LevelName);
 		
 		if (GameSession->HostSession(LocalPlayer->GetPreferredUniqueNetId().GetUniqueNetId(), *ProfilePlayerName, NAME_GameSession, *LevelName, IsLanGame))
