@@ -55,6 +55,9 @@ void AMazeGenerator::OnRep_Seed()
 
 void AMazeGenerator::SpawnMaze()
 {
+	const FVector Location = GetActorLocation();
+	MazeOrigin = FVector(Location.X - (TileSize * (MazeSize.X * 0.5f)), Location.Y - (TileSize * (MazeSize.Y * 0.5f)), Location.Z);
+	
 	SpawnIsles();
 	SpawnTiles();
 	SpawnActors();
@@ -64,7 +67,10 @@ void AMazeGenerator::SpawnIsles()
 {
 	for (auto Isle : Maze->Isles)
 	{
-		FVector Location(Isle->Position.X * TileSize, Isle->Position.Y * TileSize, 0.0f);
+		FVector Location(
+			MazeOrigin.X + Isle->Position.X * TileSize,
+			MazeOrigin.Y + Isle->Position.Y * TileSize,
+			MazeOrigin.Z);
 		FRotator Rotator(0.0f, 0.0f, 0.0f);
 		FActorSpawnParameters SpawnParameters;
 		
@@ -83,7 +89,11 @@ void AMazeGenerator::SpawnTiles()
 			const UTile* Tile = Maze->Tiles[y][x];
 			if (Tile)
 			{
-				FVector Location(Tile->Position.X * TileSize + (TileSize * 0.5f), Tile->Position.Y * TileSize + (TileSize * 0.5f), 0.0f);
+				FVector Location(
+					MazeOrigin.X + (Tile->Position.X * TileSize + (TileSize * 0.5f)),
+					MazeOrigin.Y + (Tile->Position.Y * TileSize + (TileSize * 0.5f)),
+					MazeOrigin.Z);
+				
 				FRotator Rotator(0.0f, 0.0f, 0.0f);
 				FActorSpawnParameters SpawnParameters;
 

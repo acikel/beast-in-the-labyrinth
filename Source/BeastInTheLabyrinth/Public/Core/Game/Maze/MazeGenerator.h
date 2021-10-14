@@ -62,5 +62,7 @@ private:
 	void SpawnTiles();
 	void SpawnActors();
 
+	FVector MazeOrigin;
+
 	void DebugPrintMaze();
 };
