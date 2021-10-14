@@ -22,6 +22,9 @@ public:
 	FIntPoint MazeSize = FIntPoint(20, 20);
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int32 TileSize;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<TSubclassOf<UIsle>> IsleCatalogue;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -30,17 +33,28 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<TSubclassOf<ATileActor>> TileActors;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(ReplicatedUsing=OnRep_Seed, EditAnywhere, BlueprintReadWrite)
 	int32 Seed;
 
 	UFUNCTION(BlueprintCallable, CallInEditor)
 	void Generate();
 
+	UFUNCTION(BlueprintCallable)
+	int32 GenerateRandomSeed();
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+protected:
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnSeedReplicated();
 	
 
 private:
 	UPROPERTY()
 	class UMaze* Maze;
+
+	UFUNCTION()
+	void OnRep_Seed();
 	
 	void SpawnMaze();
 

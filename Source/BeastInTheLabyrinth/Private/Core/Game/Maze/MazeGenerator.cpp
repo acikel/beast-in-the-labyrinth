@@ -5,6 +5,7 @@
 
 #include "Core/Game/Maze/Maze.h"
 #include "Core/Game/Maze/Tile.h"
+#include "Net/UnrealNetwork.h"
 
 AMazeGenerator::AMazeGenerator()
 {
@@ -14,6 +15,7 @@ AMazeGenerator::AMazeGenerator()
 	Random.GenerateNewSeed();
 
 	Seed = Random.GetCurrentSeed();
+	TileSize = 200;
 }
 
 void AMazeGenerator::Generate()
@@ -30,6 +32,27 @@ void AMazeGenerator::Generate()
 	SpawnMaze();
 }
 
+int32 AMazeGenerator::GenerateRandomSeed()
+{
+	FRandomStream Random;
+	Random.GenerateNewSeed();
+	Seed = Random.GetCurrentSeed();
+
+	return Seed;
+}
+
+void AMazeGenerator::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AMazeGenerator, Seed);
+}
+
+void AMazeGenerator::OnRep_Seed()
+{
+	OnSeedReplicated();
+}
+
 void AMazeGenerator::SpawnMaze()
 {
 	SpawnIsles();
@@ -41,7 +64,7 @@ void AMazeGenerator::SpawnIsles()
 {
 	for (auto Isle : Maze->Isles)
 	{
-		FVector Location(Isle->Position.X * 200.0f, Isle->Position.Y * 200.0f, 0.0f);
+		FVector Location(Isle->Position.X * TileSize, Isle->Position.Y * TileSize, 0.0f);
 		FRotator Rotator(0.0f, 0.0f, 0.0f);
 		FActorSpawnParameters SpawnParameters;
 		
@@ -51,6 +74,8 @@ void AMazeGenerator::SpawnIsles()
 
 void AMazeGenerator::SpawnTiles()
 {
+	FRandomStream Random(Seed);
+	
 	for (int32 y = 0; y < Maze->Tiles.Num(); ++y)
 	{
 		for (int32 x = 0; x < Maze->Tiles[y].Num(); ++x)
@@ -58,12 +83,40 @@ void AMazeGenerator::SpawnTiles()
 			const UTile* Tile = Maze->Tiles[y][x];
 			if (Tile)
 			{
-				FVector Location(Tile->Position.X * 200.0f + 100.0f, Tile->Position.Y * 200.0f + 100.0f, 0.0f);
+				FVector Location(Tile->Position.X * TileSize + (TileSize * 0.5f), Tile->Position.Y * TileSize + (TileSize * 0.5f), 0.0f);
 				FRotator Rotator(0.0f, 0.0f, 0.0f);
 				FActorSpawnParameters SpawnParameters;
+
+				UTile* TileAbove = nullptr;
+				UTile* TileLeft = nullptr;
+
+				if (y - 1 >= 0)
+					TileAbove = Maze->Tiles[y - 1][x];
+				if (x - 1 >= 0)
+					TileLeft = Maze->Tiles[y][x - 1];
+
+				TileActorSpawnInfo SpawnInfo;
+				uint8 tileValue = Tile->TileValue;
+				SpawnInfo.WallTop = !(tileValue & 1);
+				SpawnInfo.WallRight = !(tileValue & 2);
+				SpawnInfo.WallBottom = !(tileValue & 4);
+				SpawnInfo.WallLeft = !(tileValue & 8);
+				
+				if (TileAbove)
+				{
+					SpawnInfo.PillarNorthEast = false;
+					SpawnInfo.PillarNorthWest = false;
+					SpawnInfo.WallTop = false;
+				}
+				if (TileLeft)
+				{
+					SpawnInfo.PillarSouthEast = false;
+					SpawnInfo.PillarNorthEast = false;
+					SpawnInfo.WallLeft = false;
+				}
 			
-				ATileActor* TileActor = GetWorld()->SpawnActor<ATileActor>(TileActors[0], Location, Rotator, SpawnParameters);
-				TileActor->Init(Tile);
+				ATileActor* TileActor = GetWorld()->SpawnActor<ATileActor>(TileActors[Random.RandRange(0, TileActors.Num() - 1)], Location, Rotator, SpawnParameters);
+				TileActor->Init(Tile, SpawnInfo);
 			}
 		}
 	}

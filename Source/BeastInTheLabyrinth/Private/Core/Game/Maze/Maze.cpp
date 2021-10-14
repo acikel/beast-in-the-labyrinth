@@ -30,26 +30,41 @@ void UMaze::Generate(int32 MazeWidth, int32 MazeHeight)
 
 void UMaze::PlaceIsles()
 {
+	TArray<UIsle*> RequiredIslesToPlace;
 	TArray<UIsle*> IslesToPlace;
+	
 	for (auto requiredIsle : RequiredIsles)
 	{
-		IslesToPlace.Add(NewObject<UIsle>(this, requiredIsle));
+		RequiredIslesToPlace.Add(NewObject<UIsle>(this, requiredIsle));
 	}
 	
-	while (IslesToPlace.Num() < IsleCount)
+	while ((RequiredIsles.Num() + IslesToPlace.Num()) < IsleCount)
 	{
 		IslesToPlace.Add(NewObject<UIsle>(this, IsleCatalogue[Random.RandRange(0, IsleCatalogue.Num() - 1)]));
 	}
 
 	int nextIsleIndex = -1;
 	UIsle* nextIsle = nullptr;
+	bool isRequiredIsle = false;
+	int placementTries = 0;
 
 	while (IslesToPlace.Num() > 0)
 	{
 		if (!nextIsle)
 		{
-			nextIsleIndex = Random.RandRange(0, IslesToPlace.Num() - 1);
-			nextIsle = IslesToPlace[nextIsleIndex];
+			if (RequiredIslesToPlace.Num() > 0)
+			{
+				nextIsleIndex = Random.RandRange(0, RequiredIslesToPlace.Num() - 1);
+				nextIsle = RequiredIslesToPlace[nextIsleIndex];
+				isRequiredIsle = true;
+			}
+			else
+			{
+				nextIsleIndex = Random.RandRange(0, IslesToPlace.Num() - 1);
+				nextIsle = IslesToPlace[nextIsleIndex];
+				isRequiredIsle = false;
+			}
+			placementTries = 0;
 		}
 
 		int x = Random.RandRange(0, Width - nextIsle->Size.X);
@@ -59,9 +74,30 @@ void UMaze::PlaceIsles()
 		{
 			PlaceIsle(nextIsle, x, y);
 
-			IslesToPlace.RemoveAt(nextIsleIndex);
+			if (isRequiredIsle)
+				RequiredIslesToPlace.RemoveAt(nextIsleIndex);
+			else
+				IslesToPlace.RemoveAt(nextIsleIndex);
+			
 			nextIsle = nullptr;
-		}	
+		}
+
+		++placementTries;
+		if (placementTries > 80)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Isle %s could not be placed in the labyrinth"), *(nextIsle->GetName()));
+			nextIsle = nullptr;
+
+			if (isRequiredIsle)
+			{
+				RequiredIslesToPlace.RemoveAt(nextIsleIndex);
+				UE_LOG(LogTemp, Error, TEXT("REQUIRED Isle %s could not be placed in the labyrinth"), *(nextIsle->GetName()));
+			}
+			else
+			{
+				IslesToPlace.RemoveAt(nextIsleIndex);
+			}
+		}
 	}
 }
 

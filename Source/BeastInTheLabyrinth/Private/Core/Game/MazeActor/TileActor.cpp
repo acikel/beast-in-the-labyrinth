@@ -10,7 +10,7 @@
 ATileActor::ATileActor()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	Root = CreateDefaultSubobject<USceneComponent>(FName(TEXT("SceneRoot")));
 	
@@ -19,40 +19,61 @@ ATileActor::ATileActor()
 	WallSouth = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("WallSouth")));
 	WallWest = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("WallWest")));
 
-	WallEast->SetRelativeLocation(FVector(-100, 0, 0));
+	PillarNorthWest = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("PillarNorthWest")));
+	PillarNorthEast = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("PillarNorthEast")));
+	PillarSouthWest = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("PillarSouthWest")));
+	PillarSouthEast = CreateDefaultSubobject<UStaticMeshComponent>(FName(TEXT("PillarSouthEast")));
+	
 	WallNorth->SetRelativeLocation(FVector(0, -100, 0));
 	WallSouth->SetRelativeLocation(FVector(0, 100, 0));
+	WallEast->SetRelativeLocation(FVector(-100, 0, 0));
 	WallWest->SetRelativeLocation(FVector(100, 0, 0));
+	
+	PillarNorthWest->SetRelativeLocation(FVector(100, -100, 0));
+	PillarNorthEast->SetRelativeLocation(FVector(-100, -100, 0));
+	PillarSouthWest->SetRelativeLocation(FVector(100, 100, 0));
+	PillarSouthEast->SetRelativeLocation(FVector(-100, 100, 0));
 	
 	SetRootComponent(Root);
 	WallEast->SetupAttachment(Root);
 	WallNorth->SetupAttachment(Root);
 	WallSouth->SetupAttachment(Root);
 	WallWest->SetupAttachment(Root);
+	PillarNorthWest->SetupAttachment(Root);
+	PillarNorthEast->SetupAttachment(Root);
+	PillarSouthWest->SetupAttachment(Root);
+	PillarSouthEast->SetupAttachment(Root);
 }
 
-void ATileActor::Init(const UTile* Tile)
+void ATileActor::Init(const UTile* Tile, const TileActorSpawnInfo SpawnInfo)
 {
-	uint8 tileValue = Tile->TileValue;
-	TileValue = tileValue;
+	TileValue = Tile->TileValue;
 
-	const bool wallTop = tileValue & 1;
-	const bool wallRight = tileValue & 2;
-	const bool wallBottom = tileValue & 4;
-	const bool wallLeft = tileValue & 8;
+	
 
-	if (wallTop)
-		DisableWall(WallNorth);
+	if (!SpawnInfo.WallTop)
+		DisableMeshComponent(WallNorth);
+	
+	if (!SpawnInfo.WallRight)
+		DisableMeshComponent(WallWest);
 
+	if (!SpawnInfo.WallBottom)
+		DisableMeshComponent(WallSouth);
 
-	if (wallRight)
-		DisableWall(WallWest);
+	if (!SpawnInfo.WallLeft)
+		DisableMeshComponent(WallEast);
 
-	if (wallBottom)
-		DisableWall(WallSouth);
+	if (!SpawnInfo.PillarNorthWest)
+		DisableMeshComponent(PillarNorthWest);
 
-	if (wallLeft)
-		DisableWall(WallEast);
+	if (!SpawnInfo.PillarNorthEast)
+		DisableMeshComponent(PillarNorthEast);
+
+	if (!SpawnInfo.PillarSouthWest)
+		DisableMeshComponent(PillarSouthWest);
+
+	if (!SpawnInfo.PillarSouthEast)
+		DisableMeshComponent(PillarSouthEast);
 }
 
 // Called when the game starts or when spawned
@@ -68,8 +89,8 @@ void ATileActor::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ATileActor::DisableWall(UStaticMeshComponent* Wall)
+void ATileActor::DisableMeshComponent(UStaticMeshComponent* MeshComponent)
 {
-	Wall->DestroyComponent();
+	MeshComponent->DestroyComponent();
 }
 

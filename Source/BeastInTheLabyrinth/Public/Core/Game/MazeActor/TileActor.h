@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "FTileActorSpawnInfo.h"
 #include "GameFramework/Actor.h"
 #include "TileActor.generated.h"
 
@@ -30,11 +31,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* WallSouth;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* PillarNorthWest;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* PillarNorthEast;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* PillarSouthWest;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UStaticMeshComponent* PillarSouthEast;
+
 	UPROPERTY(VisibleAnywhere)
 	int32 TileValue;
 	
-	UFUNCTION(BlueprintCallable)
-	void Init(const class UTile* Tile);
+	void Init(const class UTile* Tile, const TileActorSpawnInfo SpawnInfo);
 
 protected:
 	// Called when the game starts or when spawned
@@ -45,6 +57,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	void DisableWall(UStaticMeshComponent* Wall);
+	void DisableMeshComponent(UStaticMeshComponent* Wall);
 	
 };
