@@ -155,10 +155,6 @@
 				"Win64",
 				"Linux"
 			]
-		},
-		{
-			"Name": "SteamSockets",
-			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [
