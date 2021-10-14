@@ -25,7 +25,7 @@ bool UBeastGameInstance::HostGame()
 	const ULocalPlayer* LocalPlayer = GetFirstGamePlayer();
 	const FString GameMode = FString(TEXT("/Game/BeastInTheLabyrinth/Core/Game/BP_LobbyGameMode.BP_LobbyGameMode_C"));
 	
-	LevelName = TEXT("Lobby");
+	LevelName = TEXT("/Game/BeastInTheLabyrinth/Map/Lobby");
 	LevelOptions = FString::Printf(TEXT("?game=%s%s"), *GameMode, TEXT("?listen"));
 
 	
@@ -77,6 +77,10 @@ void UBeastGameInstance::FinishSessionCreation(EOnJoinSessionCompleteResult::Typ
 
 			FString Error;
 			GEngine->Browse(*WorldContext, URL, Error);
+			if (!Error.IsEmpty())
+			{
+				UE_LOG(BeastGame, Warning, TEXT("Failed to load level: %s"), *Error);
+			}
 		}
 	}
 	else

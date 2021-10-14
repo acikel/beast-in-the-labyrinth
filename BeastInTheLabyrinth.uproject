@@ -155,6 +155,10 @@
 				"Win64",
 				"Linux"
 			]
+		},
+		{
+			"Name": "OnlineFramework",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [
