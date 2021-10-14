@@ -27,7 +27,7 @@ struct FBeastGameParams
 	{ }
 };
 
-DECLARE_EVENT_TwoParams(ASecurityGameSession, FOnCreatePresenceSessionComplete, FName /*SessionName*/, bool /*WasSuccessful*/);
+DECLARE_EVENT_TwoParams(ABeastGameSession, FOnCreatePresenceSessionComplete, FName /*SessionName*/, bool /*WasSuccessful*/);
 	
 DECLARE_MULTICAST_DELEGATE_TwoParams(FBeastOnFindSessionsComplete, const TArray<FOnlineSessionSearchResult>& SessionResults, bool Successful);
 DECLARE_MULTICAST_DELEGATE_OneParam(FBeastOnJoinSessionComplete, EOnJoinSessionCompleteResult::Type Result);
