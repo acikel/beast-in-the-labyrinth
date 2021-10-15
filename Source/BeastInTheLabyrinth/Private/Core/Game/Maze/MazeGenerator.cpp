@@ -134,6 +134,11 @@ void AMazeGenerator::SpawnTiles()
 
 void AMazeGenerator::SpawnActors()
 {
+	if (HasAuthority())
+	{
+		// Only the server should spawn the Actors which will be replicated on their own
+		
+	}
 }
 
 void AMazeGenerator::DebugPrintMaze()
