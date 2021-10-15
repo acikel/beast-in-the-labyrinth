@@ -41,7 +41,7 @@ bool ABeastGameSession::HostSession(TSharedPtr<const FUniqueNetId> UserId, const
 			// If true: this session is discoverable by presence (Epic Games launcher & Epic Social Overlay).
 			// For subsystems that supports presence... displaying information such as whether the player is in a lobby,
 			// in matchmaking or in the middle of a game.
-			HostSettings->bUsesPresence = false;
+			HostSettings->bUsesPresence = true;
 			
 			HostSettings->NumPublicConnections = DefaultMaxPlayerCount;
 			HostSettings->NumPrivateConnections = 0;
