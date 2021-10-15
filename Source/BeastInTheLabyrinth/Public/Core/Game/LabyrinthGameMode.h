@@ -29,6 +29,8 @@ protected:
 	
 	void GenerateObjectives();
 	void GenerateLabyrinth();
+
+	UFUNCTION()
 	void OnObjectiveCompleted();
 
 private:

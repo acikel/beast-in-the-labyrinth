@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "MazeActorSpawnInfo.h"
 #include "Core/Game/Maze/Isle.h"
 #include "Core/Game/MazeActor/TileActor.h"
 #include "MazeGenerator.generated.h"
@@ -32,6 +34,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<TSubclassOf<ATileActor>> TileActors;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FMazeActorSpawnInfo> Actors;
 
 	UPROPERTY(ReplicatedUsing=OnRep_Seed, EditAnywhere, BlueprintReadWrite)
 	int32 Seed;

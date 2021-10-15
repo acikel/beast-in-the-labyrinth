@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "FTileActorSpawnInfo.h"
+#include "TileActorSpawnInfo.h"
 #include "GameFramework/Actor.h"
 #include "TileActor.generated.h"
 
