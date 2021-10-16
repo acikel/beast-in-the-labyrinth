@@ -10,16 +10,16 @@
 AMazeGenerator::AMazeGenerator()
 {
 	PrimaryActorTick.bCanEverTick = false;
-
-	FRandomStream Random;
+	
 	Random.GenerateNewSeed();
-
 	Seed = Random.GetCurrentSeed();
 	TileSize = 200;
 }
 
 void AMazeGenerator::Generate()
 {
+	Random = FRandomStream(Seed);
+	
 	Maze = NewObject<UMaze>();
 	Maze->Seed = Seed;
 	
@@ -34,7 +34,6 @@ void AMazeGenerator::Generate()
 
 int32 AMazeGenerator::GenerateRandomSeed()
 {
-	FRandomStream Random;
 	Random.GenerateNewSeed();
 	Seed = Random.GetCurrentSeed();
 
@@ -80,8 +79,6 @@ void AMazeGenerator::SpawnIsles()
 
 void AMazeGenerator::SpawnTiles()
 {
-	FRandomStream Random(Seed);
-	
 	for (int32 y = 0; y < Maze->Tiles.Num(); ++y)
 	{
 		for (int32 x = 0; x < Maze->Tiles[y].Num(); ++x)
@@ -89,10 +86,7 @@ void AMazeGenerator::SpawnTiles()
 			const UTile* Tile = Maze->Tiles[y][x];
 			if (Tile)
 			{
-				FVector Location(
-					MazeOrigin.X + (Tile->Position.X * TileSize + (TileSize * 0.5f)),
-					MazeOrigin.Y + (Tile->Position.Y * TileSize + (TileSize * 0.5f)),
-					MazeOrigin.Z);
+				FVector Location = GetTileLocation(Tile);
 				
 				FRotator Rotator(0.0f, 0.0f, 0.0f);
 				FActorSpawnParameters SpawnParameters;
@@ -137,8 +131,177 @@ void AMazeGenerator::SpawnActors()
 	if (HasAuthority())
 	{
 		// Only the server should spawn the Actors which will be replicated on their own
-		
+
+		for (auto ActorSpawnInfo : Actors)
+		{
+			switch (ActorSpawnInfo.DistributionType)
+			{
+				case EActorDistributionType::DENSITY:
+					break;
+				default:
+				case EActorDistributionType::ABSOLUTE:
+					PlaceActorAbsolute(ActorSpawnInfo);
+					break;
+				case EActorDistributionType::ABSOLUTE_AMOUNT:
+					PlaceActorAbsoluteAmount(ActorSpawnInfo);
+					break;
+			}
+		}
 	}
+}
+
+TArray<int32> AMazeGenerator::GetTileIndexesToSpawnOn(int32 NumberOfActors, bool RequiresWall)
+{
+	int32 tileCount = MazeSize.X * MazeSize.Y;
+	int32 count = FMath::Min(NumberOfActors, tileCount);
+
+	TArray<int32> tileIndexes;
+	int32 findTileTries = 0;
+	int32 lastNum = 0;
+	
+	while (tileIndexes.Num() < count)
+	{
+		int32 index = Random.RandRange(0, tileCount - 1);
+		if (!tileIndexes.Contains(index))
+		{
+			if (RequiresWall)
+			{
+				UTile* tile = GetTileAtIndex(index);
+				if (!tile)
+					continue;
+					
+				if (tile->HasWalls())
+					tileIndexes.Add(index);				
+			}
+			else
+			{
+				tileIndexes.Add(index);	
+			}
+		}
+			
+
+		if (lastNum == tileIndexes.Num())
+		{
+			++findTileTries;
+			lastNum = tileIndexes.Num();
+		}
+		else
+			findTileTries = 0;
+
+		if (findTileTries > 100)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Could not find enough tiles to fit the DistributionValue"));
+			break;
+		}
+	}
+
+	return tileIndexes;
+}
+
+void AMazeGenerator::PlaceActorAbsolute(FMazeActorSpawnInfo ActorSpawnInfo)
+{
+	GetWorld()->SpawnActor<AActor>(ActorSpawnInfo.ActorClass, ActorSpawnInfo.AbsoluteTransform);
+}
+
+void AMazeGenerator::PlaceActorAbsoluteAmount(FMazeActorSpawnInfo ActorSpawnInfo)
+{
+	TArray<int32> tileIndexes = GetTileIndexesToSpawnOn(static_cast<int32>(ActorSpawnInfo.DistributionValue), ActorSpawnInfo.PlaceWithinDistanceToWall);
+	
+	for (const int32 tileIndex : tileIndexes)
+	{
+		PlaceActorOnTile(ActorSpawnInfo, tileIndex);
+	}
+}
+
+void AMazeGenerator::PlaceActorDensity(FMazeActorSpawnInfo ActorSpawnInfo)
+{
+
+}
+
+void AMazeGenerator::PlaceActorOnTile(FMazeActorSpawnInfo ActorSpawnInfo, int32 TileIndex)
+{
+	UTile* Tile = GetTileAtIndex(TileIndex);
+	
+	float minX = (Tile && !Tile->HasWallLeft()) ? -TileSize * 0.5f : -TileSize * 0.4f;
+	float maxX = (Tile && !Tile->HasWallRight()) ? TileSize * 0.5f : TileSize * 0.4f;
+	float minY = (Tile && !Tile->HasWallTop()) ? -TileSize * 0.5f : -TileSize * 0.4f;
+	float maxY = (Tile && !Tile->HasWallBottom()) ? TileSize * 0.5f : TileSize * 0.4f;
+
+	FVector Location;
+	if (Tile)
+		Location = GetTileLocation(Tile);
+	else
+		Location = GetTileLocation(TileIndex / MazeSize.X, TileIndex % MazeSize.X);
+	
+	if (ActorSpawnInfo.PlaceWithinDistanceToWall)
+	{
+		if (!Tile)
+		{
+			UE_LOG(LogTemp, Error, TEXT("Tried to place an actor near a wall on an Isle-Tile"))
+			return;
+		}
+		
+		TArray<ETileWall> Walls = Tile->GetWalls();
+		ETileWall wall = Walls[Random.RandRange(0, Walls.Num() - 1)];
+		
+		float distanceToWall = Random.FRandRange(0, ActorSpawnInfo.DistanceToWall);
+
+		switch (wall)
+		{
+			default:
+			case ETileWall::Top:
+				Location.X += Random.FRandRange(minX, maxX);
+				Location.Y -= (TileSize * 0.4f) - distanceToWall;
+				break;
+			case ETileWall::Bottom:
+				Location.X += Random.FRandRange(minX, maxX);
+				Location.Y += (TileSize * 0.4f) - distanceToWall;
+				break;
+			case ETileWall::Right:
+				Location.X += (TileSize * 0.4f) - distanceToWall;
+				Location.Y += Random.FRandRange(minY, maxY);
+				break;
+			case ETileWall::Left:
+				Location.X -= (TileSize * 0.4f) - distanceToWall;
+				Location.Y += Random.FRandRange(minY, maxY);
+				break;
+		}
+	}
+	else
+	{
+		Location.X += Random.FRandRange(minX, maxX);
+		Location.Y += Random.FRandRange(minY, maxY);
+	}
+
+	FRotator Rotation = FRotator(0, Random.FRandRange(0, 359), 0);
+	GetWorld()->SpawnActor<AActor>(ActorSpawnInfo.ActorClass, Location, Rotation);
+}
+
+UTile* AMazeGenerator::GetTileAtIndex(int32 Index)
+{
+	if (Maze && Maze->Tiles.Num() > 0)
+	{
+		return Maze->Tiles[Index / MazeSize.X][Index % MazeSize.X];
+	}
+	return nullptr;
+}
+
+FVector AMazeGenerator::GetTileLocation(const UTile* Tile)
+{
+	return FVector(
+	MazeOrigin.X + (Tile->Position.X * TileSize + (TileSize * 0.5f)),
+	MazeOrigin.Y + (Tile->Position.Y * TileSize + (TileSize * 0.5f)),
+	MazeOrigin.Z
+	);
+}
+
+FVector AMazeGenerator::GetTileLocation(int32 X, int32 Y)
+{
+	return FVector(
+	MazeOrigin.X + (X * TileSize + (TileSize * 0.5f)),
+	MazeOrigin.Y + (Y * TileSize + (TileSize * 0.5f)),
+	MazeOrigin.Z
+	);
 }
 
 void AMazeGenerator::DebugPrintMaze()

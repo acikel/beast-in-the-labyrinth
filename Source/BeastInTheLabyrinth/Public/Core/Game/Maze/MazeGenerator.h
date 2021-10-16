@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Maze.h"
 
 #include "MazeActorSpawnInfo.h"
 #include "Core/Game/Maze/Isle.h"
@@ -60,6 +61,8 @@ private:
 
 	UFUNCTION()
 	void OnRep_Seed();
+
+	FRandomStream Random;
 	
 	void SpawnMaze();
 
@@ -67,7 +70,21 @@ private:
 	void SpawnTiles();
 	void SpawnActors();
 
+	TArray<int32> GetTileIndexesToSpawnOn(int32 NumberOfActors, bool RequiresWall);
+
+	void PlaceActorAbsolute(FMazeActorSpawnInfo ActorSpawnInfo);
+	void PlaceActorAbsoluteAmount(FMazeActorSpawnInfo ActorSpawnInfo);
+	void PlaceActorDensity(FMazeActorSpawnInfo ActorSpawnInfo);
+
+	void PlaceActorOnTile(FMazeActorSpawnInfo ActorSpawnInfo, int32 TileIndex);
+
+	class UTile* GetTileAtIndex(int32 Index);
+	FVector GetTileLocation(const class UTile* Tile);
+	FVector GetTileLocation(int32 X, int32 Y);
+	
+	
 	FVector MazeOrigin;
 
 	void DebugPrintMaze();
 };
+
