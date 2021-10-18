@@ -6,6 +6,15 @@
 #include "UObject/NoExportTypes.h"
 #include "Tile.generated.h"
 
+UENUM()
+enum ETileWall
+{
+	Top = 1,
+	Right = 2,
+	Bottom = 4,
+	Left = 8
+};
+
 /**
  * 
  */
@@ -38,6 +47,28 @@ public:
 	UTile* GetNeighbourFromIsle(UIsle* Isle);
 	
 	void Connect(UTile* Tile);
+
+	FORCEINLINE bool HasWalls() const { return TileValue < 15; }
+	FORCEINLINE bool HasWall(ETileWall Wall) const { return TileValue & Wall; }
+	bool HasWallTop() const { return TileValue & 1; }
+	bool HasWallRight() const { return TileValue & 2; }
+	bool HasWallBottom() const { return TileValue & 4; }
+	bool HasWallLeft() const { return TileValue & 8; }
+
+	TArray<ETileWall> GetWalls()
+	{
+		TArray<ETileWall> Walls;
+		if (HasWall(ETileWall::Top))
+			Walls.Add(ETileWall::Top);
+		if (HasWall(ETileWall::Right))
+			Walls.Add(ETileWall::Right);
+		if (HasWall(ETileWall::Bottom))
+			Walls.Add(ETileWall::Bottom);
+		if (HasWall(ETileWall::Left))
+			Walls.Add(ETileWall::Left);
+
+		return Walls;
+	}
 
 	UPROPERTY()
 	FIntPoint Position;

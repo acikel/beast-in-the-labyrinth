@@ -11,29 +11,27 @@ enum EActorDistributionType
 	DENSITY = 2,
 };
 
+
 USTRUCT(BlueprintType)
 struct FMazeActorSpawnInfo
 {
-	GENERATED_BODY();
+	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 DistributionValue;
+	float DistributionValue = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TEnumAsByte<EActorDistributionType> DistributionType;
+	TEnumAsByte<EActorDistributionType> DistributionType = ABSOLUTE_AMOUNT;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool PlaceWithinDistanceToWall = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(EditCondition = "PlaceWithinDistanceToWall"))
+	float DistanceToWall = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AActor> ActorClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector AbsoluteLocation;
-
-	FMazeActorSpawnInfo()
-	{
-		DistributionValue = 10;
-		DistributionType = ABSOLUTE;
-		AbsoluteLocation = FVector();
-	}
-
-	
+	FTransform AbsoluteTransform = FTransform();
 };
