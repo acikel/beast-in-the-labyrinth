@@ -7,10 +7,11 @@ UENUM(BlueprintType)
 enum EActorDistributionType
 {
 	ABSOLUTE = 0,
-	ABSOLUTE_AMOUNT = 1,
+	FIXED_AMOUNT = 1,
 	DENSITY = 2,
 };
 
+DECLARE_DYNAMIC_DELEGATE_OneParam(FOnMazeActorSpawned, AActor*, Actor);
 
 USTRUCT(BlueprintType)
 struct FMazeActorSpawnInfo
@@ -21,7 +22,7 @@ struct FMazeActorSpawnInfo
 	float DistributionValue = 1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TEnumAsByte<EActorDistributionType> DistributionType = ABSOLUTE_AMOUNT;
+	TEnumAsByte<EActorDistributionType> DistributionType = FIXED_AMOUNT;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FInt32Range SpawnAmountOnTile = FInt32Range(1, 1);
@@ -34,7 +35,10 @@ struct FMazeActorSpawnInfo
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AActor> ActorClass;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FTransform AbsoluteTransform = FTransform();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FOnMazeActorSpawned OnMazeActorSpawned;
 };

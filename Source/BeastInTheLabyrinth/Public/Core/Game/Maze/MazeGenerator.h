@@ -48,6 +48,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int32 GenerateRandomSeed();
 
+	UFUNCTION(BlueprintCallable)
+	void AddActorToSpawn(FMazeActorSpawnInfo ActorSpawnInfo);
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 protected:
@@ -73,7 +76,7 @@ private:
 	TArray<int32> GetTileIndexesToSpawnOn(int32 NumberOfActors, bool RequiresWall);
 
 	void PlaceActorAbsolute(FMazeActorSpawnInfo ActorSpawnInfo);
-	void PlaceActorAbsoluteAmount(FMazeActorSpawnInfo ActorSpawnInfo);
+	void PlaceActorFixedAmount(FMazeActorSpawnInfo ActorSpawnInfo);
 	void PlaceActorDensity(FMazeActorSpawnInfo ActorSpawnInfo);
 
 	void PlaceActorOnTile(FMazeActorSpawnInfo ActorSpawnInfo, int32 TileIndex);

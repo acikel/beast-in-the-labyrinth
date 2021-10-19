@@ -40,6 +40,11 @@ int32 AMazeGenerator::GenerateRandomSeed()
 	return Seed;
 }
 
+void AMazeGenerator::AddActorToSpawn(FMazeActorSpawnInfo ActorSpawnInfo)
+{
+	Actors.Add(ActorSpawnInfo);
+}
+
 void AMazeGenerator::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -143,8 +148,8 @@ void AMazeGenerator::SpawnActors()
 				case EActorDistributionType::ABSOLUTE:
 					PlaceActorAbsolute(ActorSpawnInfo);
 					break;
-				case EActorDistributionType::ABSOLUTE_AMOUNT:
-					PlaceActorAbsoluteAmount(ActorSpawnInfo);
+				case EActorDistributionType::FIXED_AMOUNT:
+					PlaceActorFixedAmount(ActorSpawnInfo);
 					break;
 			}
 		}
@@ -201,10 +206,11 @@ TArray<int32> AMazeGenerator::GetTileIndexesToSpawnOn(int32 NumberOfActors, bool
 
 void AMazeGenerator::PlaceActorAbsolute(FMazeActorSpawnInfo ActorSpawnInfo)
 {
-	GetWorld()->SpawnActor<AActor>(ActorSpawnInfo.ActorClass, ActorSpawnInfo.AbsoluteTransform);
+	AActor* Actor = GetWorld()->SpawnActor<AActor>(ActorSpawnInfo.ActorClass, ActorSpawnInfo.AbsoluteTransform);
+	ActorSpawnInfo.OnMazeActorSpawned.ExecuteIfBound(Actor);
 }
 
-void AMazeGenerator::PlaceActorAbsoluteAmount(FMazeActorSpawnInfo ActorSpawnInfo)
+void AMazeGenerator::PlaceActorFixedAmount(FMazeActorSpawnInfo ActorSpawnInfo)
 {
 	TArray<int32> tileIndexes = GetTileIndexesToSpawnOn(static_cast<int32>(ActorSpawnInfo.DistributionValue), ActorSpawnInfo.PlaceWithinDistanceToWall);
 	
@@ -289,7 +295,8 @@ void AMazeGenerator::PlaceActorOnTile(FMazeActorSpawnInfo ActorSpawnInfo, int32 
 	}
 
 	const FRotator Rotation = FRotator(0, Random.FRandRange(0, 359), 0);
-	GetWorld()->SpawnActor<AActor>(ActorSpawnInfo.ActorClass, Location, Rotation);
+	AActor* Actor = GetWorld()->SpawnActor<AActor>(ActorSpawnInfo.ActorClass, Location, Rotation);
+	ActorSpawnInfo.OnMazeActorSpawned.ExecuteIfBound(Actor);
 }
 
 UTile* AMazeGenerator::GetTileAtIndex(int32 Index)
