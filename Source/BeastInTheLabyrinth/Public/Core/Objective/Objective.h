@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <Core/Game/Maze/MazeActorSpawnInfo.h>
+
 #include "CoreMinimal.h"
 #include "ObjectiveInterface.h"
 #include "UObject/NoExportTypes.h"
@@ -9,6 +11,7 @@
 
 
 class AIsleActor;
+
 //DECLARE_EVENT(UObjective, FOnCompleted);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCompleted);
 
@@ -20,7 +23,7 @@ class BEASTINTHELABYRINTH_API UObjective : public UObject
 	
 public:
 	// Called by game-mode or maze-generator after the actors are placed
-	void Init(TArray<TScriptInterface<IObjectiveInterface>> Actors);
+	// void OnRequiredActorsSpawned(TArray<TScriptInterface<IObjectiveInterface>> Actors);
 
 	UFUNCTION(BlueprintCallable, Category="Objectives")
 	void CheckState();
@@ -28,14 +31,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Objectives")
 	bool IsCompleted() const { return bIsCompleted; }
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnPostGeneration();
+	
 	UPROPERTY(BlueprintAssignable, Category="Objectives")
 	FOnCompleted OnCompleted;
 	
-	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Objectives")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Objectives")
 	FText DisplayedDescription;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Objectives", meta = (MustImplement = "ObjectiveInterface"))
-	TArray<TSubclassOf<AActor>> RequiredActors;
+	TArray<FMazeActorSpawnInfo> RequiredActors;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Objectives")
 	TArray<TSubclassOf<AIsleActor>> RequiredIsle;
