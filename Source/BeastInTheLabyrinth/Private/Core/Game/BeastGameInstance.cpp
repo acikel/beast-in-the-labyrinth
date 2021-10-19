@@ -16,6 +16,8 @@ void UBeastGameInstance::Init()
 	DestroySessionCompleteDelegate = FOnDestroySessionCompleteDelegate::CreateUObject(this, &UBeastGameInstance::OnDestroySessionComplete);
 	TravelLocalSessionFailureDelegateHandle = GEngine->OnTravelFailure().AddUObject(this, &UBeastGameInstance::OnTravelLocalSessionFailure);
 	NetworkFailureDelegateHandle = GEngine->OnNetworkFailure().AddUObject(this, &UBeastGameInstance::OnNetworkFailure);
+
+	CVarAPEX
 }
 
 bool UBeastGameInstance::HostGame()

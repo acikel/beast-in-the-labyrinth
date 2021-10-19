@@ -137,6 +137,7 @@ void AMazeGenerator::SpawnActors()
 			switch (ActorSpawnInfo.DistributionType)
 			{
 				case EActorDistributionType::DENSITY:
+					PlaceActorDensity(ActorSpawnInfo);
 					break;
 				default:
 				case EActorDistributionType::ABSOLUTE:
@@ -209,23 +210,37 @@ void AMazeGenerator::PlaceActorAbsoluteAmount(FMazeActorSpawnInfo ActorSpawnInfo
 	
 	for (const int32 tileIndex : tileIndexes)
 	{
-		PlaceActorOnTile(ActorSpawnInfo, tileIndex);
+		const int32 numActors = Random.RandRange(ActorSpawnInfo.SpawnAmountOnTile.GetLowerBound().GetValue(), ActorSpawnInfo.SpawnAmountOnTile.GetUpperBound().GetValue());
+		for (int32 i = 0; i < numActors; ++i)
+		{
+			PlaceActorOnTile(ActorSpawnInfo, tileIndex);
+		}
 	}
 }
 
 void AMazeGenerator::PlaceActorDensity(FMazeActorSpawnInfo ActorSpawnInfo)
 {
-
+	const int32 tileAmount = FMath::Clamp(ActorSpawnInfo.DistributionValue, 0.0f, 1.0f) * (MazeSize.X * MazeSize.Y);
+	TArray<int32> tileIndexes = GetTileIndexesToSpawnOn(tileAmount, ActorSpawnInfo.PlaceWithinDistanceToWall);
+	
+	for (const int32 tileIndex : tileIndexes)
+	{
+		const int32 numActors = Random.RandRange(ActorSpawnInfo.SpawnAmountOnTile.GetLowerBound().GetValue(), ActorSpawnInfo.SpawnAmountOnTile.GetUpperBound().GetValue());
+		for (int32 i = 0; i < numActors; ++i)
+		{
+			PlaceActorOnTile(ActorSpawnInfo, tileIndex);
+		}
+	}
 }
 
 void AMazeGenerator::PlaceActorOnTile(FMazeActorSpawnInfo ActorSpawnInfo, int32 TileIndex)
 {
 	UTile* Tile = GetTileAtIndex(TileIndex);
-	
-	float minX = (Tile && !Tile->HasWallLeft()) ? -TileSize * 0.5f : -TileSize * 0.4f;
-	float maxX = (Tile && !Tile->HasWallRight()) ? TileSize * 0.5f : TileSize * 0.4f;
-	float minY = (Tile && !Tile->HasWallTop()) ? -TileSize * 0.5f : -TileSize * 0.4f;
-	float maxY = (Tile && !Tile->HasWallBottom()) ? TileSize * 0.5f : TileSize * 0.4f;
+
+	const float minX = (Tile && !Tile->HasWallLeft()) ? -TileSize * 0.5f : -TileSize * 0.4f;
+	const float maxX = (Tile && !Tile->HasWallRight()) ? TileSize * 0.5f : TileSize * 0.4f;
+	const float minY = (Tile && !Tile->HasWallTop()) ? -TileSize * 0.5f : -TileSize * 0.4f;
+	const float maxY = (Tile && !Tile->HasWallBottom()) ? TileSize * 0.5f : TileSize * 0.4f;
 
 	FVector Location;
 	if (Tile)
@@ -249,19 +264,19 @@ void AMazeGenerator::PlaceActorOnTile(FMazeActorSpawnInfo ActorSpawnInfo, int32 
 		switch (wall)
 		{
 			default:
-			case ETileWall::Top:
+			case Top:
 				Location.X += Random.FRandRange(minX, maxX);
 				Location.Y -= (TileSize * 0.4f) - distanceToWall;
 				break;
-			case ETileWall::Bottom:
+			case Bottom:
 				Location.X += Random.FRandRange(minX, maxX);
 				Location.Y += (TileSize * 0.4f) - distanceToWall;
 				break;
-			case ETileWall::Right:
+			case Right:
 				Location.X += (TileSize * 0.4f) - distanceToWall;
 				Location.Y += Random.FRandRange(minY, maxY);
 				break;
-			case ETileWall::Left:
+			case Left:
 				Location.X -= (TileSize * 0.4f) - distanceToWall;
 				Location.Y += Random.FRandRange(minY, maxY);
 				break;
@@ -273,7 +288,7 @@ void AMazeGenerator::PlaceActorOnTile(FMazeActorSpawnInfo ActorSpawnInfo, int32 
 		Location.Y += Random.FRandRange(minY, maxY);
 	}
 
-	FRotator Rotation = FRotator(0, Random.FRandRange(0, 359), 0);
+	const FRotator Rotation = FRotator(0, Random.FRandRange(0, 359), 0);
 	GetWorld()->SpawnActor<AActor>(ActorSpawnInfo.ActorClass, Location, Rotation);
 }
 

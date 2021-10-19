@@ -24,6 +24,9 @@ struct FMazeActorSpawnInfo
 	TEnumAsByte<EActorDistributionType> DistributionType = ABSOLUTE_AMOUNT;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FInt32Range SpawnAmountOnTile = FInt32Range(1, 1);
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool PlaceWithinDistanceToWall = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(EditCondition = "PlaceWithinDistanceToWall"))
