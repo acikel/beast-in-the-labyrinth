@@ -6,6 +6,7 @@
 #include "LabyrinthGameState.h"
 #include "Core/Game/BeastGameMode.h"
 #include "Core/Objective/Objective.h"
+#include "Maze/MazeGenerator.h"
 #include "LabyrinthGameMode.generated.h"
 
 /**
@@ -28,11 +29,15 @@ protected:
 	void OnGameEnded_Implementation(const bool bIsWon);
 	
 	void GenerateObjectives();
-	void GenerateLabyrinth();
+	void FindMazeGenerator();
+	//void InstantiateObjectivesActors();
 
 	UFUNCTION()
 	void OnObjectiveCompleted();
 
 private:
 	const int32 GENERATE_NUM_OBJECTIVES = 3;
+
+	UPROPERTY()
+	AMazeGenerator* MazeGenerator;
 };
