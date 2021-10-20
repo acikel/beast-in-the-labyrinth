@@ -215,18 +215,12 @@ void UInventoryComponent::DropItem(AItem* Item)
 
 	const FVector CalculatedThrowForce = Forward * ItemThrowForce;
 
-	
 	Item->DetachFromActor(DetachmentTransformRules);
 	Item->SetHidden(false);
 	Item->SetCanBePickedUp(true);
 
-	TArray<UPrimitiveComponent*> MeshComponents;
-	Item->GetComponents<UPrimitiveComponent>(MeshComponents);
-	for (UPrimitiveComponent* MeshComponent : MeshComponents)
-	{
-		MeshComponent->SetSimulatePhysics(true);
-		MeshComponent->AddForce(CalculatedThrowForce);
-	}
+	Item->Mesh->SetSimulatePhysics(true);
+	Item->Mesh->AddForce(CalculatedThrowForce);
 }
 
 void UInventoryComponent::OnRep_SelectedInventoryIndex()
@@ -275,10 +269,8 @@ void UInventoryComponent::UpdateItemHolding()
 
 void UInventoryComponent::StoreItem(AItem* Item)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Store item"));
 	if (GetOwner() && GetOwner()->HasAuthority())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Store item for real"));
 		Item->DisableComponentsSimulatePhysics();
 		
 		FAttachmentTransformRules AttachmentTransformRules(
@@ -311,6 +303,8 @@ void UInventoryComponent::HoldItem(AItem* Item)
 			false);
 
 		Item->AttachToComponent(ItemSocket, AttachmentTransformRules);
+		Item->SetActorRelativeLocation(Item->HoldPositionOffset);
+		Item->SetActorRelativeRotation(Item->HoldRotationOffset);
 		Item->SetActorHiddenInGame(false);
 	}
 }

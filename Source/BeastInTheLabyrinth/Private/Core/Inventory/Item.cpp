@@ -12,8 +12,9 @@ AItem::AItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	RootComponent = CreateDefaultSubobject<USceneComponent>("SceneRoot");
-	SetRootComponent(RootComponent);
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
+	Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
+	SetRootComponent(Mesh);
 	
 	InteractionComponent = CreateDefaultSubobject<UInteractableComponent>("InteractionComponent");
 	InteractionComponent->InteractionTime = 0;

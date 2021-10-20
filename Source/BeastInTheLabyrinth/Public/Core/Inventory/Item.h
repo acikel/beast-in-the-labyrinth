@@ -31,6 +31,15 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	class UInventoryComponent* OwningInventory;
 
+	UPROPERTY(BlueprintReadOnly, EditAnywhere)
+	class UPrimitiveComponent* Mesh;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FVector HoldPositionOffset;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	FRotator HoldRotationOffset;
+
 	virtual void Use(class APlayerCharacter* Character);
 	virtual void AddedToInventory(class UInventoryComponent* Inventory);
 
