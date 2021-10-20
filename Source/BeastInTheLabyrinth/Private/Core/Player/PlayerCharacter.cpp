@@ -3,9 +3,13 @@
 
 #include "Core/Player/PlayerCharacter.h"
 
+#include "Online.h"
+#include "OnlineSubsystemUtils.h"
+#include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Core/Inventory/Item.h"
 #include "Core/Inventory/InventoryComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -35,7 +39,8 @@ float APlayerCharacter::GetRemainingInteractionTime() const
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	InitVOIP();
 }
 
 void APlayerCharacter::PerformInteractionCheck()
@@ -168,6 +173,58 @@ void APlayerCharacter::EndInteract()
 	if (UInteractableComponent* Interactable = GetInteractable())
 	{
 		Interactable->EndInteract(this);
+	}
+}
+
+void APlayerCharacter::InitVOIP()
+{
+	if (APlayerState* PS = GetPlayerState())
+	{
+		FVoiceSettings VoiceSettings;
+		VoiceSettings.ComponentToAttachTo = this->GetRootComponent();
+		VoiceSettings.AttenuationSettings = AttenuationSettings;
+		VoiceSettings.SourceEffectChain = SourceEffectChain;
+
+		VOIPTalker = NewObject<UVOIPTalker>();
+		AddInstanceComponent(VOIPTalker);
+		
+		VOIPTalker->Settings = VoiceSettings;
+		VOIPTalker->RegisterWithPlayerState(PS);
+				
+		UVOIPStatics::SetMicThreshold(-50.0f);
+
+		if (IsOwnedBy(UGameplayStatics::GetPlayerController(this, 0)))
+		{
+			if (APlayerController* PC = Cast<APlayerController>(GetController()))
+			{
+				PC->ToggleSpeaking(false);
+				GetWorldTimerManager().SetTimer(TimerHandle_VOIPInit, this, &APlayerCharacter::VOIPPostInit, 2.0f, false);
+			}
+		}
+
+		UE_LOG(LogTemp, Warning, TEXT("VOIP Initializing"));
+	}
+	else
+	{
+		GetWorldTimerManager().SetTimer(TimerHandle_VOIPInit, this, &APlayerCharacter::InitVOIP, 0.1f, false);
+	}
+}
+
+void APlayerCharacter::VOIPPostInit()
+{
+	if (IsOwnedBy(UGameplayStatics::GetPlayerController(this, 0)))
+	{
+		if (APlayerController* PC = Cast<APlayerController>(GetController()))
+		{
+			const IOnlineVoicePtr VoiceInterface = Online::GetVoiceInterface();
+			if (VoiceInterface.IsValid())
+			{
+				VoiceInterface->RemoveAllRemoteTalkers();
+			}
+
+			PC->ToggleSpeaking(true);
+			UE_LOG(LogTemp, Warning, TEXT("Local VOIP Initialized"));
+		}
 	}
 }
 

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Core/Interaction/InteractableComponent.h"
 #include "GameFramework/Character.h"
+#include "Net/VoiceConfig.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
@@ -41,9 +42,18 @@ public:
 	UFUNCTION(Server, Reliable)
 	void ServerDropSelectedItem();
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USoundAttenuation* AttenuationSettings;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USoundEffectSourcePresetChain* SourceEffectChain;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY()
+	UVOIPTalker* VOIPTalker;
 
 	UPROPERTY(EditDefaultsOnly, Category="Interaction")
 	float InteractionCheckFrequency;
@@ -61,8 +71,6 @@ protected:
 	void PerformInteractionCheck();
 	void CouldNotFindInteractable();
 	void FoundNewInteractable(UInteractableComponent* Interactable);
-
-	
 	
 
 	UFUNCTION(Server, Reliable)
@@ -77,9 +85,13 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void EndInteract();
+
+	void InitVOIP();
+	void VOIPPostInit();
 	
 
 	FTimerHandle TimerHandle_Interact;
+	FTimerHandle TimerHandle_VOIPInit;
 	
 public:	
 	// Called every frame
@@ -87,5 +99,4 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 };
