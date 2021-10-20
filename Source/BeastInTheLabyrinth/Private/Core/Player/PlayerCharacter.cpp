@@ -63,8 +63,19 @@ void APlayerCharacter::PerformInteractionCheck()
 
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(this);
+	
+	TArray<AItem*> Items = PlayerInventory->GetInventoryItems();
+	for (AItem* Item : Items)
+	{
+		if (Item)
+		{
+			QueryParams.AddIgnoredActor(Item);
+		}
+	}
 
-	if (GetWorld()->LineTraceSingleByChannel(TraceHit, TraceStart, TraceEnd, ECC_Visibility, QueryParams))
+	FCollisionShape CollisionSphere = FCollisionShape::MakeSphere(25.0f);
+	
+	if (GetWorld()->SweepSingleByChannel(TraceHit, TraceStart, TraceEnd, FQuat::Identity, ECC_Visibility, CollisionSphere, QueryParams))
 	{
 		if (TraceHit.GetActor())
 		{

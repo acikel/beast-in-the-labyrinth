@@ -4,6 +4,7 @@
 #include "Core/Interaction/InteractableComponent.h"
 #include "Core/Player/PlayerCharacter.h"
 #include "Core/Widget/Game/InteractionWidget.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
 UInteractableComponent::UInteractableComponent()
@@ -87,7 +88,7 @@ void UInteractableComponent::BeginFocus(APlayerCharacter* Character)
 
 	OnBeginFocus.Broadcast(Character);
 
-	if (Enabled)
+	if (Enabled && Character == UGameplayStatics::GetPlayerPawn(GetOwner(), 0))
 	{
 		SetHiddenInGame(false);
 		RefreshWidget();
