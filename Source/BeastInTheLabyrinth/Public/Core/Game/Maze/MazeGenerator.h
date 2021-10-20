@@ -52,6 +52,12 @@ public:
 	void AddActorToSpawn(FMazeActorSpawnInfo ActorSpawnInfo);
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	UFUNCTION(BlueprintCallable)
+	TArray<FTransform> GetPlayerStartPoints() { return PlayerSpawnPoints; }
+
+	UFUNCTION(BlueprintCallable)
+	FTransform GetCreatureStartPoint() { return CreatureSpawnPoint; }
 	
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
@@ -72,6 +78,7 @@ private:
 	void SpawnIsles();
 	void SpawnTiles();
 	void SpawnActors();
+	void GenerateStartingPoints();
 
 	TArray<int32> GetTileIndexesToSpawnOn(int32 NumberOfActors, bool RequiresWall);
 
@@ -87,6 +94,8 @@ private:
 	
 	
 	FVector MazeOrigin;
+	TArray<FTransform> PlayerSpawnPoints;
+	FTransform CreatureSpawnPoint;
 
 	void DebugPrintMaze();
 };

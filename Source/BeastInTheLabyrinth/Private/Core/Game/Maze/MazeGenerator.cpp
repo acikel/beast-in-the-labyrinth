@@ -65,6 +65,7 @@ void AMazeGenerator::SpawnMaze()
 	SpawnIsles();
 	SpawnTiles();
 	SpawnActors();
+	GenerateStartingPoints();
 }
 
 void AMazeGenerator::SpawnIsles()
@@ -154,6 +155,83 @@ void AMazeGenerator::SpawnActors()
 			}
 		}
 	}
+}
+
+void AMazeGenerator::GenerateStartingPoints()
+{
+	PlayerSpawnPoints.Empty();
+	
+	FIntPoint MazeHalfSize = MazeSize / 2;
+	FIntPoint MazeQuarterSize = MazeSize / 4;
+
+	int spawnCenterX = Random.RandRange(0, MazeHalfSize.X - 1) + MazeHalfSize.X;
+	int spawnCenterY = Random.RandRange(0, MazeHalfSize.Y - 1) + MazeHalfSize.Y;
+
+	TArray<FIntPoint> PlayerSpawnTiles;
+	
+	
+	for (int32 i = 0; i < 4; ++i)
+	{
+		FIntPoint playerTile;
+		playerTile.X = spawnCenterX + Random.RandRange(0, MazeQuarterSize.X) - MazeQuarterSize.X;
+		playerTile.Y = spawnCenterY + Random.RandRange(0, MazeQuarterSize.Y) - MazeQuarterSize.Y;
+
+		if (PlayerSpawnTiles.Contains(playerTile))
+		{
+			--i;
+			continue;
+		}
+
+		PlayerSpawnTiles.Add(playerTile);
+
+		FTransform PlayerSpawnPoint;
+		PlayerSpawnPoint.SetLocation(GetTileLocation(playerTile.X, playerTile.Y));
+		PlayerSpawnPoint.SetRotation(FQuat::MakeFromEuler(FVector(0.0f, 0.0f, Random.FRandRange(0.0f, 359.0f))));
+
+		PlayerSpawnPoints.Add(PlayerSpawnPoint);
+	}
+
+	ETileWall Wall;
+	
+	if (FMath::Abs(spawnCenterX) > FMath::Abs(spawnCenterY))
+	{
+		if (spawnCenterX > MazeHalfSize.X)
+			Wall = Left;
+		else
+			Wall = Right;
+	}
+	else
+	{
+		if (spawnCenterY > MazeHalfSize.Y)
+			Wall = Top;
+		else
+			Wall = Bottom;
+	}
+	
+	FIntPoint CreatureTile;
+
+	switch (Wall)
+	{
+		case Top:
+			CreatureTile.X = Random.RandRange(0, MazeSize.X - 1);
+			CreatureTile.Y = Random.RandRange(0, 2);
+			break;
+		case Bottom:
+			CreatureTile.X = Random.RandRange(0, MazeSize.X - 1);
+			CreatureTile.Y = Random.RandRange(MazeSize.Y - 3, MazeSize.Y - 1);
+			break;
+		case Left:
+			CreatureTile.X = Random.RandRange(0, 2);
+			CreatureTile.Y = Random.RandRange(0, MazeSize.Y - 1);;
+			break;
+		case Right:
+			CreatureTile.X = Random.RandRange(MazeSize.X - 3, MazeSize.X - 1);
+			CreatureTile.Y = Random.RandRange(0, MazeSize.Y - 1);;
+			break;
+	}
+
+	CreatureSpawnPoint.SetLocation(GetTileLocation(CreatureTile.X, CreatureTile.Y));
+	CreatureSpawnPoint.SetRotation(FRotator(0.0f, 0.0f, Random.FRandRange(0.0f, 359.0f)).Quaternion());
 }
 
 TArray<int32> AMazeGenerator::GetTileIndexesToSpawnOn(int32 NumberOfActors, bool RequiresWall)

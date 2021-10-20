@@ -19,9 +19,14 @@ void ALabyrinthGameMode::BeginPlay()
 	
 	GenerateObjectives();
 
+
+	OnPreMazeGenerate(MazeGenerator);
+
 	// Generate Maze
 	MazeGenerator->GenerateRandomSeed();
 	MazeGenerator->Generate();
+
+	OnPostMazeGenerate(MazeGenerator);
 }
 
 void ALabyrinthGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)

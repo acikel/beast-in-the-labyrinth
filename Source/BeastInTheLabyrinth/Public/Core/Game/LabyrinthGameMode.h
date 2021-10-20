@@ -9,6 +9,7 @@
 #include "Maze/MazeGenerator.h"
 #include "LabyrinthGameMode.generated.h"
 
+
 /**
  * 
  */
@@ -34,10 +35,18 @@ protected:
 
 	UFUNCTION()
 	void OnObjectiveCompleted();
+	
+	UPROPERTY(BlueprintReadOnly)
+	AMazeGenerator* MazeGenerator;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnPreMazeGenerate(AMazeGenerator* Generator);
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnPostMazeGenerate(AMazeGenerator* Generator);
+	
+	
 private:
 	const int32 GENERATE_NUM_OBJECTIVES = 3;
 
-	UPROPERTY()
-	AMazeGenerator* MazeGenerator;
 };
