@@ -27,11 +27,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UTexture2D* ItemIcon;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	UStaticMeshComponent* Mesh;
 	
-
 	UPROPERTY(BlueprintReadOnly)
 	class UInventoryComponent* OwningInventory;
 

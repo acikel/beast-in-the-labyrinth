@@ -12,11 +12,9 @@ AItem::AItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>("Mesh");
-	Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-
-	SetRootComponent(Mesh);
-
+	RootComponent = CreateDefaultSubobject<USceneComponent>("SceneRoot");
+	SetRootComponent(RootComponent);
+	
 	InteractionComponent = CreateDefaultSubobject<UInteractableComponent>("InteractionComponent");
 	InteractionComponent->InteractionTime = 0;
 	InteractionComponent->InteractionDistance = 250;
@@ -24,7 +22,7 @@ AItem::AItem()
 	InteractionComponent->InteractableActionText = FText::FromString("Take");
 	InteractionComponent->OnInteract.AddDynamic(this, &AItem::OnTakeItem);
 	InteractionComponent->SetIsReplicated(true);
-	InteractionComponent->SetupAttachment(Mesh);
+	InteractionComponent->SetupAttachment(RootComponent);
 	
 	bReplicates = true;
 	SetReplicatingMovement(true);

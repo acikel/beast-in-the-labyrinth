@@ -205,12 +205,6 @@ void UInventoryComponent::DropItem(AItem* Item)
 	EDetachmentRule::KeepWorld,
 	true
 	);
-	
-	Item->DetachFromActor(DetachmentTransformRules);
-	Item->SetHidden(false);
-
-	Item->Mesh->SetSimulatePhysics(true);
-	Item->SetCanBePickedUp(true);
 
 	FVector Forward;
 
@@ -220,8 +214,19 @@ void UInventoryComponent::DropItem(AItem* Item)
 		Forward = GetOwner()->GetActorForwardVector();
 
 	const FVector CalculatedThrowForce = Forward * ItemThrowForce;
-			
-	Item->Mesh->AddForce(CalculatedThrowForce);
+
+	
+	Item->DetachFromActor(DetachmentTransformRules);
+	Item->SetHidden(false);
+	Item->SetCanBePickedUp(true);
+
+	TArray<UPrimitiveComponent*> MeshComponents;
+	Item->GetComponents<UPrimitiveComponent>(MeshComponents);
+	for (UPrimitiveComponent* MeshComponent : MeshComponents)
+	{
+		MeshComponent->SetSimulatePhysics(true);
+		MeshComponent->AddForce(CalculatedThrowForce);
+	}
 }
 
 void UInventoryComponent::OnRep_SelectedInventoryIndex()
