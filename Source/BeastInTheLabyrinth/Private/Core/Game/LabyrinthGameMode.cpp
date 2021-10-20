@@ -14,6 +14,9 @@ void ALabyrinthGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	FindMazeGenerator();
+
+	if(!MazeGenerator) return;
+	
 	GenerateObjectives();
 
 	// Generate Maze
