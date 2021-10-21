@@ -343,7 +343,7 @@ void AMazeGenerator::PlaceActorOnTile(FMazeActorSpawnInfo ActorSpawnInfo, int32 
 		TArray<ETileWall> Walls = Tile->GetWalls();
 		ETileWall wall = Walls[Random.RandRange(0, Walls.Num() - 1)];
 		
-		float distanceToWall = Random.FRandRange(0, ActorSpawnInfo.DistanceToWall);
+		float distanceToWall = Random.FRandRange(ActorSpawnInfo.DistanceToWall.GetLowerBoundValue(), ActorSpawnInfo.DistanceToWall.GetUpperBoundValue());
 
 		switch (wall)
 		{
