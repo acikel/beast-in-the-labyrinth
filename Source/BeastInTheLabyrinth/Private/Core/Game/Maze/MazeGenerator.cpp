@@ -349,20 +349,20 @@ void AMazeGenerator::PlaceActorOnTile(FMazeActorSpawnInfo ActorSpawnInfo, int32 
 		{
 			default:
 			case Top:
-				Location.X += Random.FRandRange(minX, maxX);
-				Location.Y -= (TileSize * 0.4f) - distanceToWall;
+				Location.X += (TileSize * 0.4f) - distanceToWall;
+				Location.Y -= Random.FRandRange(minY, maxY);
 				break;
 			case Bottom:
-				Location.X += Random.FRandRange(minX, maxX);
-				Location.Y += (TileSize * 0.4f) - distanceToWall;
-				break;
-			case Right:
 				Location.X += (TileSize * 0.4f) - distanceToWall;
 				Location.Y += Random.FRandRange(minY, maxY);
 				break;
+			case Right:
+				Location.X += Random.FRandRange(minX, maxX);
+				Location.Y += (TileSize * 0.4f) - distanceToWall;
+				break;
 			case Left:
-				Location.X -= (TileSize * 0.4f) - distanceToWall;
-				Location.Y += Random.FRandRange(minY, maxY);
+				Location.X -= Random.FRandRange(minX, maxX);
+				Location.Y += (TileSize * 0.4f) - distanceToWall;
 				break;
 		}
 	}

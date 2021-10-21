@@ -31,7 +31,7 @@ struct FMazeActorSpawnInfo
 	bool PlaceWithinDistanceToWall = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(EditCondition = "PlaceWithinDistanceToWall"))
-	FFloatRange DistanceToWall = FFloatRange(0, 100);
+	FFloatRange DistanceToWall = FFloatRange(50, 100);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AActor> ActorClass;
