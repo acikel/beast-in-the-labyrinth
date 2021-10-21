@@ -209,9 +209,10 @@ void APlayerCharacter::InitVOIP()
 			if (APlayerController* PC = Cast<APlayerController>(GetController()))
 			{
 				PC->ToggleSpeaking(false);
-				GetWorldTimerManager().SetTimer(TimerHandle_VOIPInit, this, &APlayerCharacter::VOIPPostInit, 2.0f, false);
 			}
 		}
+
+		GetWorldTimerManager().SetTimer(TimerHandle_VOIPInit, this, &APlayerCharacter::VOIPPostInit, 2.5f, false);
 
 		UE_LOG(LogTemp, Warning, TEXT("VOIP Initializing"));
 	}
@@ -223,16 +224,16 @@ void APlayerCharacter::InitVOIP()
 
 void APlayerCharacter::VOIPPostInit()
 {
+	const IOnlineVoicePtr VoiceInterface = Online::GetVoiceInterface();
+	if (VoiceInterface.IsValid())
+	{
+		VoiceInterface->RemoveAllRemoteTalkers();
+	}
+	
 	if (IsOwnedBy(UGameplayStatics::GetPlayerController(this, 0)))
 	{
 		if (APlayerController* PC = Cast<APlayerController>(GetController()))
 		{
-			const IOnlineVoicePtr VoiceInterface = Online::GetVoiceInterface();
-			if (VoiceInterface.IsValid())
-			{
-				VoiceInterface->RemoveAllRemoteTalkers();
-			}
-
 			PC->ToggleSpeaking(true);
 			UE_LOG(LogTemp, Warning, TEXT("Local VOIP Initialized"));
 		}
