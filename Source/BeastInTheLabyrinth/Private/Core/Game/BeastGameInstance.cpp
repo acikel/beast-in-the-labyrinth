@@ -16,6 +16,24 @@ void UBeastGameInstance::Init()
 	DestroySessionCompleteDelegate = FOnDestroySessionCompleteDelegate::CreateUObject(this, &UBeastGameInstance::OnDestroySessionComplete);
 	TravelLocalSessionFailureDelegateHandle = GEngine->OnTravelFailure().AddUObject(this, &UBeastGameInstance::OnTravelLocalSessionFailure);
 	NetworkFailureDelegateHandle = GEngine->OnNetworkFailure().AddUObject(this, &UBeastGameInstance::OnNetworkFailure);
+
+	
+	static IConsoleVariable* SilenceDetectionAttackTimeCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("voice.SilenceDetectionAttackTime"));
+	check(SilenceDetectionAttackTimeCVar);
+	static IConsoleVariable* SilenceDetectionReleaseTimeCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("voice.SilenceDetectionReleaseTime"));
+	check(SilenceDetectionReleaseTimeCVar);
+	static IConsoleVariable* SilenceDetectionThresholdCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("voice.SilenceDetectionThreshold"));
+	check(SilenceDetectionThresholdCVar);
+	static IConsoleVariable* MicNoiseGateThresholdCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("voice.MicNoiseGateThreshold"));
+	check(MicNoiseGateThresholdCVar);
+	static IConsoleVariable* MicInputGainCVar = IConsoleManager::Get().FindConsoleVariable(TEXT("voice.MicInputGain"));
+	check(MicInputGainCVar);
+	
+	SilenceDetectionThresholdCVar->Set(0.000001f);
+	SilenceDetectionAttackTimeCVar->Set(0.1f);
+	SilenceDetectionReleaseTimeCVar->Set(0.1f);
+	MicNoiseGateThresholdCVar->Set(0.01f);
+	MicInputGainCVar->Set(2.5f);
 }
 
 bool UBeastGameInstance::HostGame()
