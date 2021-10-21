@@ -9,6 +9,8 @@
 #include "Components/CapsuleComponent.h"
 #include "Core/Inventory/Item.h"
 #include "Core/Inventory/InventoryComponent.h"
+#include "GameFramework/GameModeBase.h"
+#include "GameFramework/GameStateBase.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -195,7 +197,7 @@ void APlayerCharacter::InitVOIP()
 		VoiceSettings.ComponentToAttachTo = this->GetRootComponent();
 		VoiceSettings.AttenuationSettings = AttenuationSettings;
 		VoiceSettings.SourceEffectChain = SourceEffectChain;
-
+		
 		VOIPTalker = NewObject<UVOIPTalker>();
 		AddInstanceComponent(VOIPTalker);
 		
@@ -236,6 +238,14 @@ void APlayerCharacter::VOIPPostInit()
 		{
 			PC->ToggleSpeaking(true);
 			UE_LOG(LogTemp, Warning, TEXT("Local VOIP Initialized"));
+		}
+	}
+	else
+	{
+		if (APlayerController* PC = Cast<APlayerController>(GetController()))
+		{
+			PC->ToggleSpeaking(false);
+			PC->ToggleSpeaking(true);
 		}
 	}
 }
