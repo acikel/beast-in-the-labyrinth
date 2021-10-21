@@ -19,9 +19,16 @@ void ABeastGameMode::Logout(AController* Exiting)
 
 void ABeastGameMode::StartGame(const FString& LevelName)
 {
+	ServerTravel(LevelName, TEXT("BP_LabyrinthGameMode"));
+}
+
+void ABeastGameMode::ServerTravel(const FString& LevelName, const FString& GameMode)
+{
 	FURL Url;
-	Url.Map = LevelName;
-	Url.AddOption(TEXT("game=/Game/BeastInTheLabyrinth/Core/Game/BP_LabyrinthGameMode.BP_LabyrinthGameMode_C"));
+	Url.Map = TEXT("/Game/BeastInTheLabyrinth/Map/") + LevelName;
+
+	const FString GameModeArg = FString::Printf(TEXT("game=/Game/BeastInTheLabyrinth/Core/Game/%s.%s_C"), *GameMode, *GameMode);
+	Url.AddOption(*GameModeArg);
 	Url.AddOption(TEXT("listen"));
 	
 	if (GetWorld()->WorldType == EWorldType::PIE)
@@ -31,3 +38,4 @@ void ABeastGameMode::StartGame(const FString& LevelName)
 	
 	GetWorld()->ServerTravel(Url.ToString());
 }
+

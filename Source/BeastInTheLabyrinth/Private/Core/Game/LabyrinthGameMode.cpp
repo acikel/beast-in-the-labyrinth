@@ -40,9 +40,9 @@ void ALabyrinthGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	}
 }
 
-void ALabyrinthGameMode::OnGameEnded_Implementation(const bool bIsWon)
+void ALabyrinthGameMode::PlayersReadyToExit()
 {
-	UE_LOG(BeastGame, Log, TEXT("Game has ended! Is won: %d"), bIsWon);
+	OnGameEnded(true);
 }
 
 void ALabyrinthGameMode::GenerateObjectives()
@@ -56,6 +56,12 @@ void ALabyrinthGameMode::GenerateObjectives()
 	{
 		const int32 RandomIndex = FMath::RandRange(0, AvailableObjectives.Num() - 1);
 
+		if(!AvailableObjectives[RandomIndex])
+		{
+			UE_LOG(BeastGame, Error, TEXT("There is a null pointer configured within the objectives array in LabyrinthGameMode"));
+			break;
+		}
+		
 		UObjective* NewObjective = NewObject<UObjective>(this, AvailableObjectives[RandomIndex]);
 
 		NewObjective->OnCompleted.AddDynamic(this, &ALabyrinthGameMode::OnObjectiveCompleted);
@@ -105,6 +111,7 @@ void ALabyrinthGameMode::FindMazeGenerator()
 // 	}
 // }
 
+
 void ALabyrinthGameMode::OnObjectiveCompleted()
 {
 	ALabyrinthGameState* LabyrinthGameState = GetGameState<ALabyrinthGameState>();
@@ -113,6 +120,20 @@ void ALabyrinthGameMode::OnObjectiveCompleted()
 		// If any objective isn't completed - The game goes on
 		if(!Objective->IsCompleted()) { return; }
 	}
-	
-	OnGameEnded(true);
+
+	UE_LOG(BeastGame, Log, TEXT("All objectives are solved"));
+
+	OnExitIsReady();
 }
+
+void ALabyrinthGameMode::OnExitIsReady_Implementation()
+{
+	UE_LOG(BeastGame, Log, TEXT("OnExitIsReady"));
+}
+
+void ALabyrinthGameMode::OnGameEnded_Implementation(const bool bIsWon)
+{
+	UE_LOG(BeastGame, Log, TEXT("Game has ended! Is won: %d"), bIsWon);
+}
+
+

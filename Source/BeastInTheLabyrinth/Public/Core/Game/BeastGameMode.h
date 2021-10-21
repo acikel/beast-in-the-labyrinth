@@ -23,7 +23,10 @@ class BEASTINTHELABYRINTH_API ABeastGameMode : public AGameModeBase
 
 	UFUNCTION(BlueprintCallable)
 	void StartGame(const FString& Url);
-	
+
+	UFUNCTION(BlueprintCallable)
+	void ServerTravel(const FString& LevelName, const FString& GameMode);
+
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintAssignable)
 	FOnPlayerJoined OnPlayerJoined;

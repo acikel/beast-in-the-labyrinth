@@ -25,6 +25,13 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	UFUNCTION(BlueprintCallable)
+	void PlayersReadyToExit();
+	
+	UFUNCTION(BlueprintNativeEvent)
+	void OnExitIsReady();
+	void OnExitIsReady_Implementation();
+	
 	UFUNCTION(BlueprintNativeEvent)
 	void OnGameEnded(const bool bIsWon);
 	void OnGameEnded_Implementation(const bool bIsWon);
