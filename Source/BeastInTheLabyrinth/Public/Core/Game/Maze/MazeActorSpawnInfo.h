@@ -13,11 +13,12 @@ enum EActorDistributionType
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnMazeActorSpawned, AActor*, Actor);
 
-USTRUCT(BlueprintType)
-struct FMazeActorSpawnInfo
+UCLASS(BlueprintType)
+class BEASTINTHELABYRINTH_API UMazeActorSpawnInfo : public UDataAsset
 {
 	GENERATED_BODY()
 
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float DistributionValue = 1;
 

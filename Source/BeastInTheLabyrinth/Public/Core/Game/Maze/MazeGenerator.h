@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Maze.h"
 
-#include "MazeActorSpawnInfo.h"
 #include "Core/Game/Maze/Isle.h"
 #include "Core/Game/MazeActor/TileActor.h"
 #include "MazeGenerator.generated.h"
@@ -37,7 +36,7 @@ public:
 	TArray<TSubclassOf<ATileActor>> TileActors;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FMazeActorSpawnInfo> Actors;
+	TArray<class UMazeActorSpawnInfo*> Actors;
 
 	UPROPERTY(ReplicatedUsing=OnRep_Seed, EditAnywhere, BlueprintReadWrite)
 	int32 Seed;
@@ -49,7 +48,7 @@ public:
 	int32 GenerateRandomSeed();
 
 	UFUNCTION(BlueprintCallable)
-	void AddActorToSpawn(FMazeActorSpawnInfo ActorSpawnInfo);
+	void AddActorToSpawn(UMazeActorSpawnInfo* ActorSpawnInfo);
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
@@ -82,11 +81,11 @@ private:
 
 	TArray<int32> GetTileIndexesToSpawnOn(int32 NumberOfActors, bool RequiresWall);
 
-	void PlaceActorAbsolute(FMazeActorSpawnInfo ActorSpawnInfo);
-	void PlaceActorFixedAmount(FMazeActorSpawnInfo ActorSpawnInfo);
-	void PlaceActorDensity(FMazeActorSpawnInfo ActorSpawnInfo);
+	void PlaceActorAbsolute(UMazeActorSpawnInfo* ActorSpawnInfo);
+	void PlaceActorFixedAmount(UMazeActorSpawnInfo* ActorSpawnInfo);
+	void PlaceActorDensity(UMazeActorSpawnInfo* ActorSpawnInfo);
 
-	void PlaceActorOnTile(FMazeActorSpawnInfo ActorSpawnInfo, int32 TileIndex);
+	void PlaceActorOnTile(UMazeActorSpawnInfo* ActorSpawnInfo, int32 TileIndex);
 
 	class UTile* GetTileAtIndex(int32 Index);
 	FVector GetTileLocation(const class UTile* Tile);

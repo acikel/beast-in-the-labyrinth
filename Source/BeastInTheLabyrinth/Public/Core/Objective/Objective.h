@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include <Core/Game/Maze/MazeActorSpawnInfo.h>
-
 #include "CoreMinimal.h"
 #include "ObjectiveInterface.h"
 #include "UObject/NoExportTypes.h"
@@ -41,7 +39,7 @@ public:
 	FText DisplayedDescription;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Objectives", meta = (MustImplement = "ObjectiveInterface"))
-	TArray<FMazeActorSpawnInfo> RequiredActors;
+	TArray<class UMazeActorSpawnInfo*> RequiredActors;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Objectives")
 	TArray<TSubclassOf<AIsleActor>> RequiredIsle;

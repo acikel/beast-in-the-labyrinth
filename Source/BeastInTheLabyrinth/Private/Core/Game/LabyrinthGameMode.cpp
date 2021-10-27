@@ -6,6 +6,7 @@
 #include "EngineUtils.h"
 #include "BeastInTheLabyrinth/BeastInTheLabyrinth.h"
 #include "Core/Game/Maze/MazeGenerator.h"
+#include "Core/Game/Maze/MazeActorSpawnInfo.h"
 
 struct FMazeActorSpawnInfo;
 
@@ -67,11 +68,11 @@ void ALabyrinthGameMode::GenerateObjectives()
 		NewObjective->OnCompleted.AddDynamic(this, &ALabyrinthGameMode::OnObjectiveCompleted);
 		NewObjective->OnPostGeneration();
 
-		for (const FMazeActorSpawnInfo &SpawnInfo : NewObjective->RequiredActors)
+		for (UMazeActorSpawnInfo* SpawnInfo : NewObjective->RequiredActors)
 		{
-			if(SpawnInfo.ActorClass)
+			if(SpawnInfo->ActorClass)
 			{
-				UE_LOG(BeastGame, Log, TEXT("Instantiate actor of class: '%s'"), *SpawnInfo.ActorClass->GetName());
+				UE_LOG(BeastGame, Log, TEXT("Instantiate actor of class: '%s'"), *SpawnInfo->ActorClass->GetName());
 				MazeGenerator->AddActorToSpawn(SpawnInfo);
 			}
 			else

@@ -2,6 +2,7 @@
 
 
 #include "Core/Game/Maze/MazeGenerator.h"
+#include "Core/Game/Maze/MazeActorSpawnInfo.h"
 
 #include "Core/Game/Maze/Maze.h"
 #include "Core/Game/Maze/Tile.h"
@@ -40,7 +41,7 @@ int32 AMazeGenerator::GenerateRandomSeed()
 	return Seed;
 }
 
-void AMazeGenerator::AddActorToSpawn(FMazeActorSpawnInfo ActorSpawnInfo)
+void AMazeGenerator::AddActorToSpawn(UMazeActorSpawnInfo* ActorSpawnInfo)
 {
 	Actors.Add(ActorSpawnInfo);
 }
@@ -140,7 +141,7 @@ void AMazeGenerator::SpawnActors()
 
 		for (auto ActorSpawnInfo : Actors)
 		{
-			switch (ActorSpawnInfo.DistributionType)
+			switch (ActorSpawnInfo->DistributionType)
 			{
 				case EActorDistributionType::DENSITY:
 					PlaceActorDensity(ActorSpawnInfo);
@@ -282,19 +283,19 @@ TArray<int32> AMazeGenerator::GetTileIndexesToSpawnOn(int32 NumberOfActors, bool
 	return tileIndexes;
 }
 
-void AMazeGenerator::PlaceActorAbsolute(FMazeActorSpawnInfo ActorSpawnInfo)
+void AMazeGenerator::PlaceActorAbsolute(UMazeActorSpawnInfo* ActorSpawnInfo)
 {
-	AActor* Actor = GetWorld()->SpawnActor<AActor>(ActorSpawnInfo.ActorClass, ActorSpawnInfo.AbsoluteTransform);
-	ActorSpawnInfo.OnMazeActorSpawned.ExecuteIfBound(Actor);
+	AActor* Actor = GetWorld()->SpawnActor<AActor>(ActorSpawnInfo->ActorClass, ActorSpawnInfo->AbsoluteTransform);
+	ActorSpawnInfo->OnMazeActorSpawned.ExecuteIfBound(Actor);
 }
 
-void AMazeGenerator::PlaceActorFixedAmount(FMazeActorSpawnInfo ActorSpawnInfo)
+void AMazeGenerator::PlaceActorFixedAmount(UMazeActorSpawnInfo* ActorSpawnInfo)
 {
-	TArray<int32> tileIndexes = GetTileIndexesToSpawnOn(static_cast<int32>(ActorSpawnInfo.DistributionValue), ActorSpawnInfo.PlaceWithinDistanceToWall);
+	TArray<int32> tileIndexes = GetTileIndexesToSpawnOn(static_cast<int32>(ActorSpawnInfo->DistributionValue), ActorSpawnInfo->PlaceWithinDistanceToWall);
 	
 	for (const int32 tileIndex : tileIndexes)
 	{
-		const int32 numActors = Random.RandRange(ActorSpawnInfo.SpawnAmountOnTile.GetLowerBound().GetValue(), ActorSpawnInfo.SpawnAmountOnTile.GetUpperBound().GetValue());
+		const int32 numActors = Random.RandRange(ActorSpawnInfo->SpawnAmountOnTile.GetLowerBound().GetValue(), ActorSpawnInfo->SpawnAmountOnTile.GetUpperBound().GetValue());
 		for (int32 i = 0; i < numActors; ++i)
 		{
 			PlaceActorOnTile(ActorSpawnInfo, tileIndex);
@@ -302,14 +303,14 @@ void AMazeGenerator::PlaceActorFixedAmount(FMazeActorSpawnInfo ActorSpawnInfo)
 	}
 }
 
-void AMazeGenerator::PlaceActorDensity(FMazeActorSpawnInfo ActorSpawnInfo)
+void AMazeGenerator::PlaceActorDensity(UMazeActorSpawnInfo* ActorSpawnInfo)
 {
-	const int32 tileAmount = FMath::Clamp(ActorSpawnInfo.DistributionValue, 0.0f, 1.0f) * (MazeSize.X * MazeSize.Y);
-	TArray<int32> tileIndexes = GetTileIndexesToSpawnOn(tileAmount, ActorSpawnInfo.PlaceWithinDistanceToWall);
+	const int32 tileAmount = FMath::Clamp(ActorSpawnInfo->DistributionValue, 0.0f, 1.0f) * (MazeSize.X * MazeSize.Y);
+	TArray<int32> tileIndexes = GetTileIndexesToSpawnOn(tileAmount, ActorSpawnInfo->PlaceWithinDistanceToWall);
 	
 	for (const int32 tileIndex : tileIndexes)
 	{
-		const int32 numActors = Random.RandRange(ActorSpawnInfo.SpawnAmountOnTile.GetLowerBound().GetValue(), ActorSpawnInfo.SpawnAmountOnTile.GetUpperBound().GetValue());
+		const int32 numActors = Random.RandRange(ActorSpawnInfo->SpawnAmountOnTile.GetLowerBound().GetValue(), ActorSpawnInfo->SpawnAmountOnTile.GetUpperBound().GetValue());
 		for (int32 i = 0; i < numActors; ++i)
 		{
 			PlaceActorOnTile(ActorSpawnInfo, tileIndex);
@@ -317,7 +318,7 @@ void AMazeGenerator::PlaceActorDensity(FMazeActorSpawnInfo ActorSpawnInfo)
 	}
 }
 
-void AMazeGenerator::PlaceActorOnTile(FMazeActorSpawnInfo ActorSpawnInfo, int32 TileIndex)
+void AMazeGenerator::PlaceActorOnTile(UMazeActorSpawnInfo* ActorSpawnInfo, int32 TileIndex)
 {
 	UTile* Tile = GetTileAtIndex(TileIndex);
 
@@ -332,7 +333,7 @@ void AMazeGenerator::PlaceActorOnTile(FMazeActorSpawnInfo ActorSpawnInfo, int32 
 	else
 		Location = GetTileLocation(TileIndex / MazeSize.X, TileIndex % MazeSize.X);
 	
-	if (ActorSpawnInfo.PlaceWithinDistanceToWall)
+	if (ActorSpawnInfo->PlaceWithinDistanceToWall)
 	{
 		if (!Tile)
 		{
@@ -343,7 +344,7 @@ void AMazeGenerator::PlaceActorOnTile(FMazeActorSpawnInfo ActorSpawnInfo, int32 
 		TArray<ETileWall> Walls = Tile->GetWalls();
 		ETileWall wall = Walls[Random.RandRange(0, Walls.Num() - 1)];
 		
-		float distanceToWall = Random.FRandRange(ActorSpawnInfo.DistanceToWall.GetLowerBoundValue(), ActorSpawnInfo.DistanceToWall.GetUpperBoundValue());
+		float distanceToWall = Random.FRandRange(ActorSpawnInfo->DistanceToWall.GetLowerBoundValue(), ActorSpawnInfo->DistanceToWall.GetUpperBoundValue());
 
 		switch (wall)
 		{
@@ -373,8 +374,8 @@ void AMazeGenerator::PlaceActorOnTile(FMazeActorSpawnInfo ActorSpawnInfo, int32 
 	}
 
 	const FRotator Rotation = FRotator(0, Random.FRandRange(0, 359), 0);
-	AActor* Actor = GetWorld()->SpawnActor<AActor>(ActorSpawnInfo.ActorClass, Location, Rotation);
-	ActorSpawnInfo.OnMazeActorSpawned.ExecuteIfBound(Actor);
+	AActor* Actor = GetWorld()->SpawnActor<AActor>(ActorSpawnInfo->ActorClass, Location, Rotation);
+	ActorSpawnInfo->OnMazeActorSpawned.ExecuteIfBound(Actor);
 }
 
 UTile* AMazeGenerator::GetTileAtIndex(int32 Index)
