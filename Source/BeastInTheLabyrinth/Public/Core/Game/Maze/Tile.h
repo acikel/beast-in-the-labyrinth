@@ -49,11 +49,11 @@ public:
 	void Connect(UTile* Tile);
 
 	FORCEINLINE bool HasWalls() const { return TileValue < 15; }
-	FORCEINLINE bool HasWall(ETileWall Wall) const { return TileValue & Wall; }
-	bool HasWallTop() const { return TileValue & 1; }
-	bool HasWallRight() const { return TileValue & 2; }
-	bool HasWallBottom() const { return TileValue & 4; }
-	bool HasWallLeft() const { return TileValue & 8; }
+	FORCEINLINE bool HasWall(ETileWall Wall) const { return !(TileValue & Wall); }
+	bool HasWallTop() const { return !(TileValue & 1); }
+	bool HasWallRight() const { return !(TileValue & 2); }
+	bool HasWallBottom() const { return !(TileValue & 4); }
+	bool HasWallLeft() const { return !(TileValue & 8); }
 
 	TArray<ETileWall> GetWalls()
 	{

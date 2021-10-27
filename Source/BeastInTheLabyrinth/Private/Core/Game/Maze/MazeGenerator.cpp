@@ -29,7 +29,7 @@ void AMazeGenerator::Generate()
 
 	Maze->Generate(MazeSize.X, MazeSize.Y);
 
-	DebugPrintMaze();
+	// DebugPrintMaze();
 	SpawnMaze();
 }
 
@@ -256,7 +256,9 @@ TArray<int32> AMazeGenerator::GetTileIndexesToSpawnOn(int32 NumberOfActors, bool
 					continue;
 					
 				if (tile->HasWalls())
-					tileIndexes.Add(index);				
+					tileIndexes.Add(index);
+				else
+					--count;
 			}
 			else
 			{
@@ -350,20 +352,20 @@ void AMazeGenerator::PlaceActorOnTile(UMazeActorSpawnInfo* ActorSpawnInfo, int32
 		{
 			default:
 			case Top:
-				Location.X += (TileSize * 0.4f) - distanceToWall;
-				Location.Y -= Random.FRandRange(minY, maxY);
+				Location.X += Random.FRandRange(minX, maxX);
+				Location.Y += -(TileSize * 0.4f) + distanceToWall;
 				break;
 			case Bottom:
-				Location.X += (TileSize * 0.4f) - distanceToWall;
-				Location.Y += Random.FRandRange(minY, maxY);
-				break;
-			case Right:
 				Location.X += Random.FRandRange(minX, maxX);
 				Location.Y += (TileSize * 0.4f) - distanceToWall;
 				break;
+			case Right:
+				Location.X += (TileSize * 0.4f) - distanceToWall;
+				Location.Y += Random.FRandRange(minY, maxY);
+				break;
 			case Left:
-				Location.X -= Random.FRandRange(minX, maxX);
-				Location.Y += (TileSize * 0.4f) - distanceToWall;
+				Location.X += -(TileSize * 0.4f) + distanceToWall;
+				Location.Y += Random.FRandRange(minY, maxY);
 				break;
 		}
 	}
