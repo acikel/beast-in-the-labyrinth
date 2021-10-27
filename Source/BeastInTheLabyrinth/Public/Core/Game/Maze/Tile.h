@@ -70,6 +70,23 @@ public:
 		return Walls;
 	}
 
+	static FRotator GetWallRelativeRotation(ETileWall Wall)
+	{
+		switch (Wall)
+		{
+			case Top:
+				return FRotator(0.0f, 0.0f, 0.0f);
+			case Right:
+				return FRotator(0.0f, 90.0f, 0.0f);
+			case Bottom:
+				return FRotator(0.0f, 180.0f, 0.0f);
+			case Left:
+				return FRotator(0.0f, 270.0f, 0.0f);
+			default:
+				return FRotator(0.0f, 0.0f, 0.0f);
+		}
+	};
+
 	UPROPERTY()
 	FIntPoint Position;
 

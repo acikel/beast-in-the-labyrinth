@@ -13,14 +13,14 @@ enum EActorDistributionType
 
 DECLARE_DYNAMIC_DELEGATE_OneParam(FOnMazeActorSpawned, AActor*, Actor);
 
-UCLASS(BlueprintType)
+UCLASS(Blueprintable)
 class BEASTINTHELABYRINTH_API UMazeActorSpawnInfo : public UDataAsset
 {
 	GENERATED_BODY()
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float DistributionValue = 1;
+	FFloatRange DistributionValue = FFloatRange(1.0f, 1.0f);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TEnumAsByte<EActorDistributionType> DistributionType = FIXED_AMOUNT;
@@ -33,6 +33,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(EditCondition = "PlaceWithinDistanceToWall"))
 	FFloatRange DistanceToWall = FFloatRange(50, 100);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(EditCondition = "PlaceWithinDistanceToWall"))
+	FFloatRange RelativeZRotationToWall = FFloatRange(0.0f, 359.0f);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<AActor> ActorClass;
