@@ -18,3 +18,13 @@ FString UBeastBlueprintFunctionLibrary::ToString(const ENetworkFailure::Type Fai
 {
 	return ENetworkFailure::ToString(FailureType);
 }
+
+float UBeastBlueprintFunctionLibrary::CompareRhythms(TArray<FAcousticSample> PlayerRhythm,
+	TArray<FAcousticSample> OpponentRhythm)
+{
+	PlayerRhythm.RemoveAll([](const FAcousticSample Sample){
+		return Sample.Count < 1;
+	});
+	
+	return 0.2f;
+}
