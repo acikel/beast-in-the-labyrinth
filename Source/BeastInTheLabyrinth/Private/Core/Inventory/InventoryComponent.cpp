@@ -121,16 +121,17 @@ bool UInventoryComponent::RemoveSelectedItem(bool ShouldDropItem)
 		if (InventoryItems.IsValidIndex(SelectedInventoryIndex))
 		{
 			AItem* Item = InventoryItems[SelectedInventoryIndex];
-			
-			InventoryItems[SelectedInventoryIndex] = nullptr;
-			ReplicatedItemsKey++;
-
-			if (ShouldDropItem)
-				DropItem(Item);
-			
-			OnInventoryUpdated.Broadcast();
-
-			return true;
+			if (Item) {
+				InventoryItems[SelectedInventoryIndex] = nullptr;
+				ReplicatedItemsKey++;
+	
+				if (ShouldDropItem)
+					DropItem(Item);
+				
+				OnInventoryUpdated.Broadcast();
+	
+				return true;
+			}
 		}
 	}
 
