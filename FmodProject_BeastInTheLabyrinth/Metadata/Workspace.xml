@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="Workspace" id="{541ef187-72fb-436d-afb3-082c7ce71aa6}">
+		<property name="builtBanksOutputDirectory">
+			<value>../../../../../beast-in-the-labyrinth/Content/FMOD</value>
+		</property>
+		<relationship name="masterEventFolder">
+			<destination>{c990d57a-e878-4ee6-ace1-7e4436c6a527}</destination>
+		</relationship>
+		<relationship name="masterTagFolder">
+			<destination>{95fe5d58-ef90-4e2a-9840-736de7a06cf7}</destination>
+		</relationship>
+		<relationship name="masterEffectPresetFolder">
+			<destination>{a42aa335-72e7-4c0c-95ea-6523cc2689f5}</destination>
+		</relationship>
+		<relationship name="masterParameterPresetFolder">
+			<destination>{bac9f28f-33f1-4558-b7ea-45a898c8d14c}</destination>
+		</relationship>
+		<relationship name="masterBankFolder">
+			<destination>{3436c9b8-1252-48f6-911f-1a5de7890444}</destination>
+		</relationship>
+		<relationship name="masterSandboxFolder">
+			<destination>{088d8df9-dab9-4aaa-bf7a-b0ea662a2ef7}</destination>
+		</relationship>
+		<relationship name="masterAssetFolder">
+			<destination>{b0db4ee4-ee75-48e7-9517-e103ea6fdfe3}</destination>
+		</relationship>
+		<relationship name="mixer">
+			<destination>{2b30259c-a3f7-4276-a0af-dd51541dabc5}</destination>
+		</relationship>
+		<relationship name="profilerSessionFolder">
+			<destination>{0f598584-71ac-4b4a-bb0f-3f8208264776}</destination>
+		</relationship>
+		<relationship name="platforms">
+			<destination>{6bbfa78f-b6a7-43ca-bcef-3ea5c8c69284}</destination>
+		</relationship>
+	</object>
+</objects>

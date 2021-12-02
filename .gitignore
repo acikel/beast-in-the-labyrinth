@@ -89,3 +89,10 @@ Plugins/*/Intermediate/*
 DerivedDataCache/*
 
 Plugins/Developer/RiderLink
+
+# Log-files
+fmod.log
+fmod_editor.log
+FmodProject_BeastInTheLabyrinth/.cache
+FmodProject_BeastInTheLabyrinth/.user
+FmodProject_BeastInTheLabyrinth/.unsaved
