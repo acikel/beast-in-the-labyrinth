@@ -4,6 +4,9 @@
 #include "Core/BeastBlueprintFunctionLibrary.h"
 
 #include "BeastInTheLabyrinth/BeastInTheLabyrinth.h"
+#include "Core/Game/LabyrinthGameMode.h"
+#include "GameFramework/GameMode.h"
+#include "Kismet/GameplayStatics.h"
 
 
 void UBeastBlueprintFunctionLibrary::GetSessionName(const FBlueprintSessionResult SessionResult, FString& SessionName)
@@ -17,4 +20,17 @@ void UBeastBlueprintFunctionLibrary::GetSessionName(const FBlueprintSessionResul
 FString UBeastBlueprintFunctionLibrary::ToString(const ENetworkFailure::Type FailureType)
 {
 	return ENetworkFailure::ToString(FailureType);
+}
+
+ACreatureSystem* UBeastBlueprintFunctionLibrary::GetCreatureSystem(UObject* Target)
+{
+	AGameModeBase* GameMode = UGameplayStatics::GetGameMode(Target);
+	ALabyrinthGameMode* LabyrinthGameMode = Cast<ALabyrinthGameMode>(GameMode);
+
+	if (LabyrinthGameMode)
+	{
+		return LabyrinthGameMode->GetCreatureSystem();
+	}
+	
+	return nullptr;
 }

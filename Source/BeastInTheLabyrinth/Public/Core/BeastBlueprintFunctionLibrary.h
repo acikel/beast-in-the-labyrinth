@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "FindSessionsCallbackProxy.h"
+#include "Game/CreatureSystem.h"
+#include "Runtime/CoreUObject/Public/UObject/NoExportTypes.h"
 #include "BeastBlueprintFunctionLibrary.generated.h"
+
 
 
 /**
@@ -21,4 +24,7 @@ class BEASTINTHELABYRINTH_API UBeastBlueprintFunctionLibrary : public UBlueprint
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "GameInstance")
 	static FString ToString(ENetworkFailure::Type FailureType);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Creature", meta = (WorldContext = Target))
+	static UPARAM(DisplayName="CreatureSystem") class ACreatureSystem* GetCreatureSystem(UObject* Target);
 };
