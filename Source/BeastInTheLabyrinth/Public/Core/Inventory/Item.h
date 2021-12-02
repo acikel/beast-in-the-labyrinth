@@ -18,10 +18,10 @@ UCLASS(Blueprintable)
 class BEASTINTHELABYRINTH_API AItem : public AActor
 {
 	GENERATED_BODY()
-
-	AItem();
 	
 public:
+	AItem();
+	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FText ItemName;
 
