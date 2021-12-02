@@ -24,5 +24,9 @@ class BEASTINTHELABYRINTH_API UBeastBlueprintFunctionLibrary : public UBlueprint
 	static FString ToString(ENetworkFailure::Type FailureType);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure = false, Category = "Flute")
-	static float CompareRhythms(TArray<FAcousticSample> PlayerRhythm, TArray<FAcousticSample> OpponentRhythm);
+	static bool CompareRhythms(TArray<FAcousticSample> PlayerRhythm, TArray<FAcousticSample> OpponentRhythm, float& score);
+
+private:
+	static void RemoveFirstAndLastEmpty(TArray<FAcousticSample> &PlayerRhythm);
+	static bool NormalizeRhythm(TArray<FAcousticSample> &Rhythm);
 };

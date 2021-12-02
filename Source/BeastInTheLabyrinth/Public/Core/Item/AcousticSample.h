@@ -14,6 +14,12 @@ struct FAcousticSample
 	uint8 NoteType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	uint8 Count;
+	uint8 ContinuousRepetitions;
+
+	UPROPERTY()
+	float NormalizedLength = 0;
+	
+	UPROPERTY()
+	float StartTime = 0;
 };
 
