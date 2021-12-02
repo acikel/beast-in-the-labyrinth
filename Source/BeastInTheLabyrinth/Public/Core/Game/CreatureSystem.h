@@ -19,8 +19,39 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY()
+	float AggressionLevel;
+
+	UPROPERTY()
+	FInt32Range AggressionLevelRange = FInt32Range(0, 1);
+	
+
+public:
+	UFUNCTION(BlueprintCallable)
+	float GetAggressionLevel() { return AggressionLevel; };
+
+	UFUNCTION(BlueprintCallable)
+	void IncreaseAggressionLevel(float increase)
+	{
+		ensureMsgf(increase >= 0, TEXT("The 'increase' value has to be larger than or equal 0"));
+		
+		AggressionLevel += increase;
+		if (!AggressionLevelRange.Contains(AggressionLevel))
+		{
+			AggressionLevel = AggressionLevelRange.GetUpperBoundValue();
+		}
+	};
+
+	UFUNCTION(BlueprintCallable)
+	void DecreaseAggressionLevel(float decrease)
+	{
+		ensureMsgf(decrease >= 0, TEXT("The 'decrease' value has to be larger than or equal 0"));
+
+		AggressionLevel -= decrease;
+		if (!AggressionLevelRange.Contains(AggressionLevel))
+		{
+			AggressionLevel = AggressionLevelRange.GetLowerBoundValue();
+		}
+	};
 
 };
