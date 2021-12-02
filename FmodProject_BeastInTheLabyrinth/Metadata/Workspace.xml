@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="Workspace" id="{541ef187-72fb-436d-afb3-082c7ce71aa6}">
 		<property name="builtBanksOutputDirectory">
-			<value>../../../../../beast-in-the-labyrinth/Content/FMOD</value>
+			<value>../Content/FMOD</value>
 		</property>
 		<relationship name="masterEventFolder">
 			<destination>{c990d57a-e878-4ee6-ace1-7e4436c6a527}</destination>
