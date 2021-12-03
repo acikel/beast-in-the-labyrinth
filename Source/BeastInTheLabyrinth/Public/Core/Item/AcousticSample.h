@@ -11,10 +11,10 @@ struct FAcousticSample
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	uint8 NoteType;
+	uint8 NoteType = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	uint8 ContinuousRepetitions;
+	uint8 ContinuousRepetitions = 0;
 
 	UPROPERTY()
 	float NormalizedLength = 0;

@@ -19,6 +19,7 @@ class BEASTINTHELABYRINTH_API UBeastBlueprintFunctionLibrary : public UBlueprint
 {
 	GENERATED_BODY()
 
+public:
 	UFUNCTION(BlueprintCallable, Category = "Online|Session")
 	static void GetSessionName(FBlueprintSessionResult SessionResult, FString& SessionName);
 
