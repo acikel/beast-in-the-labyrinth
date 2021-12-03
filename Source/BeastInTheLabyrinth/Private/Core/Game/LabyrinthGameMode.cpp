@@ -10,10 +10,10 @@
 
 struct FMazeActorSpawnInfo;
 
+
 void ALabyrinthGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
 	CreatureSystem = Cast<ACreatureSystem>(GetWorld()->SpawnActor(CreatureSystemClass));
 
 	FindMazeGenerator();
