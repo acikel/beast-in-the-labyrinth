@@ -2,6 +2,12 @@
 
 
 #include "Core/AI/EnemyVoice.h"
+
+#include "Core/BeastBlueprintFunctionLibrary.h"
+#include "GameFramework/GameModeBase.h"
+#include "GameFramework/GameStateBase.h"
+#include "GameFramework/PlayerState.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 UEnemyVoice::UEnemyVoice(const FObjectInitializer& ObjectInitializer)
@@ -12,32 +18,45 @@ UEnemyVoice::UEnemyVoice(const FObjectInitializer& ObjectInitializer)
 void UEnemyVoice::BeginPlay()
 {
 	Super::BeginPlay();
-	Synth = Cast<UModularSynthComponent>(GetOwner()->GetComponentByClass(UModularSynthComponent::StaticClass()));
 	
+	Synth = Cast<UModularSynthComponent>(GetOwner()->GetComponentByClass(UModularSynthComponent::StaticClass()));
 	Synth->Activate();
 	Synth->SetSynthPreset(SynthSettings);
 
-	GenerateRhythm();
-	
-	GetWorld()->GetTimerManager().SetTimer(checkHandler, this, &UEnemyVoice::Check, CheckRateInSeconds, true, 0);
+	if(GetOwner()->HasAuthority())
+	{
+		GenerateRhythm();
+		GetWorld()->GetTimerManager().SetTimer(checkHandler, this, &UEnemyVoice::Check, CheckRateInSeconds, true, 3);
+	}
 }
 
-void UEnemyVoice::EnterArea(int32 playerId)
-{
-	float currentTime = UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld());
-	proximityPlayers.FindOrAdd(playerId, currentTime);
-}
-
-void UEnemyVoice::ExitArea(int32 playerId)
-{
-	proximityPlayers.Remove(playerId);
-}
+// void UEnemyVoice::EnterArea(int32 playerId)
+// {
+// 	float currentTime = UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld());
+// 	proximityPlayers.FindOrAdd(playerId, currentTime);
+// }
+//
+// void UEnemyVoice::ExitArea(int32 playerId)
+// {
+// 	proximityPlayers.Remove(playerId);
+// }
 
 void UEnemyVoice::Check()
 {
-	for (TTuple<int, float> proximityPlayer : proximityPlayers)
+	if(CreatureSystem == nullptr)
 	{
-		if(proximityPlayer.Value > PlayerInAreaNeededToTriggerRhythm)
+		CreatureSystem = UBeastBlueprintFunctionLibrary::GetCreatureSystem(GetWorld());
+		CreatureSystem->OnCreatureAggressionLevelReached.AddDynamic(this, &UEnemyVoice::OnAggressionLevelReached);
+	}
+
+	if(CreatureSystem->IsHunting()) { return; }
+	
+	TArray<APlayerState*> players = UGameplayStatics::GetGameMode(GetWorld())->GameState->PlayerArray;
+	
+	for (APlayerState* player : players)
+	{
+		float dist = FVector::Dist(player->GetPawn()->GetActorLocation(), CreatureSystem->GetCreature()->GetActorLocation());
+		if(dist <= AreaRadius)
 		{
 			if(UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld()) < rhythmPlayedTimestamp + Cooldown)
 			{
@@ -46,6 +65,8 @@ void UEnemyVoice::Check()
 			}
 		
 			rhythmPlayedTimestamp = UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld());
+			AlreadyPlayedRepeats = 0;
+			
 			PlayRhythm();
 			return;
 		}
@@ -86,7 +107,17 @@ void UEnemyVoice::PlayNote()
 	GetWorld()->GetTimerManager().ClearTimer(noteHandler);
 	currentIndex++;
 	
-	if(currentIndex >= Rhythm.Num()) { return; }
+	if(currentIndex >= Rhythm.Num())
+	{
+		// Finished playing
+		if(AlreadyPlayedRepeats < AdditionalRepeats)
+		{
+			// Repeat rhythm
+			AlreadyPlayedRepeats++;
+			GetWorld()->GetTimerManager().SetTimer(noteHandler, this, &UEnemyVoice::PlayRhythm, SilentTimeBetweenRepeats, false);
+		}
+		return;
+	}
 	
 	float durationInSeconds = Rhythm[currentIndex].ContinuousRepetitions * SampleDurationMS * 0.001f;
 	if(Rhythm[currentIndex].NoteType > 0)
@@ -97,3 +128,8 @@ void UEnemyVoice::PlayNote()
 	GetWorld()->GetTimerManager().SetTimer(noteHandler, this, &UEnemyVoice::PlayNote, durationInSeconds + 0.1f, false);
 }
 
+void UEnemyVoice::OnAggressionLevelReached()
+{
+	GetWorld()->GetTimerManager().ClearTimer(noteHandler);
+	Synth->NoteOff(Note, true);
+}

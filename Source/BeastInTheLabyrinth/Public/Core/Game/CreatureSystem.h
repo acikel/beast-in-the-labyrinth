@@ -46,7 +46,10 @@ protected:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	float GetAggressionLevel() { return AggressionLevel; };
+	float GetAggressionLevel() { return AggressionLevel; }
+
+	UFUNCTION(BlueprintCallable)
+	bool IsHunting() const { return Hunting; }
 
 	UFUNCTION(BlueprintCallable)
 	void IncreaseAggressionLevel(float increase)

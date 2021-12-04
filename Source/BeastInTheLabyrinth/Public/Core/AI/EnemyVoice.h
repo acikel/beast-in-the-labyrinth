@@ -7,6 +7,7 @@
 #include "SynthComponents/EpicSynth1Component.h"
 #include "EnemyVoice.generated.h"
 
+class ACreatureSystem;
 USTRUCT(BlueprintType)
 struct FAcousticBeat
 {
@@ -27,12 +28,12 @@ class BEASTINTHELABYRINTH_API UEnemyVoice : public UActorComponent
 public:
 	UEnemyVoice(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-	UFUNCTION(BlueprintCallable)
-	void EnterArea(int32 playerId);
-
-	UFUNCTION(BlueprintCallable)
-	void ExitArea(int32 playerId);
-	
+	// UFUNCTION(BlueprintCallable)
+	// void EnterArea(int32 playerId);
+	//
+	// UFUNCTION(BlueprintCallable)
+	// void ExitArea(int32 playerId);
+	//
 	UPROPERTY()
 	UModularSynthComponent *Synth;
 
@@ -41,10 +42,18 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Behaviour", meta = (ClampMin = "3", ClampMax = "120", UIMin = "3", UIMax = "120"))
 	float PlayerInAreaNeededToTriggerRhythm = 6;
-
+	
+	UPROPERTY(EditAnywhere, Category = "Behaviour", meta = (ClampMin = "500", ClampMax = "2500", UIMin = "500", UIMax = "2500"))
+	float AreaRadius = 2000;
+	
 	UPROPERTY(EditAnywhere, Category = "Behaviour", meta = (ClampMin = "5", ClampMax = "240", UIMin = "5", UIMax = "240"))
 	float Cooldown = 30;
+	
+	UPROPERTY(EditAnywhere, Category = "Behaviour", meta = (ClampMin = "0", ClampMax = "3", UIMin = "0", UIMax = "3"))
+	int AdditionalRepeats = 1;
 
+	UPROPERTY(EditAnywhere, Category = "Behaviour", meta = (ClampMin = "1", ClampMax = "5", UIMin = "1", UIMax = "5"))
+	float SilentTimeBetweenRepeats = 1.5f;
 	
 	UPROPERTY(EditAnywhere, Category = "Synth Sound")
 	FModularSynthPreset SynthSettings;
@@ -65,19 +74,24 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	
 	void GenerateRhythm();
 	void PlayRhythm();
 	void PlayNote();
 	void AddBeat(int32 startIndex, int32 endIndex);
-
 	void Check();
+
+	UFUNCTION()
+	void OnAggressionLevelReached();
+
+	UPROPERTY()
+	ACreatureSystem* CreatureSystem;
 	
 	FTimerHandle checkHandler;
 	FTimerHandle noteHandler;
 	int32 currentIndex = 0;
 	TMap<int32, float> proximityPlayers;
 	float rhythmPlayedTimestamp = 0;
+	int AlreadyPlayedRepeats = 0;
 	
 	//int32 delay = 0;
 };

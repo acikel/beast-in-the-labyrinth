@@ -21,8 +21,11 @@ void AInstrument::BeginPlay()
 	
 	OnUse.AddDynamic(this, &AInstrument::UseInstrument);
 
-	FTimerHandle setupHandler;
-	GetWorld()->GetTimerManager().SetTimer(setupHandler, this, &AInstrument::Setup, 5, false);
+	if(GetLocalRole() == ROLE_Authority)
+	{
+		FTimerHandle setupHandler;
+		GetWorld()->GetTimerManager().SetTimer(setupHandler, this, &AInstrument::Setup, 5, false);
+	}
 }
 
 void AInstrument::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -204,15 +207,15 @@ bool AInstrument::CompareRhythms(TArray<FAcousticSample> PlayerRhythm,
 	if (!NormalizeRhythm(PlayerRhythm)) { return false; }
 	if (!NormalizeRhythm(OpponentRhythm)) { return false; }
 	
-	float toleranceInDuration = 0.2f;
-	float toleranceInStartTime = 0.2f;
+	float toleranceInDuration = 0.25f;
+	float toleranceInStartTime = 0.25f;
 	float shift = 0;
 	int32 notesAccepted = 0;
 	int32 startIndex = 0;
 	
 	for (FAcousticSample &opponentSample : OpponentRhythm)
 	{
-		for (int32 i = startIndex; i < PlayerRhythm.Num(); ++i)
+		for (int32 i = 0; i < PlayerRhythm.Num(); ++i)
 		{
 			FAcousticSample &playerSample = PlayerRhythm[i];
 
