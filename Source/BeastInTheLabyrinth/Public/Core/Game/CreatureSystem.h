@@ -20,17 +20,35 @@ public:
 	// Sets default values for this actor's properties
 	ACreatureSystem();
 
-	
+
+private:
+	UPROPERTY()
+	FTimerHandle DebugAggressionTimer;
+
+	void DebugSampleAggressionLevel();
+	float DecreaseEasingAlpha = 0.f;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY()
-	float AggressionLevel;
+	UPROPERTY(BlueprintReadOnly)
+	FDebugFloatHistory DebugAggressionLevel;
+
+	UPROPERTY(EditAnywhere, Category="Aggression Settings")
+	float AbsoluteAggressionLevelIncrement = 0.001f;
+
+	UPROPERTY(EditAnywhere, Category="Aggression Settings")
+	float CalmDownTime = 8.f;
+
+	UPROPERTY(BlueprintReadOnly)
+	float AggressionLevel = 0.f;
+
+	UPROPERTY(BlueprintReadOnly)
+	float AbsoluteAggressionLevel = 0.f;
 
 	UPROPERTY()
-	FInt32Range AggressionLevelRange = FInt32Range(0, 1);
+	FInt32Range AggressionLevelRange = FInt32Range(0.f, 1.f);
 
 	UPROPERTY(BlueprintReadOnly)
 	AActor* Creature;
@@ -43,6 +61,8 @@ protected:
 
 	UPROPERTY()
 	TArray<AActor*> Watchers;
+
+	virtual void Tick(float DeltaSeconds) override;
 
 public:
 	UFUNCTION(BlueprintCallable)
@@ -60,12 +80,15 @@ public:
 		if (!AggressionLevelRange.Contains(AggressionLevel))
 		{
 			AggressionLevel = AggressionLevelRange.GetUpperBoundValue();
-			if (!Hunting)
-			{
-				Hunting = true;
-				OnCreatureAggressionLevelReached.Broadcast();
-			}
 		}
+
+		if (!Hunting && AggressionLevel == AggressionLevelRange.GetUpperBoundValue())
+		{
+			Hunting = true;
+			OnCreatureAggressionLevelReached.Broadcast();
+		}
+
+		DecreaseEasingAlpha = 0;
 	};
 
 	UFUNCTION(BlueprintCallable)
@@ -77,13 +100,36 @@ public:
 		if (!AggressionLevelRange.Contains(AggressionLevel))
 		{
 			AggressionLevel = AggressionLevelRange.GetLowerBoundValue();
-			if (Hunting)
-			{
-				Hunting = false;
-				OnCreatureCalmedDown.Broadcast();
-			}
 		}
-	};
+
+		if (Hunting && AggressionLevel < AggressionLevelRange.GetUpperBoundValue())
+		{
+			Hunting = false;
+			OnCreatureCalmedDown.Broadcast();
+		}
+	}
+
+	void DecreaseAbsoluteAggressionLevel(float decrease)
+	{
+		ensureMsgf(decrease >= 0, TEXT("The 'decrease' value has to be larger than or equal 0"));
+
+		AbsoluteAggressionLevel -= decrease;
+		if (!AggressionLevelRange.Contains(AbsoluteAggressionLevel))
+		{
+			AbsoluteAggressionLevel = AggressionLevelRange.GetLowerBoundValue();
+		}
+	}
+
+	void IncreaseAbsoluteAggressionLevel(float increase)
+	{
+		ensureMsgf(increase >= 0, TEXT("The 'increase' value has to be larger than or equal 0"));
+
+		AbsoluteAggressionLevel += increase;
+		if (!AggressionLevelRange.Contains(AbsoluteAggressionLevel))
+		{
+			AbsoluteAggressionLevel = AggressionLevelRange.GetUpperBoundValue();
+		}
+	}
 
 	UFUNCTION(BlueprintCallable)
 	void WatchingCreature(AActor* Watcher)
@@ -131,5 +177,10 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnCreatureStopBeingWatched OnCreatureStopBeingWatched;
+
+
+
+	UFUNCTION(BlueprintCallable)
+	FDebugFloatHistory GetDebugAggressionLevelHistory() { return DebugAggressionLevel; }
 
 };
