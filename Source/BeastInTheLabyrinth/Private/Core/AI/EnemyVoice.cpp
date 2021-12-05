@@ -55,7 +55,14 @@ void UEnemyVoice::Check()
 	
 	for (APlayerState* player : players)
 	{
-		float dist = FVector::Dist(player->GetPawn()->GetActorLocation(), CreatureSystem->GetCreature()->GetActorLocation());
+		if(player == nullptr || player->GetPawn() == nullptr) { continue; }
+		
+		float dist = 0;
+		if(CreatureSystem != nullptr && CreatureSystem->GetCreature() != nullptr)
+		{
+			dist = FVector::Dist(player->GetPawn()->GetActorLocation(), CreatureSystem->GetCreature()->GetActorLocation());
+		}
+		
 		if(dist <= AreaRadius)
 		{
 			if(UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld()) < rhythmPlayedTimestamp + Cooldown)

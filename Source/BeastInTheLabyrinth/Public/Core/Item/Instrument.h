@@ -11,7 +11,17 @@
 #include "Core/Player/BeastPlayerController.h"
 #include "Instrument.generated.h"
 
+// namespace FMOD
+// {
+// 	namespace Studio
+// 	{
+// 		class EventInstance;
+// 	}
+// }
+//
+// class UFMODEvent;
 class ACreatureSystem;
+
 /**
  * 
  */
@@ -25,6 +35,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Destroyed() override;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
@@ -35,9 +46,26 @@ protected:
 	void OnUnequipped();
 
 	UFUNCTION(BlueprintImplementableEvent)
-	UEnemyVoice* FindEnemyVoice() const;
-	
+	void OnNewLoudNotePlayed();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnNewMutedNotePlayed();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnVolumeChanged();
+
+	//UFUNCTION(BlueprintImplementableEvent)
+	//UEnemyVoice* FindEnemyVoice() const;
+
+	// UPROPERTY(EditAnywhere, Category = "FMOD")
+	// UFMODEvent* StartPlayingInstrumentEvent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FMOD")
+	float PlayerVolumeBooster = 30.0f;
+
+	// UPROPERTY()
+	// class UFMODAudioComponent* AudioComponent;
+	
 	/** Specified in seconds */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float SamplingSize = 0.1f;
@@ -47,7 +75,7 @@ protected:
 	int MinRequiredLoudNotes = 3;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float AggressionLevelReduction = -0.3f;
+	float AggressionLevelReduction = 0.3f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float MaxDistanceForEffect = 1500;
@@ -61,12 +89,15 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool ReadyToPlay = false;
-	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	float CurrentVoiceVolume = 0;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int LastRegisteredSampleType = 0;
+		
+	UPROPERTY(ReplicatedUsing=OnRep_CurrentVoiceVolume, VisibleAnywhere, BlueprintReadOnly)
+	float CurrentVoiceVolume = 1;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UAudioCaptureComponent* AudioCapture;
 
 private:
 	UFUNCTION()
@@ -78,6 +109,9 @@ private:
 	UFUNCTION(Server, Reliable)
 	void Server_Setup();
 
+	UFUNCTION(Server, Unreliable)
+	void Server_SetVolume(const float &Volume);
+
 	void Setup() { Server_Setup(); }
 	
 	void CalculateSample(const float EnvelopeAverage);
@@ -87,13 +121,15 @@ private:
 	UFUNCTION(Server, Reliable)
 	void Server_Compare(const TArray<FAcousticSample> &PlayerSamples);
 	
+	UFUNCTION()
+	void OnRep_CurrentVoiceVolume();
+
+	
 	bool CompareRhythms(TArray<FAcousticSample> PlayerRhythm, TArray<FAcousticSample> OpponentRhythm, float& Score);
 	void RemoveFirstAndLastEmpty(TArray<FAcousticSample> &PlayerRhythm);
 	bool NormalizeRhythm(TArray<FAcousticSample> &Rhythm);
 	void PrintRhythm(const TArray<FAcousticSample> &Rhythm, float TimeToDisplay = 3);
 	
-	UPROPERTY()
-	UAudioCaptureComponent* AudioCapture;
 
 	UPROPERTY()
 	UEnemyVoice* Server_CreatureVoice;
@@ -112,6 +148,8 @@ private:
 	float NextSampleCalculation = 0;
 	int NumMutedSamples = 0;
 	int NumIndividualLoudNotes = 0;
+
+	// FMOD::Studio::EventInstance* InstrumentSound;
 
 	FTimerHandle AbortTimerHandle;
 	TArray<FAcousticSample> Local_Samples;

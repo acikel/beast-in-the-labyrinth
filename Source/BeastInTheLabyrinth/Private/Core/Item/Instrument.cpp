@@ -2,6 +2,8 @@
 
 
 #include "Core/Item/Instrument.h"
+
+// #include "FMODBlueprintStatics.h"
 #include "Kismet/GameplayStatics.h"
 #include "BeastInTheLabyrinth/BeastInTheLabyrinth.h"
 #include "Core/BeastBlueprintFunctionLibrary.h"
@@ -12,7 +14,11 @@
 AInstrument::AInstrument()
 	:AItem()
 {
-	
+	AudioCapture = CreateDefaultSubobject<UAudioCaptureComponent>("AudioCaptureComponent");
+	AudioCapture->SetupAttachment(RootComponent);
+	AudioCapture->bEnableBaseSubmix = false;
+	AudioCapture->bEnableBusSends = false;
+	AudioCapture->bEnableSubmixSends = false;
 }
 
 void AInstrument::BeginPlay()
@@ -26,6 +32,34 @@ void AInstrument::BeginPlay()
 		FTimerHandle setupHandler;
 		GetWorld()->GetTimerManager().SetTimer(setupHandler, this, &AInstrument::Setup, 5, false);
 	}
+
+	// if(StartPlayingInstrumentEvent != nullptr)
+	// {
+	// 	// AudioComponent = UFMODBlueprintStatics::PlayEventAttached(
+	// 	// 	StartPlayingInstrumentEvent, RootComponent, "FMOD_InstrumentPlayingSound",
+	// 	// 	GetActorLocation(), EAttachLocation::KeepWorldPosition, true,
+	// 	// 	false, false);
+	// 	// AudioComponent->Activate();
+	// }
+	// else
+	// {
+	// 	UE_LOG(BeastGame, Error, TEXT("InstrumentPlayingSound FMOD Event not set within instrument."));
+	// }
+	
+}
+
+void AInstrument::Destroyed()
+{
+	Super::Destroyed();
+
+	OnUse.RemoveDynamic(this, &AInstrument::UseInstrument);
+
+	// if(InstrumentSound != nullptr)
+	// {
+	// 	InstrumentSound->release();
+	//
+	// 	//AudioComponent->Release();
+	// }
 }
 
 void AInstrument::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -33,11 +67,18 @@ void AInstrument::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AInstrument, CreaturePawn);
+	//DOREPLIFETIME(AInstrument, CurrentVoiceVolume);
+	DOREPLIFETIME_CONDITION(AInstrument, CurrentVoiceVolume, COND_SkipOwner);
+}
+
+void AInstrument::OnRep_CurrentVoiceVolume()
+{
+	OnVolumeChanged();
 }
 
 void AInstrument::UseInstrument(APlayerCharacter* Character)
 {
-	AudioCapture = Cast<UAudioCaptureComponent>(Character->GetComponentByClass(UAudioCaptureComponent::StaticClass()));
+	UAudioCaptureComponent* PlayerAudioCapture = Cast<UAudioCaptureComponent>(Character->GetComponentByClass(UAudioCaptureComponent::StaticClass()));
 	PlayerController = Character->GetController<ABeastPlayerController>();
 	
 	if(AudioCapture == nullptr)
@@ -51,12 +92,18 @@ void AInstrument::UseInstrument(APlayerCharacter* Character)
 	{
 		OnEquipped();
 		PlayerController->ToggleSpeaking(false);
+		PlayerAudioCapture->SetActive(false);
+		AudioCapture->SetActive(true);
+		
 		AudioCapture->OnAudioEnvelopeValue.AddDynamic(this, &AInstrument::AcousticPlayerInput);
 	}
 	else
 	{
 		OnUnequipped();
 		PlayerController->ToggleSpeaking(true);
+		PlayerAudioCapture->SetActive(true);
+		AudioCapture->SetActive(false);
+		
 		AudioCapture->OnAudioEnvelopeValue.RemoveDynamic(this, &AInstrument::AcousticPlayerInput);
 	}
 }
@@ -65,16 +112,35 @@ void AInstrument::UseInstrument(APlayerCharacter* Character)
 void AInstrument::AcousticPlayerInput(float EnvelopeValue)
 {
 	AcousticInputCounter++;
-	CurrentVoiceVolume = EnvelopeValue;
 	EnvelopeSum += EnvelopeValue;
+	
+	CurrentVoiceVolume = FMath::Clamp(EnvelopeValue * PlayerVolumeBooster, 0.0f, 1.0f);
+	Server_SetVolume(CurrentVoiceVolume);
 
+	if(EnvelopeValue > SampleVolumeThreshold && LastRegisteredSampleType != 1)
+	{
+		OnNewLoudNotePlayed();
+	}
+	
+	if(EnvelopeValue < SampleVolumeThreshold && LastRegisteredSampleType != 0)
+	{
+		OnNewMutedNotePlayed();
+	}
+	
+	//AudioComponent->SetVolume(CurrentVoiceVolume); // A linear volume level. 0.0 = silent, 1.0 = full volume. Default = 1.0
+
+	// if(InstrumentSound != nullptr) { InstrumentSound->setVolume(CurrentVoiceVolume); }
+	
 	float currentTime = UKismetSystemLibrary::GetGameTimeInSeconds(GetWorld());
 	if(currentTime > NextSampleCalculation)
 	{
 		CalculateSample(EnvelopeSum / AcousticInputCounter);
 
-		float distanceToCreature = FVector::Dist(PlayerController->GetPawn()->GetActorLocation(), CreaturePawn->GetActorLocation());
-		//UE_LOG(BeastGame, Log, TEXT("distanceToCreature = %f"), distanceToCreature);
+		float distanceToCreature = 0;
+		if(CreaturePawn != nullptr)
+		{
+			distanceToCreature = FVector::Dist(PlayerController->GetPawn()->GetActorLocation(), CreaturePawn->GetActorLocation());
+		}
 		
 		if(NumIndividualLoudNotes >= MinRequiredLoudNotes && distanceToCreature < MaxDistanceForEffect)
 		{
@@ -89,18 +155,27 @@ void AInstrument::AcousticPlayerInput(float EnvelopeValue)
 	}
 }
 
+void AInstrument::Server_SetVolume_Implementation(const float &Volume)
+{
+	CurrentVoiceVolume = Volume;
+	OnRep_CurrentVoiceVolume();
+}
+
 void AInstrument::Server_Setup_Implementation()
 {
 	Server_CreatureSystem = UBeastBlueprintFunctionLibrary::GetCreatureSystem(GetWorld());
 	CreaturePawn = Server_CreatureSystem->GetCreature();
-	Server_CreatureVoice = Cast<UEnemyVoice>(CreaturePawn->GetComponentByClass(UEnemyVoice::StaticClass()));
 
+	if(CreaturePawn != nullptr)
+	{
+		Server_CreatureVoice = Cast<UEnemyVoice>(CreaturePawn->GetComponentByClass(UEnemyVoice::StaticClass()));
+	}
+	
 	if(Server_CreatureVoice == nullptr)
 	{
 		UE_LOG(BeastGame, Error, TEXT("Could not find a UEnemyVoice component assigned to the creature"));
-		SetActorEnableCollision(false);
-		SetActorHiddenInGame(true);
-		return;
+		//SetActorEnableCollision(false);
+		//SetActorHiddenInGame(true);
 	}
 }
 
@@ -152,6 +227,17 @@ void AInstrument::AddSample(const uint8 SampleType)
 	if(SampleType > 0)
 	{
 		NumIndividualLoudNotes++;
+		// FFMODEventInstance InstanceWrapper = UFMODBlueprintStatics::PlayEventAtLocation(
+		// 	GetWorld(), StartPlayingInstrumentEvent, FTransform(GetActorLocation()), true);
+		//InstrumentSound = InstanceWrapper.Instance;
+
+		//InstrumentSound->start();
+	}
+	else
+	{
+		//OnNewMutedNotePlayed();
+		OnNewMutedNotePlayed();
+		//InstrumentSound->stop(FMOD_STUDIO_STOP_ALLOWFADEOUT);
 	}
 }
 
@@ -164,17 +250,23 @@ void AInstrument::DiscardSamples()
 
 void AInstrument::Server_Compare_Implementation(const TArray<FAcousticSample> &PlayerSamples)
 {
+	if(Server_CreatureVoice == nullptr || Server_CreatureSystem == nullptr) { return; }
+	
 	float score = 0;
 	const bool bIsValid = CompareRhythms(PlayerSamples, Server_CreatureVoice->Rhythm, score);
 
 	if(GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Yellow,
+		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Silver,
 			FString::Printf(TEXT("Rhythm score = %f - Passed = %s"),
 				score, bIsValid ? TEXT("true") : TEXT("false")));
 
 	if(bIsValid)
 	{
-		Server_CreatureSystem->DecreaseAggressionLevel(score * AggressionLevelReduction);
+		score *= AggressionLevelReduction;
+		if (score > 0)
+		{
+			Server_CreatureSystem->DecreaseAggressionLevel(score);
+		}
 	}
 	else
 	{
@@ -187,7 +279,7 @@ bool AInstrument::CompareRhythms(TArray<FAcousticSample> PlayerRhythm,
 {
 	UE_LOG(BeastGame, Log, TEXT("CompareRhythms"));
 
-	PrintRhythm(OpponentRhythm);
+	//PrintRhythm(OpponentRhythm);
 
 	RemoveFirstAndLastEmpty(PlayerRhythm);
 	
@@ -250,7 +342,7 @@ void AInstrument::RemoveFirstAndLastEmpty(TArray<FAcousticSample> &PlayerRhythm)
 		PlayerRhythm.RemoveAt(0);
 	}
 
-	if(PlayerRhythm[PlayerRhythm.Num() - 1].NoteType == 0)
+	if(PlayerRhythm.Num() > 0 && PlayerRhythm[PlayerRhythm.Num() - 1].NoteType == 0)
 	{
 		PlayerRhythm.RemoveAt(PlayerRhythm.Num() - 1);
 	}
