@@ -3,6 +3,7 @@
 
 #include "Core/Inventory/ItemSocket.h"
 
+
 // Sets default values for this component's properties
 UItemSocket::UItemSocket()
 {
@@ -30,5 +31,31 @@ void UItemSocket::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UItemSocket::HoldItem(AItem* Item)
+{
+	FAttachmentTransformRules AttachmentTransformRules(
+			EAttachmentRule::SnapToTarget,
+			EAttachmentRule::SnapToTarget,
+			EAttachmentRule::KeepWorld,
+			false);
+
+	Item->DisableComponentsSimulatePhysics();
+	Item->AttachToComponent(this, AttachmentTransformRules);
+	Item->SetActorHiddenInGame(false);
+	HoldingItem = Item;
+}
+
+void UItemSocket::ReleaseItem(AItem* Item)
+{
+	const FDetachmentTransformRules DetachmentTransformRules(
+		EDetachmentRule::KeepWorld,true
+	);
+	
+	Item->DetachFromActor(DetachmentTransformRules);
+	Item->SetCanBePickedUp(true);
+	
+	HoldingItem = nullptr;
 }
 
