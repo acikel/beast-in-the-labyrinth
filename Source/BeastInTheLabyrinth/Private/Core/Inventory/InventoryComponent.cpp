@@ -3,6 +3,7 @@
 
 #include "Core/Inventory/InventoryComponent.h"
 
+#include "Kismet/KismetMathLibrary.h"
 #include "Core/Inventory/Item.h"
 #include "Core/Inventory/ItemSocket.h"
 #include "Core/Player/PlayerCharacter.h"
@@ -168,6 +169,7 @@ void UInventoryComponent::BeginPlay()
 	if (GetOwner())
 	{
 		ItemSocket = static_cast<UItemSocket*>(GetOwner()->GetComponentByClass(UItemSocket::StaticClass()));
+		Character = Cast<APawn>(GetOwner());
 	}
 	
 	for (int32 i = 0; i < InventorySize; ++i)
@@ -208,13 +210,35 @@ void UInventoryComponent::DropItem(AItem* Item)
 	);
 
 	FVector Forward;
+	float Pitch = 90.0f;
+	float Force;
 
+	if(Character != nullptr)
+	{
+		Pitch = UKismetMathLibrary::NormalizedDeltaRotator(FRotator(90, 0, 0), Character->GetControlRotation()).Pitch;
+	}
+
+	if(Pitch > ThrowForcePeakAtRotation)
+	{
+		Force = FMath::GetMappedRangeValueClamped(
+			FVector2D(ThrowForcePeakAtRotation, ThrowForceMinimumAtRotation),
+			FVector2D(ItemThrowForce.GetUpperBoundValue(), ItemThrowForce.GetLowerBoundValue()), Pitch);
+	}
+	else
+	{
+		const float MidForce = (ItemThrowForce.GetLowerBoundValue() + ItemThrowForce.GetUpperBoundValue()) / 2;
+		Force = FMath::GetMappedRangeValueClamped(
+			FVector2D(0, ThrowForcePeakAtRotation),
+			FVector2D(MidForce, ItemThrowForce.GetUpperBoundValue()), Pitch);
+	}
+	
 	if (ItemSocket)
 		Forward = ItemSocket->GetForwardVector();
 	else
 		Forward = GetOwner()->GetActorForwardVector();
 
-	const FVector CalculatedThrowForce = Forward * ItemThrowForce;
+	const FVector CalculatedThrowForce = Forward * Force;
+	
 
 	Item->DetachFromActor(DetachmentTransformRules);
 	Item->SetHidden(false);

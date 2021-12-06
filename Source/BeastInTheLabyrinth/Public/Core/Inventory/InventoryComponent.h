@@ -67,9 +67,16 @@ protected:
 
 	UPROPERTY(ReplicatedUsing=OnRep_SelectedInventoryIndex, BlueprintReadOnly, Category="Inventory")
 	int32 SelectedInventoryIndex;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ItemThrow")
+	FFloatRange ItemThrowForce = FFloatRange(500, 100000);
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float ItemThrowForce = 100000;
+	/** Look upwards = 0°, Look downwards = 180° */
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ItemThrow")
+	float ThrowForcePeakAtRotation = 50.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category="ItemThrow")
+	float ThrowForceMinimumAtRotation = 150.0f;
 
 	UFUNCTION(Server, Reliable)
 	void ServerNextItem();
@@ -107,5 +114,7 @@ private:
 
 	UPROPERTY()
 	int32 LastSelectedItemIndex;
-		
+
+	UPROPERTY()
+	APawn* Character;
 };
