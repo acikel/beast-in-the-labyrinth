@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "InventoryComponent.generated.h"
 
+class APlayerCharacter;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnInventoryUpdated);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -116,5 +117,5 @@ private:
 	int32 LastSelectedItemIndex;
 
 	UPROPERTY()
-	APawn* Character;
+	APlayerCharacter* Character;
 };

@@ -169,7 +169,7 @@ void UInventoryComponent::BeginPlay()
 	if (GetOwner())
 	{
 		ItemSocket = static_cast<UItemSocket*>(GetOwner()->GetComponentByClass(UItemSocket::StaticClass()));
-		Character = Cast<APawn>(GetOwner());
+		Character = Cast<APlayerCharacter>(GetOwner());
 	}
 	
 	for (int32 i = 0; i < InventorySize; ++i)
@@ -243,6 +243,7 @@ void UInventoryComponent::DropItem(AItem* Item)
 	Item->DetachFromActor(DetachmentTransformRules);
 	Item->SetHidden(false);
 	Item->SetCanBePickedUp(true);
+	Item->OnDropItem(Character);
 
 	Item->Mesh->SetSimulatePhysics(true);
 	Item->Mesh->AddForce(CalculatedThrowForce);
