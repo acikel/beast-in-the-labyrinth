@@ -20,4 +20,7 @@ public:
 	
 	UPROPERTY(Replicated, BlueprintReadOnly, VisibleAnywhere)
 	TArray<UObjective*> ChosenObjectives;
+
+	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
+	AActor* Creature;
 };

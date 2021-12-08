@@ -9,5 +9,6 @@ void ALabyrinthGameState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION(ALabyrinthGameState, ChosenObjectives, COND_InitialOnly);
+	DOREPLIFETIME(ALabyrinthGameState, ChosenObjectives);
+	DOREPLIFETIME(ALabyrinthGameState, Creature);
 }

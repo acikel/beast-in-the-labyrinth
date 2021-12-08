@@ -74,6 +74,9 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_PlayRhythm();
+
 	void GenerateRhythm();
 	void PlayRhythm();
 	void PlayNote();

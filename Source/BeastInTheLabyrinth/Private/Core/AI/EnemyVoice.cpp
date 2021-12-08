@@ -13,6 +13,7 @@
 UEnemyVoice::UEnemyVoice(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	SetIsReplicatedByDefault(true);
 }
 
 void UEnemyVoice::BeginPlay()
@@ -29,6 +30,7 @@ void UEnemyVoice::BeginPlay()
 		GetWorld()->GetTimerManager().SetTimer(checkHandler, this, &UEnemyVoice::Check, CheckRateInSeconds, true, 3);
 	}
 }
+
 
 // void UEnemyVoice::EnterArea(int32 playerId)
 // {
@@ -105,9 +107,15 @@ void UEnemyVoice::AddBeat(int32 startIndex, int32 endIndex)
 
 void UEnemyVoice::PlayRhythm()
 {
+	Multicast_PlayRhythm();
+}
+
+void UEnemyVoice::Multicast_PlayRhythm_Implementation()
+{
 	currentIndex = 0;
 	PlayNote();
 }
+
 
 void UEnemyVoice::PlayNote()
 {
