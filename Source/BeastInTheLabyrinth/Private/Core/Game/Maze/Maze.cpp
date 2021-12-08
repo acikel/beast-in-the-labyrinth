@@ -67,8 +67,8 @@ void UMaze::PlaceIsles()
 			placementTries = 0;
 		}
 
-		int x = Random.RandRange(0, Width - nextIsle->Size.X);
-		int y = Random.RandRange(0, Height - nextIsle->Size.Y);
+		int x = Random.RandRange(1, Width - nextIsle->Size.X);
+		int y = Random.RandRange(1, Height - nextIsle->Size.Y);
 
 		if (DoesIsleFit(nextIsle, x, y))
 		{
@@ -170,20 +170,20 @@ void UMaze::ConnectIsles()
 
 bool UMaze::DoesIsleFit(UIsle* Isle, int32 x, int32 y)
 {
-	int32 xMax = x + Isle->Size.X;
-	int32 yMax = y + Isle->Size.Y;
+	int32 xMax = x + Isle->Size.X + 1;
+	int32 yMax = y + Isle->Size.Y + 1;
+	
+	// if (Isle->DoorsLeft.Num() > 0)
+	// 	x -= 1;
 
-	if (Isle->DoorsLeft.Num() > 0)
-		x -= 1;
+	// if (Isle->DoorsTop.Num() > 0)
+	// 	y -= 1;
 
-	if (Isle->DoorsTop.Num() > 0)
-		y -= 1;
+	//if (Isle->DoorsRight.Num() > 0)
+	// xMax += 1;
 
-	if (Isle->DoorsRight.Num() > 0)
-		xMax += 1;
-
-	if (Isle->DoorsBottom.Num() > 0)
-		yMax += 1;
+	//if (Isle->DoorsBottom.Num() > 0)
+	// yMax += 1;
 
 	if (x < 0 || y < 0)
 		return false;
