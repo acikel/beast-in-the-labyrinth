@@ -29,7 +29,7 @@ AItem::AItem()
 	ItemOnGroundEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>("ValuableEffect");
 	ItemOnGroundEffectComponent->SetupAttachment(RootComponent);
 	ItemOnGroundEffectComponent->SetUsingAbsoluteScale(true);
-	ItemOnGroundEffectComponent->SetRelativeLocation(FVector(0, 0, 20), false, nullptr, ETeleportType::TeleportPhysics);
+	ItemOnGroundEffectComponent->SetRelativeLocation(FVector(0, 0, 0), false, nullptr, ETeleportType::TeleportPhysics);
 	
 	bReplicates = true;
 	SetReplicatingMovement(true);
