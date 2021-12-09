@@ -36,11 +36,17 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Items")
 	void DropSelectedItem();
 
+	UFUNCTION(BlueprintCallable, Category="Items")
+	void DropAllItems();
+
 	UFUNCTION(Server, Reliable)
 	void ServerDropItem(class AItem* Item);
 
 	UFUNCTION(Server, Reliable)
 	void ServerDropSelectedItem();
+	
+	UFUNCTION(Server, Reliable)
+	void ServerDropAllItems();
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	USoundAttenuation* AttenuationSettings;

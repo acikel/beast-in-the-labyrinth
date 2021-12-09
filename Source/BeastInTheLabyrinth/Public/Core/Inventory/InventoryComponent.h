@@ -33,7 +33,7 @@ public:
 	bool AddItem(class AItem* Item);
 
 	UFUNCTION(BlueprintCallable, Category="Inventory")
-	bool RemoveItem(class AItem* Item);
+	bool RemoveItem(class AItem* Item, bool ShouldDropItem = true, bool WithForce = true);
 
 	UFUNCTION(BlueprintCallable, Category="Inventory")
 	bool RemoveSelectedItem(bool ShouldDropItem = true);
@@ -85,9 +85,9 @@ protected:
 	UFUNCTION(Server, Reliable)
 	void ServerPreviousItem();
 
-	void RemoveItemAtIndex(int32 Index, bool ShouldDropItem = true);
+	void RemoveItemAtIndex(int32 Index, bool ShouldDropItem = true, bool WithForce = true);
 
-	void DropItem(AItem* Item);
+	void DropItem(AItem* Item, bool WithForce = true);
 
 	
 	UFUNCTION()

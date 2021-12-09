@@ -37,6 +37,11 @@ float APlayerCharacter::GetRemainingInteractionTime() const
 	return GetWorldTimerManager().GetTimerRemaining(TimerHandle_Interact);
 }
 
+void APlayerCharacter::ServerDropAllItems_Implementation()
+{
+	DropAllItems();
+}
+
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
@@ -349,6 +354,31 @@ void APlayerCharacter::DropSelectedItem()
 			SpawnLocation.Z -= GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 		
 			const FTransform SpawnTransform(GetActorRotation(), SpawnLocation);
+		}
+	}
+}
+
+void APlayerCharacter::DropAllItems()
+{
+	if (PlayerInventory)
+	{
+		if (GetLocalRole() < ROLE_Authority)
+		{
+			ServerDropAllItems();
+			return;
+		}
+	}
+
+	if (HasAuthority())
+	{
+		TArray<AItem*> items = PlayerInventory->GetInventoryItems();
+		for (int32 i = items.Num() - 1; i >= 0; --i)
+		{
+			AItem* item = items[i];
+			if (item)
+			{
+				PlayerInventory->RemoveItem(item, true, false);
+			}
 		}
 	}
 }

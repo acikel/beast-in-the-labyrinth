@@ -103,13 +103,13 @@ bool UInventoryComponent::AddItem(AItem* Item)
 	return false;
 }
 
-bool UInventoryComponent::RemoveItem(AItem* Item)
+bool UInventoryComponent::RemoveItem(AItem* Item, bool ShouldDropItem, bool WithForce)
 {
 	int32 Index = -1;
 	InventoryItems.Find(Item, Index);
 	if (InventoryItems.IsValidIndex(Index))
 	{
-		RemoveItemAtIndex(Index);
+		RemoveItemAtIndex(Index, ShouldDropItem, WithForce);
 	}
 	
 	return false;
@@ -189,7 +189,7 @@ void UInventoryComponent::ServerPreviousItem_Implementation()
 	PreviousItem();
 }
 
-void UInventoryComponent::RemoveItemAtIndex(int32 Index, bool ShouldDropItem)
+void UInventoryComponent::RemoveItemAtIndex(int32 Index, bool ShouldDropItem, bool WithForce)
 {
 	AItem* Item = InventoryItems[Index];
 			
@@ -197,12 +197,12 @@ void UInventoryComponent::RemoveItemAtIndex(int32 Index, bool ShouldDropItem)
 	ReplicatedItemsKey++;
 
 	if (ShouldDropItem)
-		DropItem(Item);
+		DropItem(Item, WithForce);
 	
 	OnInventoryUpdated.Broadcast();
 }
 
-void UInventoryComponent::DropItem(AItem* Item)
+void UInventoryComponent::DropItem(AItem* Item, bool WithForce)
 {
 	FDetachmentTransformRules DetachmentTransformRules(
 	EDetachmentRule::KeepWorld,
@@ -211,25 +211,28 @@ void UInventoryComponent::DropItem(AItem* Item)
 
 	FVector Forward;
 	float Pitch = 90.0f;
-	float Force;
+	float Force = 40;
 
-	if(Character != nullptr)
+	if (WithForce)
 	{
-		Pitch = UKismetMathLibrary::NormalizedDeltaRotator(FRotator(90, 0, 0), Character->GetControlRotation()).Pitch;
-	}
+		if(Character != nullptr)
+		{
+			Pitch = UKismetMathLibrary::NormalizedDeltaRotator(FRotator(90, 0, 0), Character->GetControlRotation()).Pitch;
+		}
 
-	if(Pitch > ThrowForcePeakAtRotation)
-	{
-		Force = FMath::GetMappedRangeValueClamped(
-			FVector2D(ThrowForcePeakAtRotation, ThrowForceMinimumAtRotation),
-			FVector2D(ItemThrowForce.GetUpperBoundValue(), ItemThrowForce.GetLowerBoundValue()), Pitch);
-	}
-	else
-	{
-		const float MidForce = (ItemThrowForce.GetLowerBoundValue() + ItemThrowForce.GetUpperBoundValue()) / 2;
-		Force = FMath::GetMappedRangeValueClamped(
-			FVector2D(0, ThrowForcePeakAtRotation),
-			FVector2D(MidForce, ItemThrowForce.GetUpperBoundValue()), Pitch);
+		if(Pitch > ThrowForcePeakAtRotation)
+		{
+			Force = FMath::GetMappedRangeValueClamped(
+				FVector2D(ThrowForcePeakAtRotation, ThrowForceMinimumAtRotation),
+				FVector2D(ItemThrowForce.GetUpperBoundValue(), ItemThrowForce.GetLowerBoundValue()), Pitch);
+		}
+		else
+		{
+			const float MidForce = (ItemThrowForce.GetLowerBoundValue() + ItemThrowForce.GetUpperBoundValue()) / 2;
+			Force = FMath::GetMappedRangeValueClamped(
+				FVector2D(0, ThrowForcePeakAtRotation),
+				FVector2D(MidForce, ItemThrowForce.GetUpperBoundValue()), Pitch);
+		}
 	}
 	
 	if (ItemSocket)
