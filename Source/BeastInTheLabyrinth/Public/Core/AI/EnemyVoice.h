@@ -34,7 +34,7 @@ public:
 	// UFUNCTION(BlueprintCallable)
 	// void ExitArea(int32 playerId);
 	//
-	UPROPERTY()
+	UPROPERTY(EditDefaultsOnly)
 	UModularSynthComponent *Synth;
 
 	UPROPERTY(EditAnywhere, Category = "Behaviour", meta = (ClampMin = "0.2", ClampMax = "10", UIMin = "0.2", UIMax = "10"))

@@ -41,22 +41,22 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Aggression Settings")
 	float CalmDownTime = 8.f;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	float AggressionLevel = 0.f;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	float AbsoluteAggressionLevel = 0.f;
 
 	UPROPERTY()
 	FInt32Range AggressionLevelRange = FInt32Range(0.f, 1.f);
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(Replicated, BlueprintReadOnly)
 	AActor* Creature;
 
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	bool Hunting;
 	
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	bool CreatureBeingWatched;
 
 	UPROPERTY()
@@ -72,90 +72,20 @@ public:
 	bool IsHunting() const { return Hunting; }
 
 	UFUNCTION(BlueprintCallable)
-	void IncreaseAggressionLevel(float increase)
-	{
-		ensureMsgf(increase >= 0, TEXT("The 'increase' value has to be larger than or equal 0"));
-		
-		AggressionLevel += increase;
-		if (!AggressionLevelRange.Contains(AggressionLevel))
-		{
-			AggressionLevel = AggressionLevelRange.GetUpperBoundValue();
-		}
-
-		if (!Hunting && AggressionLevel == AggressionLevelRange.GetUpperBoundValue())
-		{
-			Hunting = true;
-			OnCreatureAggressionLevelReached.Broadcast();
-		}
-
-		DecreaseEasingAlpha = 0;
-	};
+	void IncreaseAggressionLevel(float increase);
 
 	UFUNCTION(BlueprintCallable)
-	void DecreaseAggressionLevel(float decrease)
-	{
-		ensureMsgf(decrease >= 0, TEXT("The 'decrease' value has to be larger than or equal 0"));
+	void DecreaseAggressionLevel(float decrease);
 
-		AggressionLevel -= decrease;
-		if (!AggressionLevelRange.Contains(AggressionLevel))
-		{
-			AggressionLevel = AggressionLevelRange.GetLowerBoundValue();
-		}
+	void DecreaseAbsoluteAggressionLevel(float decrease);
 
-		if (Hunting && AggressionLevel < AggressionLevelRange.GetUpperBoundValue())
-		{
-			Hunting = false;
-			OnCreatureCalmedDown.Broadcast();
-		}
-	}
-
-	void DecreaseAbsoluteAggressionLevel(float decrease)
-	{
-		ensureMsgf(decrease >= 0, TEXT("The 'decrease' value has to be larger than or equal 0"));
-
-		AbsoluteAggressionLevel -= decrease;
-		if (!AggressionLevelRange.Contains(AbsoluteAggressionLevel))
-		{
-			AbsoluteAggressionLevel = AggressionLevelRange.GetLowerBoundValue();
-		}
-	}
-
-	void IncreaseAbsoluteAggressionLevel(float increase)
-	{
-		ensureMsgf(increase >= 0, TEXT("The 'increase' value has to be larger than or equal 0"));
-
-		AbsoluteAggressionLevel += increase;
-		if (!AggressionLevelRange.Contains(AbsoluteAggressionLevel))
-		{
-			AbsoluteAggressionLevel = AggressionLevelRange.GetUpperBoundValue();
-		}
-	}
+	void IncreaseAbsoluteAggressionLevel(float increase);
 
 	UFUNCTION(BlueprintCallable)
-	void WatchingCreature(AActor* Watcher)
-	{
-		if (!Watchers.Contains(Watcher))
-			Watchers.AddUnique(Watcher);
-		
-		if (!CreatureBeingWatched)
-		{
-			CreatureBeingWatched = true;
-			OnCreatureBeingWatched.Broadcast();
-		}
-	}
+	void WatchingCreature(AActor* Watcher);
 
 	UFUNCTION(BlueprintCallable)
-	void StoppedWatchingCreature(AActor* Watcher)
-	{
-		if (Watchers.Contains(Watcher))
-			Watchers.Remove(Watcher);
-		
-		if (CreatureBeingWatched && Watchers.Num() == 0)
-		{
-			CreatureBeingWatched = false;
-			OnCreatureStopBeingWatched.Broadcast();
-		}
-	}
+	void StoppedWatchingCreature(AActor* Watcher);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<AActor*> GetWatchers() const { return Watchers; }
@@ -178,9 +108,28 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnCreatureStopBeingWatched OnCreatureStopBeingWatched;
 
-
-
 	UFUNCTION(BlueprintCallable)
 	FDebugFloatHistory GetDebugAggressionLevelHistory() { return DebugAggressionLevel; }
 
+protected:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+private:
+	UFUNCTION(Server, Reliable)
+	void ServerWatchingCreature(AActor* Watcher);
+	
+	UFUNCTION(Server, Reliable)
+	void ServerStoppedWatchingCreature(AActor* Watcher);
+
+	UFUNCTION(Server, Reliable)
+	void ServerIncreaseAbsoluteAggressionLevel(float increase);
+
+	UFUNCTION(Server, Reliable)
+	void ServerDecreaseAbsoluteAggressionLevel(float decrease);
+	
+	UFUNCTION(Server, Reliable)
+	void ServerIncreaseAggressionLevel(float increase);
+
+	UFUNCTION(Server, Reliable)
+	void ServerDecreaseAggressionLevel(float decrease);
 };

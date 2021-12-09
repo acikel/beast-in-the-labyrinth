@@ -26,7 +26,6 @@ void ABeastGameMode::ServerTravel(const FString& LevelName, const FString& GameM
 {
 	FURL Url;
 	Url.Map = TEXT("/Game/BeastInTheLabyrinth/Map/") + LevelName;
-
 	const FString GameModeArg = FString::Printf(TEXT("game=/Game/BeastInTheLabyrinth/Core/Game/%s.%s_C"), *GameMode, *GameMode);
 	Url.AddOption(*GameModeArg);
 	Url.AddOption(TEXT("listen"));
