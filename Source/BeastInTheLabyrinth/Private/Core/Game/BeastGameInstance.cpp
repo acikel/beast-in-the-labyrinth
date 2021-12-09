@@ -12,6 +12,7 @@
 void UBeastGameInstance::Init()
 {
 	Super::Init();
+	DestroySession();
 	
 	DestroySessionCompleteDelegate = FOnDestroySessionCompleteDelegate::CreateUObject(this, &UBeastGameInstance::OnDestroySessionComplete);
 	TravelLocalSessionFailureDelegateHandle = GEngine->OnTravelFailure().AddUObject(this, &UBeastGameInstance::OnTravelLocalSessionFailure);
