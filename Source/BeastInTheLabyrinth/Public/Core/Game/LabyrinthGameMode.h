@@ -21,7 +21,7 @@ class BEASTINTHELABYRINTH_API ALabyrinthGameMode : public ABeastGameMode
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, EditAnywhere)
-	TArray<TSubclassOf<UObjective>> Objectives;
+	TArray<TSubclassOf<AObjective>> Objectives;
 	
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;

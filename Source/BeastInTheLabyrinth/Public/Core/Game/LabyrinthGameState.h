@@ -6,7 +6,7 @@
 #include "GameFramework/GameStateBase.h"
 #include "LabyrinthGameState.generated.h"
 
-class UObjective;
+class AObjective;
 
 
 UCLASS()
@@ -19,7 +19,7 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const override;
 	
 	UPROPERTY(Replicated, BlueprintReadOnly, VisibleAnywhere)
-	TArray<UObjective*> ChosenObjectives;
+	TArray<AObjective*> ChosenObjectives;
 
 	UPROPERTY(Replicated, BlueprintReadWrite, VisibleAnywhere)
 	AActor* Creature;

@@ -15,11 +15,12 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCompleted);
 
 
 UCLASS(Blueprintable)
-class BEASTINTHELABYRINTH_API UObjective : public UObject
+class BEASTINTHELABYRINTH_API AObjective : public AInfo
 {
 	GENERATED_BODY()
 	
 public:
+	AObjective();
 	// Called by game-mode or maze-generator after the actors are placed
 	// void OnRequiredActorsSpawned(TArray<TScriptInterface<IObjectiveInterface>> Actors);
 
@@ -32,12 +33,14 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnPostGeneration();
 	
+	
+	
+	UPROPERTY(Replicated, BlueprintReadWrite, EditAnywhere, Category="Objectives")
+	FText DisplayedDescription;
+
 	UPROPERTY(BlueprintAssignable, Category="Objectives")
 	FOnCompleted OnCompleted;
 	
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category="Objectives")
-	FText DisplayedDescription;
-
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Objectives", meta = (MustImplement = "ObjectiveInterface"))
 	TArray<class UMazeActorSpawnInfo*> RequiredActors;
 
@@ -45,12 +48,18 @@ public:
 	TArray<TSubclassOf<AIsleActor>> RequiredIsle;
 	
 protected:
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Objectives")
 	TArray<TScriptInterface<IObjectiveInterface>> GeneratedActors;
 
 	UFUNCTION(BlueprintImplementableEvent)
 	bool OnIsCompleted() const;
 
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastCompleted();
+	
 private:
+	UPROPERTY(Replicated)
 	bool bIsCompleted = false;
 };

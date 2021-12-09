@@ -37,7 +37,7 @@ void ALabyrinthGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	Super::EndPlay(EndPlayReason);
 
 	ALabyrinthGameState* LabyrinthGameState = GetGameState<ALabyrinthGameState>();
-	for (UObjective* Objective : LabyrinthGameState->ChosenObjectives)
+	for (AObjective* Objective : LabyrinthGameState->ChosenObjectives)
 	{
 		Objective->OnCompleted.RemoveAll(this);
 	}
@@ -65,8 +65,9 @@ void ALabyrinthGameMode::GenerateObjectives()
 			break;
 		}
 		
-		UObjective* NewObjective = NewObject<UObjective>(this, AvailableObjectives[RandomIndex]);
-
+		//AObjective* NewObjective = NewObject<AObjective>(this, AvailableObjectives[RandomIndex]);
+		AObjective* NewObjective = GetWorld()->SpawnActor<AObjective>(AvailableObjectives[RandomIndex]);
+		
 		NewObjective->OnCompleted.AddDynamic(this, &ALabyrinthGameMode::OnObjectiveCompleted);
 		NewObjective->OnPostGeneration();
 
@@ -118,7 +119,7 @@ void ALabyrinthGameMode::FindMazeGenerator()
 void ALabyrinthGameMode::OnObjectiveCompleted()
 {
 	ALabyrinthGameState* LabyrinthGameState = GetGameState<ALabyrinthGameState>();
-	for (const UObjective* Objective : LabyrinthGameState->ChosenObjectives)
+	for (const AObjective* Objective : LabyrinthGameState->ChosenObjectives)
 	{
 		// If any objective isn't completed - The game goes on
 		if(!Objective->IsCompleted()) { return; }

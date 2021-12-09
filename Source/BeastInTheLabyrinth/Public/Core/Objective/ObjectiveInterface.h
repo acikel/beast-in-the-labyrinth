@@ -6,7 +6,7 @@
 #include "UObject/Interface.h"
 #include "ObjectiveInterface.generated.h"
 
-class UObjective;
+class AObjective;
 
 
 UINTERFACE(MinimalAPI)
@@ -23,5 +23,5 @@ class BEASTINTHELABYRINTH_API IObjectiveInterface
 	
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category="Objectives")
-	void OnInit(UObjective* Objective);
+	void OnInit(AObjective* Objective);
 };
