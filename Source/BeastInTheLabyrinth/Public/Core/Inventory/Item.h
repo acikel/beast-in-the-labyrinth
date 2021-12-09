@@ -24,6 +24,9 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	FText ItemName;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool bPlayEffectIfItemOnGround;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UTexture2D* ItemIcon;
@@ -58,6 +61,9 @@ protected:
 	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
 	class UInteractableComponent* InteractionComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UParticleSystemComponent* ItemOnGroundEffectComponent;
+
 	UPROPERTY(BlueprintAssignable)
 	FOnUseItem OnUse;
 
@@ -73,7 +79,16 @@ protected:
 	UFUNCTION()
 	void OnTakeItem(APlayerCharacter* Taker);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void Multicast_EnableEffect(bool bEnable);
+
+	UFUNCTION()
+	void EnableEffect();
+
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual bool IsSupportedForNetworking() const override;
+
+private:
+	FTimerHandle DeactivateEffectsHandler;
 };
 

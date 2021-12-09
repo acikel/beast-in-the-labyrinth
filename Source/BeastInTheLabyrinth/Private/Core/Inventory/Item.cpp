@@ -7,6 +7,7 @@
 #include "Core/Inventory/InventoryComponent.h"
 #include "Core/Player/PlayerCharacter.h"
 #include "Net/UnrealNetwork.h"
+#include "Particles/ParticleSystemComponent.h"
 
 AItem::AItem()
 {
@@ -16,7 +17,7 @@ AItem::AItem()
 	Mesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	SetRootComponent(Mesh);
 	
-	InteractionComponent = CreateDefaultSubobject<UInteractableComponent>("InteractionComponent");
+	InteractionComponent = CreateDefaultSubobject<UInteractableComponent>("InteractionComponent");	
 	InteractionComponent->InteractionTime = 0;
 	InteractionComponent->InteractionDistance = 250;
 	InteractionComponent->InteractableNameText = ItemName;
@@ -24,6 +25,11 @@ AItem::AItem()
 	InteractionComponent->OnInteract.AddDynamic(this, &AItem::OnTakeItem);
 	InteractionComponent->SetIsReplicated(true);
 	InteractionComponent->SetupAttachment(RootComponent);
+
+	ItemOnGroundEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>("ValuableEffect");
+	ItemOnGroundEffectComponent->SetupAttachment(RootComponent);
+	ItemOnGroundEffectComponent->SetUsingAbsoluteScale(true);
+	ItemOnGroundEffectComponent->SetRelativeLocation(FVector(0, 0, 20), false, nullptr, ETeleportType::TeleportPhysics);
 	
 	bReplicates = true;
 	SetReplicatingMovement(true);
@@ -57,11 +63,22 @@ void AItem::ServerSetCanBePickedUp_Implementation(bool CanBePickedUp)
 void AItem::OnDropItem(APlayerCharacter* Character)
 {
 	OnDrop.Broadcast(Character);
+
+	Multicast_EnableEffect(true);
 }
 
 void AItem::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if(bPlayEffectIfItemOnGround && ItemOnGroundEffectComponent != nullptr)
+	{
+		ItemOnGroundEffectComponent->Activate();
+	}
+	else
+	{
+		ItemOnGroundEffectComponent->Deactivate();
+	}
 }
 
 void AItem::Destroyed()
@@ -82,6 +99,8 @@ void AItem::OnTakeItem(APlayerCharacter* Taker)
 		return;
 	}
 	
+	Multicast_EnableEffect(false);
+	
 	if (HasAuthority() && !IsPendingKillPending())
 	{
 		if (UInventoryComponent* PlayerInventory = Taker->PlayerInventory)
@@ -96,6 +115,27 @@ void AItem::OnTakeItem(APlayerCharacter* Taker)
 			}
 		}
 	}
+}
+
+void AItem::Multicast_EnableEffect_Implementation(bool bEnable)
+{
+	if(bPlayEffectIfItemOnGround && ItemOnGroundEffectComponent != nullptr)
+	{
+		if(bEnable)
+		{
+			GetWorld()->GetTimerManager().ClearTimer(DeactivateEffectsHandler);
+			GetWorld()->GetTimerManager().SetTimer(DeactivateEffectsHandler, this, &AItem::EnableEffect, 2.0f, false);
+		}
+		else
+		{
+			ItemOnGroundEffectComponent->DeactivateImmediate();
+		}
+	}
+}
+
+void AItem::EnableEffect()
+{
+	ItemOnGroundEffectComponent->Activate();
 }
 
 void AItem::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
