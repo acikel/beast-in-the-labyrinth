@@ -128,13 +128,14 @@ void AItem::Multicast_EnableEffect_Implementation(bool bEnable)
 		}
 		else
 		{
-			ItemOnGroundEffectComponent->DeactivateImmediate();
+			ItemOnGroundEffectComponent->Deactivate();
 		}
 	}
 }
 
 void AItem::EnableEffect()
 {
+	ItemOnGroundEffectComponent->ResetParticles();
 	ItemOnGroundEffectComponent->Activate();
 }
 
