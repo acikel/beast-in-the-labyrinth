@@ -75,8 +75,19 @@ void ALabyrinthGameMode::GenerateObjectives()
 		{
 			if(SpawnInfo->ActorClass)
 			{
-				UE_LOG(BeastGame, Log, TEXT("Instantiate actor of class: '%s'"), *SpawnInfo->ActorClass->GetName());
 				MazeGenerator->AddActorToSpawn(SpawnInfo);
+			}
+			else
+			{
+				UE_LOG(BeastGame, Error, TEXT("Objective '%s' has no class set for required item"), *NewObjective->GetName());
+			}
+		}
+
+		for (TSubclassOf<UIsle> Isle : NewObjective->RequiredIsle)
+		{
+			if(Isle != nullptr)
+			{
+				MazeGenerator->RequiredIsles.Add(Isle);
 			}
 			else
 			{

@@ -8,6 +8,7 @@
 #include "Objective.generated.h"
 
 
+class UIsle;
 class AIsleActor;
 
 //DECLARE_EVENT(UObjective, FOnCompleted);
@@ -45,7 +46,7 @@ public:
 	TArray<class UMazeActorSpawnInfo*> RequiredActors;
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category="Objectives")
-	TArray<TSubclassOf<AIsleActor>> RequiredIsle;
+	TArray<TSubclassOf<UIsle>> RequiredIsle;
 	
 protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
