@@ -151,7 +151,7 @@
 	</object>
 	<object class="TransitionSourceSound" id="{a269efa6-6bdd-442a-adb2-9bdc97dc11d6}">
 		<property name="length">
-			<value>0.35714285714285715</value>
+			<value>0.044642857142857144</value>
 		</property>
 		<relationship name="fadeOutCurve">
 			<destination>{f5c1e18b-9b3d-4923-9fba-78b6c03e74c7}</destination>
@@ -211,9 +211,8 @@
 			<value>1.4285714285714286</value>
 		</property>
 		<property name="length">
-			<value>47.5</value>
+			<value>45.714285714285715</value>
 		</property>
-		<property name="name" />
 		<relationship name="timeline">
 			<destination>{b83e656c-c2d6-48d3-a68a-dc2d7e4c0cef}</destination>
 		</relationship>
@@ -226,7 +225,7 @@
 	</object>
 	<object class="NamedMarker" id="{57498105-b425-4f5d-925d-3fbb61e74a24}">
 		<property name="position">
-			<value>48.928571428571431</value>
+			<value>47.142857142857146</value>
 		</property>
 		<property name="name">
 			<value>Chase End</value>
@@ -243,10 +242,10 @@
 			<value>1.4285714285714286</value>
 		</property>
 		<property name="length">
-			<value>47.5</value>
+			<value>45.714285714285715</value>
 		</property>
 		<property name="quantizationInterval">
-			<value>6</value>
+			<value>5</value>
 		</property>
 		<relationship name="timeline">
 			<destination>{b83e656c-c2d6-48d3-a68a-dc2d7e4c0cef}</destination>
@@ -397,7 +396,7 @@
 	</object>
 	<object class="AutomationPoint" id="{651e3958-9f0d-466a-b853-085c7898ceeb}">
 		<property name="position">
-			<value>0.35714285714285715</value>
+			<value>0.044642857142857144</value>
 		</property>
 		<property name="value">
 			<value>0</value>

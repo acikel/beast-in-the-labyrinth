@@ -117,6 +117,9 @@
 		<property name="timelockedOffset">
 			<value>0.375</value>
 		</property>
+		<relationship name="modulators">
+			<destination>{7ac2b313-b336-4c3e-bfe5-fcadf93e7c22}</destination>
+		</relationship>
 		<relationship name="fadeInCurve">
 			<destination>{6c770215-39f9-4b6d-ac40-35ceb67d19cc}</destination>
 		</relationship>
@@ -158,7 +161,6 @@
 		<property name="length">
 			<value>131</value>
 		</property>
-		<property name="name" />
 		<relationship name="timeline">
 			<destination>{70c95de5-2540-4acf-8df8-a334ddb1a1a4}</destination>
 		</relationship>
@@ -176,6 +178,23 @@
 	</object>
 	<object class="MixerBusPanner" id="{fc66fb46-536b-4fef-97e6-7e8953a63367}" />
 	<object class="MixerBusFader" id="{9c05db51-57af-49ae-bc03-9a2126bdd782}" />
+	<object class="ADSRModulator" id="{7ac2b313-b336-4c3e-bfe5-fcadf93e7c22}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>volume</value>
+		</property>
+		<property name="initialValue">
+			<value>-80</value>
+		</property>
+		<property name="attackTime">
+			<value>0</value>
+		</property>
+		<property name="releaseTime">
+			<value>10000</value>
+		</property>
+		<property name="finalValue">
+			<value>-80</value>
+		</property>
+	</object>
 	<object class="FadeCurve" id="{6c770215-39f9-4b6d-ac40-35ceb67d19cc}">
 		<relationship name="startPoint">
 			<destination>{a9cd2713-6f0f-4cf6-a6c8-e58b621a3be2}</destination>

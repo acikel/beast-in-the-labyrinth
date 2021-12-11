@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
-	<object class="AudioFile" id="{e63a8fa1-ed4b-4ca2-9b4c-9c725272a739}">
+	<object class="AudioFile" id="{1b2f0fb9-e409-40fb-8f4b-faa24dbe5921}">
 		<property name="assetPath">
-			<value>BeastLab_AmbientAI_V01.wav</value>
+			<value>BeastLab_STEM_AmbientBII_StringChord01.wav</value>
 		</property>
 		<property name="isStreaming">
 			<value>true</value>
@@ -14,7 +14,7 @@
 			<value>2</value>
 		</property>
 		<property name="length">
-			<value>93.818187499999993</value>
+			<value>19.636375000000001</value>
 		</property>
 		<relationship name="masterAssetFolder">
 			<destination>{b0db4ee4-ee75-48e7-9517-e103ea6fdfe3}</destination>

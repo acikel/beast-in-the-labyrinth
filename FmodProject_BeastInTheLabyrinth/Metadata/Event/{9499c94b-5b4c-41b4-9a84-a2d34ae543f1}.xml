@@ -5,7 +5,7 @@
 			<value>AmbientMusic</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>5</value>
 		</property>
 		<relationship name="folder">
 			<destination>{6548b06b-be97-4f9e-b919-d3c1e0a3ef6b}</destination>
