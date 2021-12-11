@@ -11,6 +11,7 @@
 AMazeGenerator::AMazeGenerator()
 {
 	PrimaryActorTick.bCanEverTick = false;
+	bReplicates = true;
 	
 	Random.GenerateNewSeed();
 	Seed = Random.GetCurrentSeed();
@@ -51,6 +52,10 @@ void AMazeGenerator::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AMazeGenerator, Seed);
+	DOREPLIFETIME(AMazeGenerator, MazeSize);
+	DOREPLIFETIME(AMazeGenerator, TileSize);
+	DOREPLIFETIME(AMazeGenerator, Actors);
+	DOREPLIFETIME(AMazeGenerator, RequiredIsles);
 }
 
 void AMazeGenerator::OnRep_Seed()

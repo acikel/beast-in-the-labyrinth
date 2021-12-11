@@ -20,22 +20,22 @@ class BEASTINTHELABYRINTH_API AMazeGenerator : public AActor
 public:
 	AMazeGenerator();
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
 	FIntPoint MazeSize = FIntPoint(20, 20);
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadOnly)
 	int32 TileSize;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<TSubclassOf<UIsle>> IsleCatalogue;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite)
 	TArray<TSubclassOf<UIsle>> RequiredIsles;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<TSubclassOf<ATileActor>> TileActors;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(Replicated, EditAnywhere, BlueprintReadWrite)
 	TArray<class UMazeActorSpawnInfo*> Actors;
 
 	UPROPERTY(ReplicatedUsing=OnRep_Seed, EditAnywhere, BlueprintReadWrite)
