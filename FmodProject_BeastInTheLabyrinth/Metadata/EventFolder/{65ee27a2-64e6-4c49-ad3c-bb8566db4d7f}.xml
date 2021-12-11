@@ -5,7 +5,7 @@
 			<value>Lobby</value>
 		</property>
 		<relationship name="folder">
-			<destination>{bdc1987f-d233-469d-a489-010fa2596995}</destination>
+			<destination>{c990d57a-e878-4ee6-ace1-7e4436c6a527}</destination>
 		</relationship>
 	</object>
 </objects>
