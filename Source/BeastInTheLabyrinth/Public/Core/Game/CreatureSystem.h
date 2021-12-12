@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "CreatureSystem.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCreatureAggressionLevelReached);
@@ -67,6 +68,12 @@ protected:
 public:
 	UFUNCTION(BlueprintCallable)
 	float GetAggressionLevel() { return AggressionLevel; }
+	
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	float GetAbsoluteNormalizedAggressionLevel() const
+	{
+		return UKismetMathLibrary::MapRangeClamped(AbsoluteAggressionLevel, AggressionLevelRange.GetLowerBoundValue(), AggressionLevelRange.GetUpperBoundValue(), 0.0f, 1.0f);
+	}
 
 	UFUNCTION(BlueprintCallable)
 	bool IsHunting() const { return Hunting; }
