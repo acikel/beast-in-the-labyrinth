@@ -62,7 +62,7 @@
 			<destination>{003fffdf-31fe-4c84-a3de-162181d75823}</destination>
 		</relationship>
 		<relationship name="output">
-			<destination>{954eb9ee-b3f4-4420-a8ba-e5acded62100}</destination>
+			<destination>{959bd0bd-1fef-4551-a36c-b732c4c260aa}</destination>
 		</relationship>
 	</object>
 	<object class="EventAutomatableProperties" id="{dcbac761-4c76-4def-969e-04e304b141bf}" />
@@ -139,6 +139,9 @@
 		<relationship name="automators">
 			<destination>{e847ac2b-5fe3-42fa-8c49-a1fbb31393aa}</destination>
 		</relationship>
+		<relationship name="modulators">
+			<destination>{3c78a9da-7b50-4852-a837-b64bccd901fe}</destination>
+		</relationship>
 		<relationship name="sounds">
 			<destination>{8a1a7067-a70a-4409-b12e-f06bb12cb325}</destination>
 			<destination>{bfbd1a2b-0f8a-4191-b3e3-edc1336a66d4}</destination>
@@ -160,6 +163,20 @@
 		<relationship name="automationCurves">
 			<destination>{52c14af0-5272-408e-a060-d6b400fcec44}</destination>
 		</relationship>
+	</object>
+	<object class="ADSRModulator" id="{3c78a9da-7b50-4852-a837-b64bccd901fe}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>volume</value>
+		</property>
+		<property name="initialValue">
+			<value>-80</value>
+		</property>
+		<property name="attackTime">
+			<value>0</value>
+		</property>
+		<property name="finalValue">
+			<value>-80</value>
+		</property>
 	</object>
 	<object class="EventSound" id="{8a1a7067-a70a-4409-b12e-f06bb12cb325}">
 		<relationship name="event">

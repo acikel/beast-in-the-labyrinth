@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="MixerGroup" id="{959bd0bd-1fef-4551-a36c-b732c4c260aa}">
+		<property name="name">
+			<value>wLowpass</value>
+		</property>
+		<relationship name="effectChain">
+			<destination>{b568de3e-a77d-41e0-aaca-e500b9f6869e}</destination>
+		</relationship>
+		<relationship name="panner">
+			<destination>{f395f3d0-35f3-4d0a-9c3e-fc4da364d1d2}</destination>
+		</relationship>
+		<relationship name="output">
+			<destination>{13225dbf-bf55-4377-8518-558df40fe2c1}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusEffectChain" id="{b568de3e-a77d-41e0-aaca-e500b9f6869e}">
+		<relationship name="effects">
+			<destination>{62e88a3c-a804-4fb7-9702-621d6436d462}</destination>
+			<destination>{49f8a8cd-2262-41c9-8995-32eacda1e387}</destination>
+		</relationship>
+	</object>
+	<object class="MixerBusPanner" id="{f395f3d0-35f3-4d0a-9c3e-fc4da364d1d2}" />
+	<object class="MultibandEqEffect" id="{62e88a3c-a804-4fb7-9702-621d6436d462}" />
+	<object class="MixerBusFader" id="{49f8a8cd-2262-41c9-8995-32eacda1e387}" />
+</objects>

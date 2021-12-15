@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="SandboxScene" id="{53a36a2d-2c1f-4344-a20d-b9ae37dbe0b8}">
+		<property name="name">
+			<value>Test</value>
+		</property>
+		<relationship name="folder">
+			<destination>{088d8df9-dab9-4aaa-bf7a-b0ea662a2ef7}</destination>
+		</relationship>
+		<relationship name="markerTracks">
+			<destination>{4c0d629c-2dd8-4a40-a191-4bbec27182e5}</destination>
+		</relationship>
+		<relationship name="timeline">
+			<destination>{13147042-acd1-4b95-bf59-0ae85e7bcfca}</destination>
+		</relationship>
+		<relationship name="emitters">
+			<destination>{999fe90f-1305-411c-9b8c-1326b42f9d3a}</destination>
+			<destination>{15acce9a-5b7d-4509-918f-766fc098cc5a}</destination>
+			<destination>{666216b1-1caf-42f0-9d4b-519ed283360e}</destination>
+		</relationship>
+	</object>
+	<object class="MarkerTrack" id="{4c0d629c-2dd8-4a40-a191-4bbec27182e5}" />
+	<object class="Timeline" id="{13147042-acd1-4b95-bf59-0ae85e7bcfca}" />
+	<object class="SandboxEmitter" id="{999fe90f-1305-411c-9b8c-1326b42f9d3a}">
+		<property name="positionX">
+			<value>0.0499995835</value>
+		</property>
+		<property name="positionZ">
+			<value>-0.0249997359</value>
+		</property>
+		<property name="rotationY">
+			<value>-136.574707</value>
+		</property>
+		<relationship name="event">
+			<destination>{9499c94b-5b4c-41b4-9a84-a2d34ae543f1}</destination>
+		</relationship>
+	</object>
+	<object class="SandboxEmitter" id="{15acce9a-5b7d-4509-918f-766fc098cc5a}">
+		<property name="positionX">
+			<value>-1.52499986</value>
+		</property>
+		<property name="positionZ">
+			<value>1.20000017</value>
+		</property>
+		<property name="rotationY">
+			<value>74.2477875</value>
+		</property>
+		<relationship name="event">
+			<destination>{7145cbce-5700-4067-b46b-a2c9ee69051f}</destination>
+		</relationship>
+	</object>
+	<object class="SandboxEmitter" id="{666216b1-1caf-42f0-9d4b-519ed283360e}">
+		<property name="positionX">
+			<value>3.47500014</value>
+		</property>
+		<property name="positionZ">
+			<value>0.175000027</value>
+		</property>
+		<property name="rotationY">
+			<value>-125.851723</value>
+		</property>
+		<relationship name="event">
+			<destination>{9e34f75b-d96a-4bec-aed8-88860158486b}</destination>
+		</relationship>
+	</object>
+</objects>
