@@ -1,14 +1,22 @@
 ﻿#pragma once
+#include "TileActorSpawnInfo.generated.h"
 
-struct TileActorSpawnInfo
+USTRUCT(BlueprintType)
+struct FTileActorSpawnInfo
 {
-	bool WallTop = true;
-	bool WallBottom = true;
-	bool WallLeft = true;
-	bool WallRight = true;
+	GENERATED_BODY()
 	
-	bool PillarNorthWest = true;
-	bool PillarNorthEast = true;
-	bool PillarSouthWest = true;
-	bool PillarSouthEast = true;
+	UPROPERTY(EditAnywhere)	bool Generated = false;
+
+	UPROPERTY(EditAnywhere)	bool WallTop = true;
+	UPROPERTY(EditAnywhere)	bool WallBottom = true;
+	UPROPERTY(EditAnywhere)	bool WallLeft = true;
+	UPROPERTY(EditAnywhere)	bool WallRight = true;
+	
+	UPROPERTY(EditAnywhere) bool PillarNorthWest = true;
+	UPROPERTY(EditAnywhere) bool PillarNorthEast = true;
+	UPROPERTY(EditAnywhere) bool PillarSouthWest = true;
+	UPROPERTY(EditAnywhere) bool PillarSouthEast = true;
+
+	bool IsValid() { return Generated; }
 };
