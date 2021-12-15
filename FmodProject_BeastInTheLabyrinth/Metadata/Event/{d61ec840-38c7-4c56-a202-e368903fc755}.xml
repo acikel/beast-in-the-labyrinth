@@ -64,7 +64,7 @@
 	</object>
 	<object class="EventAutomatableProperties" id="{b1126315-043d-4538-a64b-49e705c7af3c}">
 		<property name="minimumDistance">
-			<value>1.80000007</value>
+			<value>4.5999999</value>
 		</property>
 		<property name="maximumDistance">
 			<value>35</value>
@@ -130,7 +130,7 @@
 	</object>
 	<object class="MixerBusPanner" id="{9e1217b0-498c-478f-b3bc-7c904ff4f801}">
 		<property name="surroundPanExtent">
-			<value>90</value>
+			<value>70</value>
 		</property>
 	</object>
 	<object class="SingleSound" id="{94569566-6340-4d60-a170-26c922c50d75}">
@@ -151,7 +151,7 @@
 	<object class="MixerBusFader" id="{99dde6c9-ee55-47e8-94fb-8cbfeff5d48c}" />
 	<object class="SpatialiserEffect" id="{5622220d-8fe1-49e6-aeb8-2c41533d1a3e}">
 		<property name="minimumDistance">
-			<value>1.80000007</value>
+			<value>4.5999999</value>
 		</property>
 		<property name="maximumDistance">
 			<value>35</value>
