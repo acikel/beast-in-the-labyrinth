@@ -4,6 +4,7 @@
 #include "Core/Game/MazeActor/TileActor.h"
 
 #include "Core/Game/Maze/Tile.h"
+#include "Core/Game/MazeActor/TileActorSpawnInfo.h"
 
 
 // Sets default values
@@ -45,42 +46,27 @@ ATileActor::ATileActor()
 	PillarSouthEast->SetupAttachment(Root);
 }
 
-void ATileActor::Init(const UTile* Tile, const TileActorSpawnInfo SpawnInfo)
+void ATileActor::Init(const UTile* Tile, const FTileActorSpawnInfo NewSpawnInfo)
 {
 	TileValue = Tile->TileValue;
-
-	
-
-	if (!SpawnInfo.WallTop)
-		DisableMeshComponent(WallNorth);
-	
-	if (!SpawnInfo.WallRight)
-		DisableMeshComponent(WallWest);
-
-	if (!SpawnInfo.WallBottom)
-		DisableMeshComponent(WallSouth);
-
-	if (!SpawnInfo.WallLeft)
-		DisableMeshComponent(WallEast);
-
-	if (!SpawnInfo.PillarNorthWest)
-		DisableMeshComponent(PillarNorthWest);
-
-	if (!SpawnInfo.PillarNorthEast)
-		DisableMeshComponent(PillarNorthEast);
-
-	if (!SpawnInfo.PillarSouthWest)
-		DisableMeshComponent(PillarSouthWest);
-
-	if (!SpawnInfo.PillarSouthEast)
-		DisableMeshComponent(PillarSouthEast);
+	SpawnInfo = NewSpawnInfo;
+	Init();
 }
 
 // Called when the game starts or when spawned
 void ATileActor::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void ATileActor::PostLoad()
+{
+	Super::PostLoad();
 	
+	if (SpawnInfo.IsValid())
+	{
+		Init();
+	}
 }
 
 // Called every frame
@@ -92,5 +78,32 @@ void ATileActor::Tick(float DeltaTime)
 void ATileActor::DisableMeshComponent(UStaticMeshComponent* MeshComponent)
 {
 	MeshComponent->DestroyComponent();
+}
+
+void ATileActor::Init()
+{
+	if (!SpawnInfo.WallTop && WallNorth)
+		DisableMeshComponent(WallNorth);
+	
+	if (!SpawnInfo.WallRight && WallWest)
+		DisableMeshComponent(WallWest);
+
+	if (!SpawnInfo.WallBottom && WallSouth)
+		DisableMeshComponent(WallSouth);
+
+	if (!SpawnInfo.WallLeft && WallEast)
+		DisableMeshComponent(WallEast);
+
+	if (!SpawnInfo.PillarNorthWest && PillarNorthWest)
+		DisableMeshComponent(PillarNorthWest);
+
+	if (!SpawnInfo.PillarNorthEast && PillarNorthEast)
+		DisableMeshComponent(PillarNorthEast);
+
+	if (!SpawnInfo.PillarSouthWest && PillarSouthWest)
+		DisableMeshComponent(PillarSouthWest);
+
+	if (!SpawnInfo.PillarSouthEast && PillarSouthEast)
+		DisableMeshComponent(PillarSouthEast);
 }
 

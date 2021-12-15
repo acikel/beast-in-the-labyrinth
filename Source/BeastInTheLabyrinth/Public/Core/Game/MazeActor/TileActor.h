@@ -43,14 +43,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* PillarSouthEast;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FTileActorSpawnInfo SpawnInfo;
+	
 	UPROPERTY(VisibleAnywhere)
 	int32 TileValue;
 	
-	void Init(const class UTile* Tile, const TileActorSpawnInfo SpawnInfo);
+	void Init(const class UTile* Tile, const FTileActorSpawnInfo NewSpawnInfo);
+
+	
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void PostLoad() override;
 
 public:
 	// Called every frame
@@ -58,5 +65,6 @@ public:
 
 private:
 	void DisableMeshComponent(UStaticMeshComponent* Wall);
+	void Init();
 	
 };

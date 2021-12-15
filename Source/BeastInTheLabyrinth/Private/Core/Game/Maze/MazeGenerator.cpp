@@ -111,7 +111,8 @@ void AMazeGenerator::SpawnTiles()
 				if (x - 1 >= 0)
 					TileLeft = Maze->Tiles[y][x - 1];
 
-				TileActorSpawnInfo SpawnInfo;
+				FTileActorSpawnInfo SpawnInfo;
+				SpawnInfo.Generated = true;
 				uint8 tileValue = Tile->TileValue;
 				SpawnInfo.WallTop = !(tileValue & 1);
 				SpawnInfo.WallRight = !(tileValue & 2);
