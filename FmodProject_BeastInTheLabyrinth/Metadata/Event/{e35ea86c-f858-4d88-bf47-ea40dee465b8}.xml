@@ -5,7 +5,7 @@
 			<value>TakeCanisterFromStatue</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{d2113f33-a2f6-4117-ad18-86843acdcd04}</destination>
@@ -118,6 +118,7 @@
 	<object class="MixerBusEffectChain" id="{d491aefe-0806-4b4f-b223-8eb6afc287ba}">
 		<relationship name="effects">
 			<destination>{d085a000-b599-4cea-b9b7-d8c2580fbd33}</destination>
+			<destination>{56f94feb-f583-47bd-be2e-432e58d57a92}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{459b32a5-8b63-41ba-b7d7-c0bc1e3d03a3}" />
@@ -135,6 +136,7 @@
 	</object>
 	<object class="MixerBusPanner" id="{5c1d1e70-8bb7-4d3a-ad89-0a1a1dad92b8}" />
 	<object class="MixerBusFader" id="{d085a000-b599-4cea-b9b7-d8c2580fbd33}" />
+	<object class="SpatialiserEffect" id="{56f94feb-f583-47bd-be2e-432e58d57a92}" />
 	<object class="SingleSound" id="{ad14f02a-f18b-4a80-9c5b-74113b21e882}">
 		<relationship name="audioFile">
 			<destination>{b3597748-c04d-466f-b6e5-e5c3555e2033}</destination>

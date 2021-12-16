@@ -5,7 +5,7 @@
 			<value>PutCanisterIntoSoulStationAndCharge</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{6521991c-9c74-45da-9841-64fe69ec2cb4}</destination>
@@ -118,6 +118,7 @@
 	<object class="MixerBusEffectChain" id="{830e285f-e079-464d-b4bb-12f4f56c4c82}">
 		<relationship name="effects">
 			<destination>{7f8ef2f5-9c20-4cf3-b544-790ca0c72115}</destination>
+			<destination>{af30d81d-fb39-4d3f-8751-4068c03f52de}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{b389dd0b-bb6d-4475-95ef-088ecce4e5c8}" />
@@ -134,5 +135,6 @@
 	</object>
 	<object class="MixerBusPanner" id="{ad83c62f-9716-4088-a1ea-cffc521474d0}" />
 	<object class="MixerBusFader" id="{7f8ef2f5-9c20-4cf3-b544-790ca0c72115}" />
+	<object class="SpatialiserEffect" id="{af30d81d-fb39-4d3f-8751-4068c03f52de}" />
 	<object class="MixerBusFader" id="{1f69a520-c411-49cd-82da-60e94b6951f7}" />
 </objects>
