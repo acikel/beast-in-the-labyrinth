@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{24683645-5e5a-45ae-b7d7-41c6a770c041}">
+		<property name="assetPath">
+			<value>Machine_wheel.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>1.4166041666666667</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{b0db4ee4-ee75-48e7-9517-e103ea6fdfe3}</destination>
+		</relationship>
+	</object>
+</objects>

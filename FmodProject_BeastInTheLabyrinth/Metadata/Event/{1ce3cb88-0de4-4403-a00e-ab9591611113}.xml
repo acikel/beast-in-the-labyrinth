@@ -2,13 +2,13 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="Event" id="{1ce3cb88-0de4-4403-a00e-ab9591611113}">
 		<property name="name">
-			<value>WarningSound</value>
+			<value>Creature_WarningSound</value>
 		</property>
 		<property name="outputFormat">
 			<value>2</value>
 		</property>
 		<relationship name="folder">
-			<destination>{8ca1e6de-8af2-423a-83c5-e31f02736009}</destination>
+			<destination>{3c3f6853-cb6b-4cf9-877e-a9efee6f31e3}</destination>
 		</relationship>
 		<relationship name="mixer">
 			<destination>{539d9d95-bbd5-4972-b57a-797cc99feb3d}</destination>
@@ -36,6 +36,7 @@
 		</relationship>
 		<relationship name="banks">
 			<destination>{bf19e519-d292-44ef-9333-36736b7b5745}</destination>
+			<destination>{3bef54a1-b42c-49f1-9b6b-ca155b30fb9f}</destination>
 		</relationship>
 	</object>
 	<object class="EventMixer" id="{539d9d95-bbd5-4972-b57a-797cc99feb3d}">

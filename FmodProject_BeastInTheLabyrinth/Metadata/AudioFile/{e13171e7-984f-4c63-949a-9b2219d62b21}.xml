@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{e13171e7-984f-4c63-949a-9b2219d62b21}">
+		<property name="assetPath">
+			<value>monster_footsteps_heavy-002.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>1.8877916666666668</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{b0db4ee4-ee75-48e7-9517-e103ea6fdfe3}</destination>
+		</relationship>
+	</object>
+</objects>
