@@ -5,7 +5,7 @@
 			<value>Item_StunnerDestroy</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{756d7db0-3f15-4a32-b5c3-8fb0c45c5c69}</destination>
@@ -118,6 +118,7 @@
 	<object class="MixerBusEffectChain" id="{dbbf8d49-854a-4078-b356-6513c8d43824}">
 		<relationship name="effects">
 			<destination>{b6424af8-7af4-4b3a-94d2-711c6810514e}</destination>
+			<destination>{ed927b9a-4c53-43ab-9cac-8764a3a5c2ef}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{15d0c1d4-2e1d-45e3-b597-69334d79b973}" />
@@ -134,5 +135,6 @@
 	</object>
 	<object class="MixerBusPanner" id="{2ceef51c-06f1-4f4e-ac51-62fbe5ea5e14}" />
 	<object class="MixerBusFader" id="{b6424af8-7af4-4b3a-94d2-711c6810514e}" />
+	<object class="SpatialiserEffect" id="{ed927b9a-4c53-43ab-9cac-8764a3a5c2ef}" />
 	<object class="MixerBusFader" id="{b1c30feb-f19a-4724-8490-c0a557f91347}" />
 </objects>
