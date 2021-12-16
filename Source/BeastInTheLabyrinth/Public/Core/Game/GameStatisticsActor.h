@@ -22,6 +22,18 @@ public:
 
 	void RegisterPlayerController(APlayerController* PlayerController);
 
+	UFUNCTION(BlueprintCallable)
+	void RecordPlayerDied(APlayerController* PlayerController);
+
+	UFUNCTION(BlueprintCallable)
+	void RecordPlayerRevived(APlayerController* PlayerController);
+	
+	UFUNCTION(Server, Reliable)
+	void ServerRecordPlayerDied(APlayerController* PlayerController);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRecordPlayerRevived(APlayerController* PlayerController);
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -38,6 +50,9 @@ private:
 
 	UPROPERTY()
 	class ALabyrinthGameMode* GameMode;
+
+	UPROPERTY()
+	AActor* Creature;
 
 	UFUNCTION()
 	void Prepare();
