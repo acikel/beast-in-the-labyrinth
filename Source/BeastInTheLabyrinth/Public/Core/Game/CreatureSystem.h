@@ -26,6 +26,9 @@ private:
 	UPROPERTY()
 	FTimerHandle DebugAggressionTimer;
 
+	UPROPERTY()
+	FTimerHandle StopHuntingTimer;
+
 	void DebugSampleAggressionLevel();
 	float DecreaseEasingAlpha = 0.f;
 
@@ -33,6 +36,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void StopHunting();
+	
 	UPROPERTY(BlueprintReadOnly)
 	FDebugFloatHistory DebugAggressionLevel;
 

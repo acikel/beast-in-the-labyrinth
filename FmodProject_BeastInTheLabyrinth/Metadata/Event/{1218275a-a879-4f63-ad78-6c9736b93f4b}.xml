@@ -672,6 +672,9 @@
 		<property name="length">
 			<value>47.5</value>
 		</property>
+		<property name="triggerConditionMode">
+			<value>1</value>
+		</property>
 		<property name="quantizationInterval">
 			<value>6</value>
 		</property>
@@ -688,7 +691,7 @@
 			<destination>{57498105-b425-4f5d-925d-3fbb61e74a24}</destination>
 		</relationship>
 		<relationship name="triggerConditions">
-			<destination>{f38b6eb9-f142-43e3-9fb2-3cdf7e500377}</destination>
+			<destination>{c8b79c10-810d-4987-9f93-eb99af80b268}</destination>
 		</relationship>
 	</object>
 	<object class="NamedMarker" id="{5fca18bf-631e-47d0-b6bb-89097576ef6b}">
@@ -776,7 +779,7 @@
 			<destination>{57498105-b425-4f5d-925d-3fbb61e74a24}</destination>
 		</relationship>
 		<relationship name="triggerConditions">
-			<destination>{4bf60cf8-7670-4752-98ad-f9eaa0471b4b}</destination>
+			<destination>{4f989c2d-28a7-40e4-9246-1caec3f1dabd}</destination>
 		</relationship>
 	</object>
 	<object class="TransitionMarker" id="{b8ef2d36-f897-4a85-a5b7-d8d38714a4df}">
@@ -1107,16 +1110,10 @@
 			<destination>{b05e4025-2e7f-454b-a7cb-0c9a0cdabda1}</destination>
 		</relationship>
 	</object>
-	<object class="ParameterCondition" id="{f38b6eb9-f142-43e3-9fb2-3cdf7e500377}">
-		<property name="minimum">
+	<object class="EventCondition" id="{c8b79c10-810d-4987-9f93-eb99af80b268}">
+		<property name="eventState">
 			<value>1</value>
 		</property>
-		<property name="maximum">
-			<value>1</value>
-		</property>
-		<relationship name="parameter">
-			<destination>{19c2d204-57d4-4a4b-8af9-398c8481fc23}</destination>
-		</relationship>
 	</object>
 	<object class="TransitionTimeline" id="{3ad5fdba-a8a9-4671-bcbb-73646c573e53}">
 		<property name="length">
@@ -1163,16 +1160,10 @@
 			<destination>{78f4154f-5bba-4ae8-812e-7488f28bce0d}</destination>
 		</relationship>
 	</object>
-	<object class="ParameterCondition" id="{4bf60cf8-7670-4752-98ad-f9eaa0471b4b}">
-		<property name="minimum">
+	<object class="EventCondition" id="{4f989c2d-28a7-40e4-9246-1caec3f1dabd}">
+		<property name="eventState">
 			<value>1</value>
 		</property>
-		<property name="maximum">
-			<value>1</value>
-		</property>
-		<relationship name="parameter">
-			<destination>{19c2d204-57d4-4a4b-8af9-398c8481fc23}</destination>
-		</relationship>
 	</object>
 	<object class="TransitionTimeline" id="{a4edccb6-e7af-46f8-acb3-d7471f0f9ccd}">
 		<property name="length">

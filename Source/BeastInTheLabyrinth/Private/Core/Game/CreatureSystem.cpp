@@ -39,6 +39,12 @@ void ACreatureSystem::Tick(float DeltaSeconds)
 	{
 		AbsoluteAggressionLevel += AbsoluteAggressionLevelIncrement * DeltaSeconds;
 		AggressionLevel = FMath::InterpEaseInOut(AggressionLevel, AbsoluteAggressionLevel, DecreaseEasingAlpha, 2.f);
+
+		if (Hunting && AggressionLevel < AggressionLevelRange.GetUpperBoundValue())
+		{
+			GetWorldTimerManager().ClearTimer(StopHuntingTimer);
+			GetWorldTimerManager().SetTimer(StopHuntingTimer, this, &ACreatureSystem::StopHunting, 4, false);
+		}
 	}
 
 	if (AggressionLevel < AbsoluteAggressionLevel)
@@ -48,6 +54,12 @@ void ACreatureSystem::Tick(float DeltaSeconds)
 
 	DecreaseEasingAlpha += DeltaSeconds / (CalmDownTime * 10);
 	DecreaseEasingAlpha = FMath::Clamp(DecreaseEasingAlpha, 0.f, 1.f);
+}
+
+void ACreatureSystem::StopHunting()
+{
+	Hunting = false;
+	OnCreatureCalmedDown.Broadcast();
 }
 
 void ACreatureSystem::IncreaseAggressionLevel(float increase)
