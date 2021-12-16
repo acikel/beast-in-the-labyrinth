@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="Event" id="{6c35aeb7-17b3-43e0-8e5d-30c6e0ed817b}">
 		<property name="name">
-			<value>Wheel</value>
+			<value>MachineWheel</value>
 		</property>
 		<property name="outputFormat">
 			<value>2</value>
@@ -62,7 +62,14 @@
 			<destination>{e8816bc8-5c22-4d83-adc3-7114cd7b6715}</destination>
 		</relationship>
 	</object>
-	<object class="EventAutomatableProperties" id="{c0f3c6c6-4f36-4dc3-b160-596245dd396c}" />
+	<object class="EventAutomatableProperties" id="{c0f3c6c6-4f36-4dc3-b160-596245dd396c}">
+		<property name="minimumDistance">
+			<value>2</value>
+		</property>
+		<property name="maximumDistance">
+			<value>6</value>
+		</property>
+	</object>
 	<object class="MarkerTrack" id="{f31d99f0-80a9-4cbd-b2e0-216c116e5bca}" />
 	<object class="GroupTrack" id="{b5e08207-307d-476b-9466-19f7a76bc35b}">
 		<relationship name="mixerGroup">
@@ -80,6 +87,9 @@
 		</relationship>
 	</object>
 	<object class="EventMixerMaster" id="{301b9934-57d6-4695-8906-3e559a59c783}">
+		<property name="volume">
+			<value>2</value>
+		</property>
 		<relationship name="effectChain">
 			<destination>{b530e1ea-3a23-42d2-b2fe-6db4dc8e3ece}</destination>
 		</relationship>
@@ -135,6 +145,13 @@
 	</object>
 	<object class="MixerBusPanner" id="{52966d85-265d-47e9-837b-e0334946828b}" />
 	<object class="MixerBusFader" id="{58a4bb1d-44f5-47e7-8bc4-583f2d59da09}" />
-	<object class="SpatialiserEffect" id="{8609cee5-55e0-4898-8870-dc42566aa202}" />
+	<object class="SpatialiserEffect" id="{8609cee5-55e0-4898-8870-dc42566aa202}">
+		<property name="minimumDistance">
+			<value>2</value>
+		</property>
+		<property name="maximumDistance">
+			<value>6</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{1f51b0aa-bd65-436d-a45a-4fcffc5e5c83}" />
 </objects>
