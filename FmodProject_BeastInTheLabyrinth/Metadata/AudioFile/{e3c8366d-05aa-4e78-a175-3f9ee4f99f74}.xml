@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
-	<object class="AudioFile" id="{3abd4bcf-994d-48f2-aa3f-3137a7bf2052}">
+	<object class="AudioFile" id="{e3c8366d-05aa-4e78-a175-3f9ee4f99f74}">
 		<property name="assetPath">
-			<value>BeastLab_Chase_V07.wav</value>
-		</property>
-		<property name="isStreaming">
-			<value>true</value>
+			<value>BeastLab_Chase_TapedPianoB5_V08.wav</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>48</value>
@@ -14,7 +11,7 @@
 			<value>2</value>
 		</property>
 		<property name="length">
-			<value>72.857145833333334</value>
+			<value>4.0960000000000001</value>
 		</property>
 		<relationship name="masterAssetFolder">
 			<destination>{b0db4ee4-ee75-48e7-9517-e103ea6fdfe3}</destination>

@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="Snapshot" id="{9e34f75b-d96a-4bec-aed8-88860158486b}">
 		<property name="name">
-			<value>Lowpass</value>
+			<value>LowpassStone</value>
 		</property>
 		<relationship name="mixer">
 			<destination>{2b30259c-a3f7-4276-a0af-dd51541dabc5}</destination>
@@ -20,30 +20,30 @@
 			<destination>{d3a2573b-7b00-450c-9dea-17ffef572028}</destination>
 		</relationship>
 		<relationship name="snapshotProperties">
-			<destination>{d1ac28d8-fd41-40d7-926f-9bd0c57908ba}</destination>
+			<destination>{177f9ef3-0e2a-49c3-ad34-36c386e6c588}</destination>
 		</relationship>
 		<relationship name="snapshotTracks">
-			<destination>{69088ce6-ab20-4307-9c4d-fee26e76abef}</destination>
+			<destination>{ae5887c6-4f98-495d-a5fc-71278c2309b0}</destination>
 		</relationship>
 	</object>
 	<object class="EventAutomatableProperties" id="{11157cdd-d88e-455a-805f-fe466b72af46}" />
 	<object class="MarkerTrack" id="{e11765c0-f502-421d-ad7f-e778e188fe5b}" />
 	<object class="Timeline" id="{3ac77758-27ed-4d49-9d45-03c46624da69}" />
 	<object class="SnapshotMasterTrack" id="{d3a2573b-7b00-450c-9dea-17ffef572028}" />
-	<object class="SnapshotProperty" id="{d1ac28d8-fd41-40d7-926f-9bd0c57908ba}">
+	<object class="SnapshotProperty" id="{177f9ef3-0e2a-49c3-ad34-36c386e6c588}">
 		<property name="propertyName">
 			<value>frequencyA</value>
 		</property>
 		<property name="value">
-			<value>150</value>
+			<value>200</value>
 		</property>
 		<relationship name="automatableObject">
-			<destination>{62e88a3c-a804-4fb7-9702-621d6436d462}</destination>
+			<destination>{58798f90-ede9-4171-b51f-f87a075a5f8b}</destination>
 		</relationship>
 	</object>
-	<object class="SnapshotTrack" id="{69088ce6-ab20-4307-9c4d-fee26e76abef}">
+	<object class="SnapshotTrack" id="{ae5887c6-4f98-495d-a5fc-71278c2309b0}">
 		<relationship name="mixerStrip">
-			<destination>{959bd0bd-1fef-4551-a36c-b732c4c260aa}</destination>
+			<destination>{e8816bc8-5c22-4d83-adc3-7114cd7b6715}</destination>
 		</relationship>
 	</object>
 </objects>

@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="Snapshot" id="{7145cbce-5700-4067-b46b-a2c9ee69051f}">
 		<property name="name">
-			<value>MusicPlaying</value>
+			<value>Default</value>
 		</property>
 		<relationship name="mixer">
 			<destination>{2b30259c-a3f7-4276-a0af-dd51541dabc5}</destination>
@@ -20,17 +20,17 @@
 			<destination>{afddf85f-20a7-479c-96c5-49d49dfa8651}</destination>
 		</relationship>
 		<relationship name="snapshotProperties">
-			<destination>{23db9490-8c94-469c-bfc9-641a559b1e8c}</destination>
+			<destination>{9e56448b-a62a-486e-9e65-9ced29ce6fd7}</destination>
 		</relationship>
 		<relationship name="snapshotTracks">
-			<destination>{16a1f059-ae21-4699-9416-344be69713aa}</destination>
+			<destination>{2f25915b-42b1-4813-acdf-db5437159ff5}</destination>
 		</relationship>
 	</object>
 	<object class="EventAutomatableProperties" id="{01b48862-bd0c-462a-8860-804a7a894656}" />
 	<object class="MarkerTrack" id="{f7c0642c-db29-4947-ae71-e954c73dce27}" />
 	<object class="Timeline" id="{aea6c81e-3967-4d51-8bbf-cac65d99b952}" />
 	<object class="SnapshotMasterTrack" id="{afddf85f-20a7-479c-96c5-49d49dfa8651}" />
-	<object class="SnapshotProperty" id="{23db9490-8c94-469c-bfc9-641a559b1e8c}">
+	<object class="SnapshotProperty" id="{9e56448b-a62a-486e-9e65-9ced29ce6fd7}">
 		<property name="propertyName">
 			<value>frequencyA</value>
 		</property>
@@ -38,12 +38,12 @@
 			<value>22000</value>
 		</property>
 		<relationship name="automatableObject">
-			<destination>{62e88a3c-a804-4fb7-9702-621d6436d462}</destination>
+			<destination>{58798f90-ede9-4171-b51f-f87a075a5f8b}</destination>
 		</relationship>
 	</object>
-	<object class="SnapshotTrack" id="{16a1f059-ae21-4699-9416-344be69713aa}">
+	<object class="SnapshotTrack" id="{2f25915b-42b1-4813-acdf-db5437159ff5}">
 		<relationship name="mixerStrip">
-			<destination>{959bd0bd-1fef-4551-a36c-b732c4c260aa}</destination>
+			<destination>{e8816bc8-5c22-4d83-adc3-7114cd7b6715}</destination>
 		</relationship>
 	</object>
 </objects>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{74528b74-baa7-4bf3-98b9-19d313cee65f}">
+		<property name="assetPath">
+			<value>BeastLab_Chase_Ending_V08.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>20.48</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{b0db4ee4-ee75-48e7-9517-e103ea6fdfe3}</destination>
+		</relationship>
+	</object>
+</objects>
