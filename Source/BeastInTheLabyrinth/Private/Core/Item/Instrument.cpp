@@ -67,8 +67,36 @@ void AInstrument::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifet
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AInstrument, CreaturePawn);
+	DOREPLIFETIME(AInstrument, bIgnoreInput);
+	
 	//DOREPLIFETIME(AInstrument, CurrentVoiceVolume);
 	DOREPLIFETIME_CONDITION(AInstrument, CurrentVoiceVolume, COND_SkipOwner);
+}
+
+void AInstrument::PlayedCorrectly_Implementation()
+{
+	if(bIgnoreInput) { return; }
+	GetWorld()->GetTimerManager().ClearTimer(EnableInputTimerHandle);
+	
+	bIgnoreInput = true;
+	OnRep_bIgnoreInput();
+	
+	OnPlayedCorrectly();
+	
+	GetWorld()->GetTimerManager().SetTimer(EnableInputTimerHandle, this, &AInstrument::EnablePlayerInput, PlaySuccessMusicDuration, false);
+}
+
+void AInstrument::EnablePlayerInput()
+{
+	DiscardSamples();
+	bIgnoreInput = false;
+	
+	OnRep_bIgnoreInput();
+}
+
+void AInstrument::OnRep_bIgnoreInput()
+{
+	OnIgnoreInput(bIgnoreInput);
 }
 
 void AInstrument::OnRep_CurrentVoiceVolume()
@@ -111,6 +139,8 @@ void AInstrument::UseInstrument(APlayerCharacter* Character)
 
 void AInstrument::AcousticPlayerInput(float EnvelopeValue)
 {
+	if(bIgnoreInput) { return; }
+	
 	AcousticInputCounter++;
 	EnvelopeSum += EnvelopeValue;
 	
@@ -147,7 +177,7 @@ void AInstrument::AcousticPlayerInput(float EnvelopeValue)
 			Server_Compare(Local_Samples);
 		}
 
-		PrintRhythm(Local_Samples, SamplingSize);
+		//PrintRhythm(Local_Samples, SamplingSize);
 		
 		AcousticInputCounter = 0;
 		EnvelopeSum = 0;
@@ -250,28 +280,30 @@ void AInstrument::DiscardSamples()
 
 void AInstrument::Server_Compare_Implementation(const TArray<FAcousticSample> &PlayerSamples)
 {
+	if(bIgnoreInput) { return; }
 	if(Server_CreatureVoice == nullptr || Server_CreatureSystem == nullptr) { return; }
 	
 	float score = 0;
 	const bool bIsValid = CompareRhythms(PlayerSamples, Server_CreatureVoice->Rhythm, score);
 
-	if(GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Silver,
-			FString::Printf(TEXT("Rhythm score = %f - Passed = %s"),
-				score, bIsValid ? TEXT("true") : TEXT("false")));
+	// if(GEngine)
+	// 	GEngine->AddOnScreenDebugMessage(-1, 1, FColor::Silver,
+	// 		FString::Printf(TEXT("Rhythm score = %f - Passed = %s"),
+	// 			score, bIsValid ? TEXT("true") : TEXT("false")));
 
 	if(bIsValid)
 	{
-		score *= AggressionLevelReduction;
-		if (score > 0)
+		if (score > 0.5f)
 		{
+			PlayedCorrectly();
+			score *= AggressionLevelReduction;
 			Server_CreatureSystem->DecreaseAggressionLevel(score);
 		}
 	}
-	else
-	{
-		UE_LOG(BeastGame, Log, TEXT("Rhythm invalid: score = %f"), score);
-	}
+	// else
+	// {
+	// 	UE_LOG(BeastGame, Log, TEXT("Rhythm invalid: score = %f"), score);
+	// }
 }
 
 bool AInstrument::CompareRhythms(TArray<FAcousticSample> PlayerRhythm,

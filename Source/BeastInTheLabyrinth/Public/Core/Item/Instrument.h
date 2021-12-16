@@ -54,6 +54,12 @@ protected:
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnVolumeChanged();
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnIgnoreInput(bool ignore);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnPlayedCorrectly();
+
 	//UFUNCTION(BlueprintImplementableEvent)
 	//UEnemyVoice* FindEnemyVoice() const;
 
@@ -62,6 +68,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "FMOD")
 	float PlayerVolumeBooster = 30.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float PlaySuccessMusicDuration = 3.0f;
 
 	// UPROPERTY()
 	// class UFMODAudioComponent* AudioComponent;
@@ -120,6 +129,9 @@ private:
 
 	UFUNCTION(Server, Reliable)
 	void Server_Compare(const TArray<FAcousticSample> &PlayerSamples);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void PlayedCorrectly();
 	
 	UFUNCTION()
 	void OnRep_CurrentVoiceVolume();
@@ -149,9 +161,19 @@ private:
 	int NumMutedSamples = 0;
 	int NumIndividualLoudNotes = 0;
 
+	UPROPERTY(ReplicatedUsing=OnRep_bIgnoreInput)
+	bool bIgnoreInput = false;
+
+	UFUNCTION()
+	void OnRep_bIgnoreInput();
+
+	UFUNCTION()
+	void EnablePlayerInput();
+
 	// FMOD::Studio::EventInstance* InstrumentSound;
 
 	FTimerHandle AbortTimerHandle;
+	FTimerHandle EnableInputTimerHandle;
 	TArray<FAcousticSample> Local_Samples;
 };
 
