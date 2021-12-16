@@ -21,6 +21,10 @@
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{8fb84140-b5a3-474c-ac40-d77310089827}" />
-	<object class="MultibandEqEffect" id="{58798f90-ede9-4171-b51f-f87a075a5f8b}" />
+	<object class="MultibandEqEffect" id="{58798f90-ede9-4171-b51f-f87a075a5f8b}">
+		<property name="frequencyA">
+			<value>21999.9902</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{6cc2e0ba-3563-4257-bfee-9c7c2d893e5f}" />
 </objects>
