@@ -105,6 +105,7 @@ void UEnemyVoice::AddBeat(int32 startIndex, int32 endIndex)
 }
 
 
+
 void UEnemyVoice::PlayRhythm()
 {
 	Multicast_PlayRhythm();
