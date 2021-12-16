@@ -6,6 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "BeastGameSession.h"
 #include "FindSessionsCallbackProxy.h"
+#include "GameStatistics.h"
 #include "BeastGameInstance.generated.h"
 
 // USTRUCT(BlueprintType)
@@ -48,12 +49,22 @@ public:
 
 	FBeastOnDestroySessionComplete OnDestroySessionCompleteEvent;
 
+	UFUNCTION(BlueprintCallable)
+	UGameStatistics* GetGameStatistics() const { return GameStatistics; }
+
+	void CreateGameStatistics()	{ GameStatistics = NewObject<UGameStatistics>(); }
+
+	FString GetProfilePlayerName() const { return ProfilePlayerName; }
+
 protected:
 	void DestroySession();
 	void OnDestroySessionComplete(FName InSessionName, bool WasSuccessful);
 	
 	UPROPERTY(BlueprintReadWrite)
 	FString ProfilePlayerName;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UGameStatistics* GameStatistics;
 
 private:
 		

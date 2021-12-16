@@ -6,6 +6,9 @@
 #include "GameFramework/PlayerController.h"
 #include "BeastPlayerController.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeName, FString, NewName);
+
 /**
  * 
  */
@@ -14,5 +17,18 @@ class BEASTINTHELABYRINTH_API ABeastPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-	// virtual void BeginPlay() override;
+	virtual void BeginPlay() override;
+
+protected:
+	UFUNCTION(Server, Reliable, WithValidation)
+	void ServerChangePlayerName(const FString& NewPlayerName);
+
+private:
+	void RegisterStatistics();
+
+	FTimerHandle RegisterStatisticsDelayHandle;
+	
+public:
+	UPROPERTY(BlueprintAssignable)
+	FOnChangeName OnChangeName;
 };

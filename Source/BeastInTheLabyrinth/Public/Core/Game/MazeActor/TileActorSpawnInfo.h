@@ -5,6 +5,8 @@ USTRUCT(BlueprintType)
 struct FTileActorSpawnInfo
 {
 	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere) int32 Id = 0;
 	
 	UPROPERTY(EditAnywhere)	bool Generated = false;
 

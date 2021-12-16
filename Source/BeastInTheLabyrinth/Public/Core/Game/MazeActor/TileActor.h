@@ -48,6 +48,8 @@ public:
 	
 	UPROPERTY(VisibleAnywhere)
 	int32 TileValue;
+
+	int32 GetId() { return Id; }
 	
 	void Init(const class UTile* Tile, const FTileActorSpawnInfo NewSpawnInfo);
 
@@ -58,6 +60,9 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void PostLoad() override;
+
+	UPROPERTY(VisibleAnywhere)
+	int32 Id;
 
 public:
 	// Called every frame

@@ -34,3 +34,16 @@ ACreatureSystem* UBeastBlueprintFunctionLibrary::GetCreatureSystem(UObject* Targ
 	
 	return nullptr;
 }
+
+AGameStatisticsActor* UBeastBlueprintFunctionLibrary::GetGameStatisticsActor(UObject* Target)
+{
+	AGameModeBase* GameMode = UGameplayStatics::GetGameMode(Target);
+	ALabyrinthGameMode* LabyrinthGameMode = Cast<ALabyrinthGameMode>(GameMode);
+
+	if (LabyrinthGameMode)
+	{
+		return LabyrinthGameMode->GetGameStatistics();
+	}
+	
+	return nullptr;
+}

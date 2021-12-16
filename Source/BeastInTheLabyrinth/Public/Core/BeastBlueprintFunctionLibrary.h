@@ -28,4 +28,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Creature", meta = (WorldContext = Target))
 	static UPARAM(DisplayName="CreatureSystem") class ACreatureSystem* GetCreatureSystem(UObject* Target);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category="Statistics", meta = (WorldContext = Target))
+	static UPARAM(DisplayName="GameStatistics") class AGameStatisticsActor* GetGameStatisticsActor(UObject* Target);
 };

@@ -5,6 +5,7 @@
 
 #include "EngineUtils.h"
 #include "BeastInTheLabyrinth/BeastInTheLabyrinth.h"
+#include "Core/Game/BeastGameInstance.h"
 #include "Core/Game/Maze/MazeGenerator.h"
 #include "Core/Game/Maze/MazeActorSpawnInfo.h"
 
@@ -14,6 +15,14 @@ struct FMazeActorSpawnInfo;
 void ALabyrinthGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UBeastGameInstance* GameInstance = Cast<UBeastGameInstance>(GetGameInstance());
+	GameInstance->CreateGameStatistics();
+	
+	GameStatisticsActor = Cast<AGameStatisticsActor>(GetWorld()->SpawnActor(AGameStatisticsActor::StaticClass()));
+	GameStatisticsActor->SetGameStatistics(GameInstance->GetGameStatistics());
+
+	
 	CreatureSystem = Cast<ACreatureSystem>(GetWorld()->SpawnActor(CreatureSystemClass));
 
 	FindMazeGenerator();
@@ -30,6 +39,9 @@ void ALabyrinthGameMode::BeginPlay()
 	MazeGenerator->Generate();
 
 	OnPostMazeGenerate(MazeGenerator);
+	
+	GameInstance->GetGameStatistics()->Maze = MazeGenerator->GetMaze();
+	ReadyToPlay = true;
 }
 
 void ALabyrinthGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -39,7 +51,10 @@ void ALabyrinthGameMode::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	ALabyrinthGameState* LabyrinthGameState = GetGameState<ALabyrinthGameState>();
 	for (AObjective* Objective : LabyrinthGameState->ChosenObjectives)
 	{
-		Objective->OnCompleted.RemoveAll(this);
+		if (Objective)
+		{
+			Objective->OnCompleted.RemoveAll(this);
+		}
 	}
 }
 
