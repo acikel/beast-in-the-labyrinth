@@ -9,16 +9,16 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(BlueprintType)
 class BEASTINTHELABYRINTH_API UMaze : public UObject
 {
 	GENERATED_BODY()
 
 public:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	int32 Width;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	int32 Height;
 
 	UPROPERTY()

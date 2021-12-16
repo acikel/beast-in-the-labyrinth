@@ -28,6 +28,40 @@ void AGameStatisticsActor::RegisterPlayerController(APlayerController* PlayerCon
 	TrackedPlayers.Add(PlayerController);
 }
 
+void AGameStatisticsActor::RecordPlayerDied(APlayerController* PlayerController)
+{
+	if (!HasAuthority())
+	{
+		ServerRecordPlayerDied(PlayerController);
+		return;
+	}
+	
+	uint32 Id = PlayerController->GetPlayerState<ABeastPlayerState>()->GetPlayerId();
+	GameStatistics->PlayerStatistics[Id].AmountOfDeaths++;
+}
+
+void AGameStatisticsActor::RecordPlayerRevived(APlayerController* PlayerController)
+{
+	if (!HasAuthority())
+	{
+		ServerRecordPlayerRevived(PlayerController);
+		return;
+	}
+	
+	uint32 Id = PlayerController->GetPlayerState<ABeastPlayerState>()->GetPlayerId();
+	GameStatistics->PlayerStatistics[Id].AmountOfRevivesGiven++;
+}
+
+void AGameStatisticsActor::ServerRecordPlayerDied_Implementation(APlayerController* PlayerController)
+{
+	RecordPlayerDied(PlayerController);
+}
+
+void AGameStatisticsActor::ServerRecordPlayerRevived_Implementation(APlayerController* PlayerController)
+{
+	RecordPlayerRevived(PlayerController);
+}
+
 // Called when the game starts or when spawned
 void AGameStatisticsActor::BeginPlay()
 {
@@ -44,6 +78,7 @@ void AGameStatisticsActor::Prepare()
 		if (GameMode->IsReady())
 		{
 			MazeGenerator = GameMode->GetMazeGenerator();
+			Creature = GameMode->GetCreatureSystem()->GetCreature();
 			SetActorTickEnabled(true);
 		}
 		else
@@ -69,6 +104,12 @@ void AGameStatisticsActor::Tick(float DeltaTime)
 			
 			GameStatistics->PlayerStatistics[PlayerId].CoveredTiles.AddUnique(TileId);
 			//GEngine->AddOnScreenDebugMessage(4444, 5.0f, FColor::Green, FString::Printf(TEXT("Tile ID: %d"), TileId));
+			
+			float Distance = FVector::Dist2D(Creature->GetActorLocation(), Pawn->GetActorLocation());
+			if (Distance <= 800)
+			{
+				GameStatistics->PlayerStatistics[PlayerId].TimeCloseToCreature += GetActorTickInterval();
+			}
 		}
 	}
 }
