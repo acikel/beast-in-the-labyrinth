@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CreatureSystem.h"
+#include "GameStatisticsActor.h"
 #include "LabyrinthGameState.h"
 #include "Core/Game/BeastGameMode.h"
 #include "Core/Objective/Objective.h"
@@ -50,6 +51,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	ACreatureSystem* CreatureSystem;
 
+	UPROPERTY(BlueprintReadOnly)
+	AGameStatisticsActor* GameStatisticsActor;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<ACreatureSystem> CreatureSystemClass;
 
@@ -58,11 +62,17 @@ protected:
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void OnPostMazeGenerate(AMazeGenerator* Generator);
-	
+
+	UPROPERTY()
+	bool ReadyToPlay = false;
 	
 private:
 	const int32 GENERATE_NUM_OBJECTIVES = 3;
 
 public:
 	ACreatureSystem* GetCreatureSystem() const { return CreatureSystem; };
+	AGameStatisticsActor* GetGameStatistics() const { return GameStatisticsActor; }
+	AMazeGenerator* GetMazeGenerator() const { return MazeGenerator; }
+
+	bool IsReady() { return ReadyToPlay; };
 };

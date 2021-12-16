@@ -113,6 +113,8 @@ void AMazeGenerator::SpawnTiles()
 
 				FTileActorSpawnInfo SpawnInfo;
 				SpawnInfo.Generated = true;
+				SpawnInfo.Id = y * Maze->Width + x;
+				
 				uint8 tileValue = Tile->TileValue;
 				SpawnInfo.WallTop = !(tileValue & 1);
 				SpawnInfo.WallRight = !(tileValue & 2);
@@ -419,6 +421,15 @@ FVector AMazeGenerator::GetTileLocation(int32 X, int32 Y)
 	MazeOrigin.Y + (Y * TileSize + (TileSize * 0.5f)),
 	MazeOrigin.Z
 	);
+}
+
+int32 AMazeGenerator::GetTileIdAtLocation(FVector Location)
+{
+	FVector RelativeLocation = Location - MazeOrigin;
+	int32 y = RelativeLocation.Y / TileSize;
+	int32 x = RelativeLocation.X / TileSize;
+
+	return y * MazeSize.X + x;
 }
 
 void AMazeGenerator::DebugPrintMaze()

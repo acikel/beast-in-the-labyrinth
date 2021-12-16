@@ -49,6 +49,7 @@ ATileActor::ATileActor()
 void ATileActor::Init(const UTile* Tile, const FTileActorSpawnInfo NewSpawnInfo)
 {
 	TileValue = Tile->TileValue;
+	Id = SpawnInfo.Id;
 	SpawnInfo = NewSpawnInfo;
 	Init();
 }

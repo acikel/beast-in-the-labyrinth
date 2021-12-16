@@ -57,6 +57,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FTransform GetCreatureStartPoint() { return CreatureSpawnPoint; }
+
+	UFUNCTION()
+	class UMaze* GetMaze() { return Maze; }
+
+	int32 GetTileIdAtLocation(FVector Location);
 	
 protected:
 	UFUNCTION(BlueprintImplementableEvent)
