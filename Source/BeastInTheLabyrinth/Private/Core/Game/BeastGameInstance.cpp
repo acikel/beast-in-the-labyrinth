@@ -219,7 +219,7 @@ void UBeastGameInstance::QuitToMenu()
 
 	FURL Url;
 	Url.Map = "MainMenu";
-	Url.AddOption(TEXT("game=/Game/BeastInTheLabyrinth/Core/Game/BP_LobbyGameMode.BP_LobbyGameMode_C"));
+	//Url.AddOption(TEXT("game=/Game/BeastInTheLabyrinth/Core/Game/BP_LobbyGameMode.BP_LobbyGameMode_C"));
 
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 	PlayerController->ClientTravel(Url.ToString(), TRAVEL_Absolute);
