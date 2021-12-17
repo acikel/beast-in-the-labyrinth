@@ -391,8 +391,9 @@ void AMazeGenerator::PlaceActorOnTile(UMazeActorSpawnInfo* ActorSpawnInfo, int32
 		Location.Y += Random.FRandRange(minY, maxY);
 	}
 
-	
-	AActor* Actor = GetWorld()->SpawnActor<AActor>(ActorSpawnInfo->ActorClass, Location, Rotation);
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	AActor* Actor = GetWorld()->SpawnActor<AActor>(ActorSpawnInfo->ActorClass, Location, Rotation, Params);
 	ActorSpawnInfo->OnMazeActorSpawned.ExecuteIfBound(Actor);
 }
 

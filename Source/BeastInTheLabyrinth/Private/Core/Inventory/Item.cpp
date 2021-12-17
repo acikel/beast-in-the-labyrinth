@@ -121,9 +121,9 @@ void AItem::Multicast_EnableEffect_Implementation(bool bEnable)
 {
 	if(bPlayEffectIfItemOnGround && ItemOnGroundEffectComponent != nullptr)
 	{
+		GetWorld()->GetTimerManager().ClearTimer(DeactivateEffectsHandler);
 		if(bEnable)
 		{
-			GetWorld()->GetTimerManager().ClearTimer(DeactivateEffectsHandler);
 			GetWorld()->GetTimerManager().SetTimer(DeactivateEffectsHandler, this, &AItem::EnableEffect, 2.0f, false);
 		}
 		else
