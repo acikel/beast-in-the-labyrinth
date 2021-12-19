@@ -25,8 +25,10 @@ protected:
 
 private:
 	void RegisterStatistics();
+	void SetPlayerName();
 
 	FTimerHandle RegisterStatisticsDelayHandle;
+	FTimerHandle SetPlayerNameHandle;
 	
 public:
 	UPROPERTY(BlueprintAssignable)

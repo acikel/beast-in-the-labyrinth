@@ -3,6 +3,8 @@
 
 #include "Core/Game/BeastGameMode.h"
 
+#include "Kismet/GameplayStatics.h"
+
 void ABeastGameMode::PostLogin(APlayerController* NewPlayer)
 {
 	Super::PostLogin(NewPlayer);
@@ -32,7 +34,9 @@ void ABeastGameMode::ServerTravel(const FString& LevelName, const FString& GameM
 	
 	if (GetWorld()->WorldType == EWorldType::PIE)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("Please start game as 'Standalone Game'"));    
+		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("Please start game as 'Standalone Game'"));
+		
+		UGameplayStatics::OpenLevel(GetWorld(), FName(LevelName), false, "listen&game=" + GameModeArg);
 	}
 	
 	GetWorld()->ServerTravel(Url.ToString());

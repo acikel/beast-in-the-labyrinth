@@ -19,11 +19,7 @@ void ABeastPlayerController::BeginPlay()
 	
 	if (IsLocalPlayerController())
 	{
-		UBeastGameInstance* GameInstance = Cast<UBeastGameInstance>(GetGameInstance());
-		if (GameInstance)
-		{
-			ServerChangePlayerName(GameInstance->GetProfilePlayerName());
-		}
+		SetPlayerName();
 	}
 }
 
@@ -62,6 +58,24 @@ void ABeastPlayerController::RegisterStatistics()
 			{
 				GetWorldTimerManager().SetTimer(RegisterStatisticsDelayHandle, this, &ABeastPlayerController::RegisterStatistics, 0.2f, false, 0.f);
 			}
+		}
+	}
+}
+
+void ABeastPlayerController::SetPlayerName()
+{
+	UBeastGameInstance* GameInstance = Cast<UBeastGameInstance>(GetGameInstance());
+	if (GameInstance)
+	{
+		ABeastPlayerState* PS = GetPlayerState<ABeastPlayerState>();
+		if (PS)
+		{
+			PS->SetPlayerName(GameInstance->GetProfilePlayerName());
+			ServerChangePlayerName(GameInstance->GetProfilePlayerName());
+		}
+		else
+		{
+			GetWorldTimerManager().SetTimer(SetPlayerNameHandle, this, &ABeastPlayerController::SetPlayerName, 0.2f, false, 0.f);
 		}
 	}
 }

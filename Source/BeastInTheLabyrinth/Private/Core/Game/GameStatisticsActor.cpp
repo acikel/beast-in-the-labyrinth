@@ -7,7 +7,6 @@
 #include "Core/Game/LabyrinthGameMode.h"
 #include "Core/Player/BeastPlayerState.h"
 #include "Core/Player/PlayerCharacter.h"
-#include "GameFramework/GameMode.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -42,14 +41,24 @@ void AGameStatisticsActor::RecordPlayerDied(APlayerController* PlayerController)
 
 void AGameStatisticsActor::RecordPlayerRevived(APlayerController* PlayerController)
 {
+	if (!PlayerController)
+	{
+		UE_LOG(LogTemp, Error, TEXT("RecordPlayerRevived: No PlayerController set to record Player revived."));
+		return;
+	}
+	
 	if (!HasAuthority())
 	{
 		ServerRecordPlayerRevived(PlayerController);
 		return;
 	}
-	
-	uint32 Id = PlayerController->GetPlayerState<ABeastPlayerState>()->GetPlayerId();
-	GameStatistics->PlayerStatistics[Id].AmountOfRevivesGiven++;
+
+	ABeastPlayerState* PS = PlayerController->GetPlayerState<ABeastPlayerState>();
+	if (PS)
+	{
+		uint32 Id = PS->GetPlayerId();
+		GameStatistics->PlayerStatistics[Id].AmountOfRevivesGiven++;
+	}
 }
 
 void AGameStatisticsActor::ServerRecordPlayerDied_Implementation(APlayerController* PlayerController)
