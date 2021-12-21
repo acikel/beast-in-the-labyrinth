@@ -69,6 +69,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Interaction")
 	void SetInteractableActionText(const FText& NewActionText);
 
+	UFUNCTION(BlueprintCallable, Category="Interaction")
+	void EnableInteraction(bool bIsEnabled);
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintAssignable)
 	FOnBeginInteract OnBeginInteract;
 
@@ -92,6 +95,9 @@ protected:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 	virtual void Deactivate() override;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void UpdateInteractable();
 
 	bool CanInteract(class APlayerCharacter* Character) const;
 

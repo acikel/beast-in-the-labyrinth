@@ -43,7 +43,8 @@ void UItemSocket::HoldItem(AItem* Item)
 
 	Item->DisableComponentsSimulatePhysics();
 	Item->AttachToComponent(this, AttachmentTransformRules);
-	Item->SetActorHiddenInGame(false);
+	Item->SetCanBePickedUp(false);
+	//Item->SetActorHiddenInGame(false);
 	HoldingItem = Item;
 }
 

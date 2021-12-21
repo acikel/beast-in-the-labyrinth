@@ -39,6 +39,15 @@ void UInteractableComponent::SetInteractableActionText(const FText& NewActionTex
 	RefreshWidget();
 }
 
+void UInteractableComponent::EnableInteraction(bool bIsEnabled)
+{
+	if(GetOwner()->HasAuthority())
+	{
+		Enabled = bIsEnabled;
+		UpdateInteractable();
+	}
+}
+
 void UInteractableComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
@@ -60,6 +69,11 @@ void UInteractableComponent::Deactivate()
 	}
 
 	Interactors.Empty();
+}
+
+void UInteractableComponent::UpdateInteractable_Implementation()
+{
+	RefreshWidget();
 }
 
 bool UInteractableComponent::CanInteract(class APlayerCharacter* Character) const
