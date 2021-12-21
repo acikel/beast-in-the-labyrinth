@@ -37,13 +37,10 @@ void ACreatureSystem::Tick(float DeltaSeconds)
 	
 	if (AggressionLevel > AbsoluteAggressionLevel)
 	{
-		AbsoluteAggressionLevel += AbsoluteAggressionLevelIncrement * DeltaSeconds;
-		AggressionLevel = FMath::InterpEaseInOut(AggressionLevel, AbsoluteAggressionLevel, DecreaseEasingAlpha, 2.f);
-
-		if (Hunting && AggressionLevel < AggressionLevelRange.GetUpperBoundValue())
+		if(!Hunting)
 		{
-			GetWorldTimerManager().ClearTimer(StopHuntingTimer);
-			GetWorldTimerManager().SetTimer(StopHuntingTimer, this, &ACreatureSystem::StopHunting, 4, false);
+			AbsoluteAggressionLevel += AbsoluteAggressionLevelIncrement * DeltaSeconds;
+			AggressionLevel = FMath::InterpEaseInOut(AggressionLevel, AbsoluteAggressionLevel, DecreaseEasingAlpha, 2.f);
 		}
 	}
 
@@ -59,7 +56,22 @@ void ACreatureSystem::Tick(float DeltaSeconds)
 void ACreatureSystem::StopHunting()
 {
 	Hunting = false;
+	DecreaseEasingAlpha = 0;
 	OnCreatureCalmedDown.Broadcast();
+
+	//if(GEngine) GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Silver,TEXT("Stop hunting"));
+}
+
+void ACreatureSystem::StartHunting()
+{
+	Hunting = true;
+	DecreaseEasingAlpha = 0;
+	
+	//GetWorldTimerManager().ClearTimer(StopHuntingTimer);
+	StopHuntingTimer.Invalidate();
+	GetWorldTimerManager().SetTimer(StopHuntingTimer, this, &ACreatureSystem::StopHunting, HuntDuration, false);
+
+	//if(GEngine) GEngine->AddOnScreenDebugMessage(-1, 3, FColor::Silver,TEXT("Start hunting"));
 }
 
 void ACreatureSystem::IncreaseAggressionLevel(float increase)
@@ -80,7 +92,7 @@ void ACreatureSystem::IncreaseAggressionLevel(float increase)
 
 	if (!Hunting && AggressionLevel == AggressionLevelRange.GetUpperBoundValue())
 	{
-		Hunting = true;
+		StartHunting();
 		OnCreatureAggressionLevelReached.Broadcast();
 	}
 
@@ -105,8 +117,7 @@ void ACreatureSystem::DecreaseAggressionLevel(float decrease)
 
 	if (Hunting && AggressionLevel < AggressionLevelRange.GetUpperBoundValue())
 	{
-		Hunting = false;
-		OnCreatureCalmedDown.Broadcast();
+		StopHunting();
 	}
 }
 
@@ -137,11 +148,7 @@ void ACreatureSystem::IncreaseAbsoluteAggressionLevel(float increase)
 		return;
 	}
 
-	AbsoluteAggressionLevel += increase;
-	if (!AggressionLevelRange.Contains(AbsoluteAggressionLevel))
-	{
-		AbsoluteAggressionLevel = AggressionLevelRange.GetUpperBoundValue();
-	}
+	AbsoluteAggressionLevel = FMath::Min(AbsoluteAggressionLevel + increase, MaxAbsoluteAggressionLevel);
 }
 
 void ACreatureSystem::WatchingCreature(AActor* Watcher)
@@ -189,6 +196,7 @@ void ACreatureSystem::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutL
 	DOREPLIFETIME(ACreatureSystem, AbsoluteAggressionLevel);
 	DOREPLIFETIME(ACreatureSystem, Hunting);
 	DOREPLIFETIME(ACreatureSystem, CreatureBeingWatched);
+	DOREPLIFETIME(ACreatureSystem, HuntDuration);
 }
 
 void ACreatureSystem::ServerWatchingCreature_Implementation(AActor* Watcher)

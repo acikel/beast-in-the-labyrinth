@@ -37,6 +37,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	void StopHunting();
+	void StartHunting();
 	
 	UPROPERTY(BlueprintReadOnly)
 	FDebugFloatHistory DebugAggressionLevel;
@@ -47,6 +48,12 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Aggression Settings")
 	float CalmDownTime = 8.f;
 
+	UPROPERTY(EditAnywhere, Category="Aggression Settings")
+	float MaxAbsoluteAggressionLevel = 0.8f;
+
+	UPROPERTY(Replicated, EditAnywhere, Category="Aggression Settings")
+	float HuntDuration = 12.0f;
+	
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	float AggressionLevel = 0.f;
 
