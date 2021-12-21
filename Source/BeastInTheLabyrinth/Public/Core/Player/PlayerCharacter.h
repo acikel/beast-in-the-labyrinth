@@ -66,7 +66,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Interaction")
 	float InteractionCheckDistance;
-	
+
+	UPROPERTY()
 	FInteractionData InteractionData;
 	
 	FORCEINLINE UInteractableComponent* GetInteractable() const
