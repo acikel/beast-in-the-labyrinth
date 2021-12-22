@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
-	<object class="AudioFile" id="{b0618682-4fe7-47fc-9cc4-e20132002f71}">
+	<object class="AudioFile" id="{9a1e62cd-227f-4c67-9e78-cff2712847b6}">
 		<property name="assetPath">
-			<value>BeastLab_MenuMusic_V01.wav</value>
+			<value>BeastLab_MenuMusic_V02.wav</value>
 		</property>
 		<property name="isStreaming">
 			<value>true</value>
