@@ -30,6 +30,9 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void PlayersReadyToExit();
 	
+	UFUNCTION(BlueprintCallable)
+	void LoseGame();
+
 	UFUNCTION(BlueprintNativeEvent)
 	void OnExitIsReady();
 	void OnExitIsReady_Implementation();

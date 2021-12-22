@@ -60,6 +60,11 @@ void ALabyrinthGameMode::PlayersReadyToExit()
 	OnGameEnded(true);
 }
 
+void ALabyrinthGameMode::LoseGame()
+{
+	OnGameEnded(false);
+}
+
 void ALabyrinthGameMode::GenerateObjectives()
 {
 	TArray<UClass*> AvailableObjectives = TArray<UClass*>(Objectives);
