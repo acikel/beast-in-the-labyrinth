@@ -5,14 +5,13 @@
 #include "CoreMinimal.h"
 #include "PlayerStatistics.h"
 #include "Maze/Maze.h"
-#include "UObject/NoExportTypes.h"
 #include "GameStatistics.generated.h"
 
 /**
  * 
  */
-UCLASS(Blueprintable)
-class BEASTINTHELABYRINTH_API UGameStatistics : public UObject
+USTRUCT(Blueprintable)
+struct BEASTINTHELABYRINTH_API FGameStatistics
 {
 	GENERATED_BODY()
 
@@ -23,8 +22,8 @@ public:
 	UPROPERTY()
 	TMap<uint32, FPlayerStatistics> PlayerStatistics;
 
-	UFUNCTION(BlueprintCallable)
-	TArray<FPlayerStatistics> GetPlayerStatistics() const;
+	UPROPERTY(BlueprintReadOnly)
+	TArray<FPlayerStatistics> PlayerStatisticsArray;
 
-	void AddStatisticForPlayer(uint32 PlayerId, const FString PlayerName);
+	
 };

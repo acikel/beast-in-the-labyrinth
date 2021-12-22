@@ -44,5 +44,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<int32> CoveredTiles;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float MazeCoverage = 0;
 };

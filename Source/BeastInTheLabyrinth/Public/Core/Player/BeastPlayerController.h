@@ -7,7 +7,7 @@
 #include "BeastPlayerController.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeName, FString, NewName);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnChangeName, APlayerController*, PlayerController, FString, NewName);
 
 /**
  * 

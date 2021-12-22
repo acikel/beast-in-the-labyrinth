@@ -17,10 +17,7 @@ void ALabyrinthGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	UBeastGameInstance* GameInstance = Cast<UBeastGameInstance>(GetGameInstance());
-	GameInstance->CreateGameStatistics();
-	
 	GameStatisticsActor = Cast<AGameStatisticsActor>(GetWorld()->SpawnActor(AGameStatisticsActor::StaticClass()));
-	GameStatisticsActor->SetGameStatistics(GameInstance->GetGameStatistics());
 
 	
 	CreatureSystem = Cast<ACreatureSystem>(GetWorld()->SpawnActor(CreatureSystemClass));
@@ -40,7 +37,7 @@ void ALabyrinthGameMode::BeginPlay()
 
 	OnPostMazeGenerate(MazeGenerator);
 	
-	GameInstance->GetGameStatistics()->Maze = MazeGenerator->GetMaze();
+	GameInstance->GameStatistics.Maze = MazeGenerator->GetMaze();
 	ReadyToPlay = true;
 }
 

@@ -48,11 +48,9 @@ public:
 	FOnFindSessionsCompleted OnSessionsFound;
 
 	FBeastOnDestroySessionComplete OnDestroySessionCompleteEvent;
-
-	UFUNCTION(BlueprintCallable)
-	UGameStatistics* GetGameStatistics() const { return GameStatistics; }
-
-	void CreateGameStatistics()	{ GameStatistics = NewObject<UGameStatistics>(); }
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	FGameStatistics GameStatistics;
 
 	FString GetProfilePlayerName() const { return ProfilePlayerName; }
 
@@ -63,8 +61,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 	FString ProfilePlayerName;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UGameStatistics* GameStatistics;
+	
 
 private:
 		

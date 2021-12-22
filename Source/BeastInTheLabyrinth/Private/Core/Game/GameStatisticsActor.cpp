@@ -21,9 +21,12 @@ AGameStatisticsActor::AGameStatisticsActor()
 
 void AGameStatisticsActor::RegisterPlayerController(APlayerController* PlayerController)
 {
-	ABeastPlayerState* PS = PlayerController->GetPlayerState<ABeastPlayerState>();
+	const ABeastPlayerState* PS = PlayerController->GetPlayerState<ABeastPlayerState>();
+	const uint32 PlayerId = PlayerController->GetPlayerState<ABeastPlayerState>()->GetPlayerId();
 	
-	GameStatistics->AddStatisticForPlayer(PlayerController->GetPlayerState<ABeastPlayerState>()->GetPlayerId(), PS->GetPlayerName());
+	FString PlayerName = PS->GetPlayerName();
+	
+	GameInstance->GameStatistics.PlayerStatistics.Add(PlayerId, FPlayerStatistics(PlayerId, PlayerName));
 	TrackedPlayers.Add(PlayerController);
 }
 
@@ -34,9 +37,9 @@ void AGameStatisticsActor::RecordPlayerDied(APlayerController* PlayerController)
 		ServerRecordPlayerDied(PlayerController);
 		return;
 	}
-	
-	uint32 Id = PlayerController->GetPlayerState<ABeastPlayerState>()->GetPlayerId();
-	GameStatistics->PlayerStatistics[Id].AmountOfDeaths++;
+
+	const uint32 Id = PlayerController->GetPlayerState<ABeastPlayerState>()->GetPlayerId();
+	GameInstance->GameStatistics.PlayerStatistics[Id].AmountOfDeaths++;
 }
 
 void AGameStatisticsActor::RecordPlayerRevived(APlayerController* PlayerController)
@@ -56,8 +59,8 @@ void AGameStatisticsActor::RecordPlayerRevived(APlayerController* PlayerControll
 	ABeastPlayerState* PS = PlayerController->GetPlayerState<ABeastPlayerState>();
 	if (PS)
 	{
-		uint32 Id = PS->GetPlayerId();
-		GameStatistics->PlayerStatistics[Id].AmountOfRevivesGiven++;
+		const uint32 Id = PS->GetPlayerId();
+		GameInstance->GameStatistics.PlayerStatistics[Id].AmountOfRevivesGiven++;
 	}
 }
 
@@ -77,6 +80,7 @@ void AGameStatisticsActor::BeginPlay()
 	Super::BeginPlay();
 
 	GameMode = Cast<ALabyrinthGameMode>(UGameplayStatics::GetGameMode(this));
+	GameInstance = Cast<UBeastGameInstance>(GetGameInstance());
 	Prepare();
 }
 
@@ -102,7 +106,7 @@ void AGameStatisticsActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	for (auto PlayerController : TrackedPlayers)
+	for (const auto PlayerController : TrackedPlayers)
 	{
 		APlayerCharacter* Pawn = Cast<APlayerCharacter>(PlayerController->GetPawn());
 
@@ -111,13 +115,13 @@ void AGameStatisticsActor::Tick(float DeltaTime)
 			int32 TileId = MazeGenerator->GetTileIdAtLocation(Pawn->GetActorLocation());
 			const int32 PlayerId = PlayerController->GetPlayerState<ABeastPlayerState>()->GetPlayerId();
 			
-			GameStatistics->PlayerStatistics[PlayerId].CoveredTiles.AddUnique(TileId);
+			GameInstance->GameStatistics.PlayerStatistics[PlayerId].CoveredTiles.AddUnique(TileId);
 			//GEngine->AddOnScreenDebugMessage(4444, 5.0f, FColor::Green, FString::Printf(TEXT("Tile ID: %d"), TileId));
 			
-			float Distance = FVector::Dist2D(Creature->GetActorLocation(), Pawn->GetActorLocation());
-			if (Distance <= 800)
+			const float Distance = FVector::Dist2D(Creature->GetActorLocation(), Pawn->GetActorLocation());
+			if (Distance <= 1000)
 			{
-				GameStatistics->PlayerStatistics[PlayerId].TimeCloseToCreature += GetActorTickInterval();
+				GameInstance->GameStatistics.PlayerStatistics[PlayerId].TimeCloseToCreature += GetActorTickInterval();
 			}
 		}
 	}

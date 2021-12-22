@@ -16,10 +16,7 @@ class BEASTINTHELABYRINTH_API AGameStatisticsActor : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AGameStatisticsActor();
-
-	UFUNCTION()
-	void SetGameStatistics(UGameStatistics* NewGameStatistics) { GameStatistics = NewGameStatistics; }
-
+	
 	void RegisterPlayerController(APlayerController* PlayerController);
 
 	UFUNCTION(BlueprintCallable)
@@ -38,9 +35,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	UGameStatistics* GameStatistics;
-
 	UPROPERTY()
 	TArray<APlayerController*> TrackedPlayers;
 
@@ -50,6 +44,9 @@ private:
 
 	UPROPERTY()
 	class ALabyrinthGameMode* GameMode;
+
+	UPROPERTY()
+	class UBeastGameInstance* GameInstance;
 
 	UPROPERTY()
 	AActor* Creature;

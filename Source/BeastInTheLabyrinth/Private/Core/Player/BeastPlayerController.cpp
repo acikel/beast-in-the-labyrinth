@@ -37,7 +37,7 @@ void ABeastPlayerController::ServerChangePlayerName_Implementation(const FString
 		GameMode->ChangeName( this, NewPlayerName, true );
 	}
 
-	OnChangeName.Broadcast(NewPlayerName);
+	OnChangeName.Broadcast(this, NewPlayerName);
 	RegisterStatistics();
 }
 
