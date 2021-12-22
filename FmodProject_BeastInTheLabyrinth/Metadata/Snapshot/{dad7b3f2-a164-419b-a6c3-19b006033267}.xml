@@ -1,65 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
-	<object class="Snapshot" id="{7145cbce-5700-4067-b46b-a2c9ee69051f}">
+	<object class="Snapshot" id="{dad7b3f2-a164-419b-a6c3-19b006033267}">
 		<property name="name">
-			<value>Default</value>
+			<value>ExitMenu</value>
 		</property>
 		<relationship name="mixer">
 			<destination>{2b30259c-a3f7-4276-a0af-dd51541dabc5}</destination>
 		</relationship>
 		<relationship name="automatableProperties">
-			<destination>{01b48862-bd0c-462a-8860-804a7a894656}</destination>
+			<destination>{398244af-d2aa-4de3-b206-a22a58c57fb9}</destination>
 		</relationship>
 		<relationship name="markerTracks">
-			<destination>{f7c0642c-db29-4947-ae71-e954c73dce27}</destination>
+			<destination>{8c2b0e45-1db6-4dc1-869e-40b7715cc803}</destination>
 		</relationship>
 		<relationship name="timeline">
-			<destination>{aea6c81e-3967-4d51-8bbf-cac65d99b952}</destination>
+			<destination>{84fe3798-da3f-435c-9f0e-f8b33ff1470b}</destination>
 		</relationship>
 		<relationship name="snapshotMasterTrack">
-			<destination>{afddf85f-20a7-479c-96c5-49d49dfa8651}</destination>
+			<destination>{a71c59a4-d6d7-47f8-bc53-3d31bbfaab3e}</destination>
 		</relationship>
 		<relationship name="snapshotProperties">
-			<destination>{9e56448b-a62a-486e-9e65-9ced29ce6fd7}</destination>
-			<destination>{a7784c90-3a87-460d-8c78-0740c1a0ecfc}</destination>
+			<destination>{e20c91e7-0af8-4a2e-b19b-f2c9d5c72ee2}</destination>
+			<destination>{c65d3953-5d4e-4b4a-b733-b56de0fd9f26}</destination>
 		</relationship>
 		<relationship name="snapshotTracks">
-			<destination>{2f25915b-42b1-4813-acdf-db5437159ff5}</destination>
-			<destination>{f32970f1-bdae-4ba5-8bca-53c1ac4ea630}</destination>
+			<destination>{fbe2a713-e9c6-4380-a6e6-89c8baabdcd5}</destination>
+			<destination>{5af0f07d-3744-4702-a1c3-dfb046cc78cc}</destination>
 		</relationship>
 	</object>
-	<object class="EventAutomatableProperties" id="{01b48862-bd0c-462a-8860-804a7a894656}" />
-	<object class="MarkerTrack" id="{f7c0642c-db29-4947-ae71-e954c73dce27}" />
-	<object class="Timeline" id="{aea6c81e-3967-4d51-8bbf-cac65d99b952}" />
-	<object class="SnapshotMasterTrack" id="{afddf85f-20a7-479c-96c5-49d49dfa8651}" />
-	<object class="SnapshotProperty" id="{9e56448b-a62a-486e-9e65-9ced29ce6fd7}">
+	<object class="EventAutomatableProperties" id="{398244af-d2aa-4de3-b206-a22a58c57fb9}" />
+	<object class="MarkerTrack" id="{8c2b0e45-1db6-4dc1-869e-40b7715cc803}" />
+	<object class="Timeline" id="{84fe3798-da3f-435c-9f0e-f8b33ff1470b}" />
+	<object class="SnapshotMasterTrack" id="{a71c59a4-d6d7-47f8-bc53-3d31bbfaab3e}" />
+	<object class="SnapshotProperty" id="{e20c91e7-0af8-4a2e-b19b-f2c9d5c72ee2}">
 		<property name="propertyName">
 			<value>frequencyA</value>
 		</property>
 		<property name="value">
-			<value>22000</value>
+			<value>21999.9902</value>
 		</property>
 		<relationship name="automatableObject">
 			<destination>{58798f90-ede9-4171-b51f-f87a075a5f8b}</destination>
 		</relationship>
 	</object>
-	<object class="SnapshotProperty" id="{a7784c90-3a87-460d-8c78-0740c1a0ecfc}">
+	<object class="SnapshotProperty" id="{c65d3953-5d4e-4b4a-b733-b56de0fd9f26}">
 		<property name="propertyName">
 			<value>frequencyA</value>
 		</property>
 		<property name="value">
-			<value>22000</value>
+			<value>200</value>
 		</property>
 		<relationship name="automatableObject">
 			<destination>{40ed4a95-f089-4623-9a2b-adb2da6f6f31}</destination>
 		</relationship>
 	</object>
-	<object class="SnapshotTrack" id="{2f25915b-42b1-4813-acdf-db5437159ff5}">
+	<object class="SnapshotTrack" id="{fbe2a713-e9c6-4380-a6e6-89c8baabdcd5}">
 		<relationship name="mixerStrip">
 			<destination>{e8816bc8-5c22-4d83-adc3-7114cd7b6715}</destination>
 		</relationship>
 	</object>
-	<object class="SnapshotTrack" id="{f32970f1-bdae-4ba5-8bca-53c1ac4ea630}">
+	<object class="SnapshotTrack" id="{5af0f07d-3744-4702-a1c3-dfb046cc78cc}">
 		<relationship name="mixerStrip">
 			<destination>{954eb9ee-b3f4-4420-a8ba-e5acded62100}</destination>
 		</relationship>
