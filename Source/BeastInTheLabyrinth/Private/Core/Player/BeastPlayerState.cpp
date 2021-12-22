@@ -12,6 +12,7 @@ void ABeastPlayerState::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > &
 
 	DOREPLIFETIME(ABeastPlayerState, DisplayName);
 	DOREPLIFETIME(ABeastPlayerState, bIsGroupLeader);
+	DOREPLIFETIME(ABeastPlayerState, PlayerColor);
 }
 
 void ABeastPlayerState::SetNickname_Implementation(const FString& PlayerName)
@@ -29,6 +30,19 @@ void ABeastPlayerState::SetIsLeader(const bool bIsLeader)
 FString ABeastPlayerState::GetNickname() const
 {
 	return DisplayName;
+}
+
+void ABeastPlayerState::CopyProperties(APlayerState* PlayerState)
+{
+	Super::CopyProperties(PlayerState);
+
+	ABeastPlayerState* PS = Cast<ABeastPlayerState>(PlayerState);
+	if (PS)
+	{
+		PS->DisplayName = DisplayName;
+		PS->bIsGroupLeader = bIsGroupLeader;
+		PS->PlayerColor = PlayerColor;
+	}
 }
 
 

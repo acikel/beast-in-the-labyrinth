@@ -34,5 +34,11 @@ public:
 	
 	UPROPERTY(Replicated, BlueprintReadOnly)
 	FString DisplayName;
+
+	UPROPERTY(Replicated, BlueprintReadWrite)
+	FColor PlayerColor = FColor(0,0,0, 255);
+
+protected:
+	virtual void CopyProperties(APlayerState* PlayerState) override;
 	
 };
