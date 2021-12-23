@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{d39cc967-d3f9-4e19-b134-89a38a0ef8ad}">
+		<property name="assetPath">
+			<value>BeastLab_MA_StoneMusic_TapedPiano3.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>14.4545625</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{b0db4ee4-ee75-48e7-9517-e103ea6fdfe3}</destination>
+		</relationship>
+	</object>
+</objects>
