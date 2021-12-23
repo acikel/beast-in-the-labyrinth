@@ -4,6 +4,9 @@
 		<property name="assetPath">
 			<value>BeastLab_Chase_TapedPianoA7_V08.wav</value>
 		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
 		<property name="frequencyInKHz">
 			<value>48</value>
 		</property>

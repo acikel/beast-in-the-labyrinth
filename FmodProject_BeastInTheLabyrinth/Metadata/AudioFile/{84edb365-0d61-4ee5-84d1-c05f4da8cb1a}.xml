@@ -2,7 +2,10 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="AudioFile" id="{84edb365-0d61-4ee5-84d1-c05f4da8cb1a}">
 		<property name="assetPath">
-			<value>BeastLab_VFX_Growl_V01.wav</value>
+			<value>BeastLab_SFX_Growl_V01.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>48</value>

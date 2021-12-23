@@ -110,6 +110,7 @@
 		</property>
 		<relationship name="sounds">
 			<destination>{c38b436d-7e97-4f58-81ac-ac24f4e1b55d}</destination>
+			<destination>{e6761087-86e8-407c-b9e5-d2411f3658a3}</destination>
 			<destination>{c03d8541-1f5a-4424-a429-892ba77b5bd2}</destination>
 			<destination>{0d250f20-dbd9-42a3-95cc-f4e55a5421aa}</destination>
 		</relationship>
@@ -146,6 +147,12 @@
 		</relationship>
 		<relationship name="audioFile">
 			<destination>{db72c06d-868d-454f-afa4-376f080ad7b4}</destination>
+		</relationship>
+	</object>
+	<object class="EventSound" id="{e6761087-86e8-407c-b9e5-d2411f3658a3}">
+		<property name="name" />
+		<relationship name="event">
+			<destination>{ddfe1505-aa3d-4690-b4ed-82f6c6d750ce}</destination>
 		</relationship>
 	</object>
 	<object class="SingleSound" id="{c03d8541-1f5a-4424-a429-892ba77b5bd2}">

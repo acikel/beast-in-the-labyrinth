@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.02.00">
 	<object class="AudioFile" id="{76ddf6a7-fac8-4cd0-a198-b929a975b173}">
 		<property name="assetPath">
-			<value>BeastLab_VFX_Warning_V02.wav</value>
+			<value>BeastLab_SFX_Warning_V02.wav</value>
 		</property>
 		<property name="isStreaming">
 			<value>true</value>

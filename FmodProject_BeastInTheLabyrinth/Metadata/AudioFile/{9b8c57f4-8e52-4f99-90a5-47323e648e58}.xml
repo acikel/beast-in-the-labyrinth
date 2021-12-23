@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.02.00">
-	<object class="AudioFile" id="{f6e8715f-b8b0-4463-9003-4038f7194505}">
+	<object class="AudioFile" id="{9b8c57f4-8e52-4f99-90a5-47323e648e58}">
 		<property name="assetPath">
-			<value>BeastLab_Chase_Shout15_V09.wav</value>
+			<value>BeastLab_SoundScapeSnippetC7.wav</value>
 		</property>
 		<property name="isStreaming">
 			<value>true</value>
@@ -14,7 +14,7 @@
 			<value>2</value>
 		</property>
 		<property name="length">
-			<value>4.0960000000000001</value>
+			<value>20.181833333333334</value>
 		</property>
 		<relationship name="masterAssetFolder">
 			<destination>{b0db4ee4-ee75-48e7-9517-e103ea6fdfe3}</destination>
